@@ -1,10 +1,8 @@
-CREATE DATABASE  IF NOT EXISTS `callback_bd` /*!40100 DEFAULT CHARACTER SET utf8 */ /*!80016 DEFAULT ENCRYPTION='N' */;
-USE `callback_bd`;
--- MySQL dump 10.13  Distrib 8.0.27, for Win64 (x86_64)
+-- MySQL dump 10.13  Distrib 8.0.38, for Win64 (x86_64)
 --
 -- Host: localhost    Database: callback_bd
 -- ------------------------------------------------------
--- Server version	8.0.26
+-- Server version	8.0.39
 
 /*!40101 SET @OLD_CHARACTER_SET_CLIENT=@@CHARACTER_SET_CLIENT */;
 /*!40101 SET @OLD_CHARACTER_SET_RESULTS=@@CHARACTER_SET_RESULTS */;
@@ -192,6 +190,7 @@ SET @saved_cs_client     = @@character_set_client;
 /*!50001 CREATE VIEW `projeto_avaliacoes` AS SELECT 
  1 AS `id_projeto`,
  1 AS `projeto_nome`,
+ 1 AS `sala_numero`,
  1 AS `total_avaliacoes`,
  1 AS `media_notas`*/;
 SET character_set_client = @saved_cs_client;
@@ -387,7 +386,7 @@ UNLOCK TABLES;
 /*!50001 SET collation_connection      = utf8mb4_0900_ai_ci */;
 /*!50001 CREATE ALGORITHM=UNDEFINED */
 /*!50013 DEFINER=`root`@`localhost` SQL SECURITY DEFINER */
-/*!50001 VIEW `projeto_avaliacoes` AS select `p`.`id_projeto` AS `id_projeto`,`p`.`nome` AS `projeto_nome`,count(`a`.`id_avaliacao`) AS `total_avaliacoes`,avg(`a`.`nota`) AS `media_notas` from (`projeto` `p` left join `avaliacao` `a` on((`p`.`id_projeto` = `a`.`id_projeto`))) group by `p`.`id_projeto` */;
+/*!50001 VIEW `projeto_avaliacoes` AS select `p`.`id_projeto` AS `id_projeto`,`p`.`nome` AS `projeto_nome`,`s`.`numero` AS `sala_numero`,count(`a`.`id_avaliacao`) AS `total_avaliacoes`,avg(`a`.`nota`) AS `media_notas` from ((`projeto` `p` left join `avaliacao` `a` on((`p`.`id_projeto` = `a`.`id_projeto`))) left join `sala` `s` on((`p`.`sala_id_sala` = `s`.`id_sala`))) group by `p`.`id_projeto`,`s`.`numero` */;
 /*!50001 SET character_set_client      = @saved_cs_client */;
 /*!50001 SET character_set_results     = @saved_cs_results */;
 /*!50001 SET collation_connection      = @saved_col_connection */;
@@ -491,4 +490,4 @@ UNLOCK TABLES;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2024-09-13 21:45:13
+-- Dump completed on 2024-09-15  5:10:47
