@@ -4,7 +4,7 @@ require_once __DIR__ . "/config/db_connect.php";
 ?>
 
 <!DOCTYPE html>
-<html lang="en">
+<html lang="pt-br">
 
 <head>
     <meta charset="UTF-8">
@@ -14,6 +14,7 @@ require_once __DIR__ . "/config/db_connect.php";
 
 <body>
     <h2>Hello world</h2>
+    <a href"./pages/cadastroUsuario.php"></a>
 </body>
 
 </html>
