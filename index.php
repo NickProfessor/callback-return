@@ -1,6 +1,7 @@
 <?php
-require_once __DIR__ . "/config/config.php";
-require_once __DIR__ . "/config/db_connect.php";
+require_once "./src/config/config.php";
+require_once "./src/config/db_connect.php";
+
 ?>
 
 <!DOCTYPE html>
@@ -8,13 +9,15 @@ require_once __DIR__ . "/config/db_connect.php";
 
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>CallbackReturn</title>
+    <link rel="stylesheet" href="./src/css/style.css">
 </head>
 
 <body>
     <h2>Hello world</h2>
-    <a href"./pages/cadastroUsuario.php"></a>
-</body>
+    <a href="./src/pages/cadastroUsuario.php">cadastra usuario</a>
 
-</html>
+
+    <?php
+    include "./src/views/footer.php";
+    ?>
