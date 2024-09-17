@@ -1,3 +1,5 @@
+CREATE DATABASE  IF NOT EXISTS `callback_bd` /*!40100 DEFAULT CHARACTER SET utf8mb3 */ /*!80016 DEFAULT ENCRYPTION='N' */;
+USE `callback_bd`;
 -- MySQL dump 10.13  Distrib 8.0.38, for Win64 (x86_64)
 --
 -- Host: localhost    Database: callback_bd
@@ -175,25 +177,9 @@ CREATE TABLE `projeto` (
 
 LOCK TABLES `projeto` WRITE;
 /*!40000 ALTER TABLE `projeto` DISABLE KEYS */;
-INSERT INTO `projeto` VALUES (1,'Projeto de marketing','Um projeto bem legal sobre marketing',25),(2,'Projeto de Administração','Um projeto bem legal sobre administração',2);
+INSERT INTO `projeto` VALUES (1,'Projeto do marketing','Um projeto bem legal sobre marketing',25),(2,'Projeto de Administração','Um projeto bem legal sobre administração',2);
 /*!40000 ALTER TABLE `projeto` ENABLE KEYS */;
 UNLOCK TABLES;
-
---
--- Temporary view structure for view `projeto_avaliacoes`
---
-
-DROP TABLE IF EXISTS `projeto_avaliacoes`;
-/*!50001 DROP VIEW IF EXISTS `projeto_avaliacoes`*/;
-SET @saved_cs_client     = @@character_set_client;
-/*!50503 SET character_set_client = utf8mb4 */;
-/*!50001 CREATE VIEW `projeto_avaliacoes` AS SELECT 
- 1 AS `id_projeto`,
- 1 AS `projeto_nome`,
- 1 AS `sala_numero`,
- 1 AS `total_avaliacoes`,
- 1 AS `media_notas`*/;
-SET character_set_client = @saved_cs_client;
 
 --
 -- Table structure for table `projeto_has_tema`
@@ -208,6 +194,8 @@ CREATE TABLE `projeto_has_tema` (
   PRIMARY KEY (`projeto_id_projeto`,`tema_id_tema`),
   KEY `fk_projeto_has_tema_tema1_idx` (`tema_id_tema`),
   KEY `fk_projeto_has_tema_projeto1_idx` (`projeto_id_projeto`),
+  KEY `idx_projeto_tema_id_projeto` (`projeto_id_projeto`),
+  KEY `idx_projeto_tema_id_tema` (`tema_id_tema`),
   CONSTRAINT `fk_projeto_has_tema_projeto1` FOREIGN KEY (`projeto_id_projeto`) REFERENCES `projeto` (`id_projeto`),
   CONSTRAINT `fk_projeto_has_tema_tema1` FOREIGN KEY (`tema_id_tema`) REFERENCES `tema` (`id_tema`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb3;
@@ -222,81 +210,6 @@ LOCK TABLES `projeto_has_tema` WRITE;
 INSERT INTO `projeto_has_tema` VALUES (2,1),(2,9),(2,11),(1,14);
 /*!40000 ALTER TABLE `projeto_has_tema` ENABLE KEYS */;
 UNLOCK TABLES;
-
---
--- Temporary view structure for view `projetos_avaliacoes_adultos`
---
-
-DROP TABLE IF EXISTS `projetos_avaliacoes_adultos`;
-/*!50001 DROP VIEW IF EXISTS `projetos_avaliacoes_adultos`*/;
-SET @saved_cs_client     = @@character_set_client;
-/*!50503 SET character_set_client = utf8mb4 */;
-/*!50001 CREATE VIEW `projetos_avaliacoes_adultos` AS SELECT 
- 1 AS `id_projeto`,
- 1 AS `nome_projeto`,
- 1 AS `total_avaliacoes_adultos`,
- 1 AS `media_notas_adultos`*/;
-SET character_set_client = @saved_cs_client;
-
---
--- Temporary view structure for view `projetos_avaliacoes_feminino`
---
-
-DROP TABLE IF EXISTS `projetos_avaliacoes_feminino`;
-/*!50001 DROP VIEW IF EXISTS `projetos_avaliacoes_feminino`*/;
-SET @saved_cs_client     = @@character_set_client;
-/*!50503 SET character_set_client = utf8mb4 */;
-/*!50001 CREATE VIEW `projetos_avaliacoes_feminino` AS SELECT 
- 1 AS `id_projeto`,
- 1 AS `nome_projeto`,
- 1 AS `total_avaliacoes_feminino`,
- 1 AS `media_notas_feminino`*/;
-SET character_set_client = @saved_cs_client;
-
---
--- Temporary view structure for view `projetos_avaliacoes_jovens`
---
-
-DROP TABLE IF EXISTS `projetos_avaliacoes_jovens`;
-/*!50001 DROP VIEW IF EXISTS `projetos_avaliacoes_jovens`*/;
-SET @saved_cs_client     = @@character_set_client;
-/*!50503 SET character_set_client = utf8mb4 */;
-/*!50001 CREATE VIEW `projetos_avaliacoes_jovens` AS SELECT 
- 1 AS `id_projeto`,
- 1 AS `nome_projeto`,
- 1 AS `total_avaliacoes_jovens`,
- 1 AS `media_notas_jovens`*/;
-SET character_set_client = @saved_cs_client;
-
---
--- Temporary view structure for view `projetos_avaliacoes_masculino`
---
-
-DROP TABLE IF EXISTS `projetos_avaliacoes_masculino`;
-/*!50001 DROP VIEW IF EXISTS `projetos_avaliacoes_masculino`*/;
-SET @saved_cs_client     = @@character_set_client;
-/*!50503 SET character_set_client = utf8mb4 */;
-/*!50001 CREATE VIEW `projetos_avaliacoes_masculino` AS SELECT 
- 1 AS `id_projeto`,
- 1 AS `nome_projeto`,
- 1 AS `total_avaliacoes_masculino`,
- 1 AS `media_notas_masculino`*/;
-SET character_set_client = @saved_cs_client;
-
---
--- Temporary view structure for view `projetos_avaliacoes_seniores`
---
-
-DROP TABLE IF EXISTS `projetos_avaliacoes_seniores`;
-/*!50001 DROP VIEW IF EXISTS `projetos_avaliacoes_seniores`*/;
-SET @saved_cs_client     = @@character_set_client;
-/*!50503 SET character_set_client = utf8mb4 */;
-/*!50001 CREATE VIEW `projetos_avaliacoes_seniores` AS SELECT 
- 1 AS `id_projeto`,
- 1 AS `nome_projeto`,
- 1 AS `total_avaliacoes_seniores`,
- 1 AS `media_notas_seniores`*/;
-SET character_set_client = @saved_cs_client;
 
 --
 -- Table structure for table `sala`
@@ -356,10 +269,11 @@ DROP TABLE IF EXISTS `usuario`;
 CREATE TABLE `usuario` (
   `id_usuario` int NOT NULL AUTO_INCREMENT,
   `nome` varchar(255) NOT NULL,
-  `idade` int NOT NULL,
   `sexo` varchar(50) NOT NULL,
   `frase_seguranca` varchar(255) NOT NULL,
-  PRIMARY KEY (`id_usuario`)
+  `data_nascimento` date DEFAULT NULL,
+  PRIMARY KEY (`id_usuario`),
+  KEY `idx_sexo` (`sexo`)
 ) ENGINE=InnoDB AUTO_INCREMENT=3 DEFAULT CHARSET=utf8mb3;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
@@ -369,117 +283,9 @@ CREATE TABLE `usuario` (
 
 LOCK TABLES `usuario` WRITE;
 /*!40000 ALTER TABLE `usuario` DISABLE KEYS */;
-INSERT INTO `usuario` VALUES (1,'Maria Josefina',18,'Feminino','Fui na roça'),(2,'Mario José',45,'Masculino','Tava eu e o jorginho apavorando na festa');
+INSERT INTO `usuario` VALUES (1,'Maria Josefina','Feminino','Fui na roça','2006-09-17'),(2,'Mario José','Masculino','Tava eu e o jorginho apavorando na festa','1979-09-17');
 /*!40000 ALTER TABLE `usuario` ENABLE KEYS */;
 UNLOCK TABLES;
-
---
--- Final view structure for view `projeto_avaliacoes`
---
-
-/*!50001 DROP VIEW IF EXISTS `projeto_avaliacoes`*/;
-/*!50001 SET @saved_cs_client          = @@character_set_client */;
-/*!50001 SET @saved_cs_results         = @@character_set_results */;
-/*!50001 SET @saved_col_connection     = @@collation_connection */;
-/*!50001 SET character_set_client      = utf8mb4 */;
-/*!50001 SET character_set_results     = utf8mb4 */;
-/*!50001 SET collation_connection      = utf8mb4_0900_ai_ci */;
-/*!50001 CREATE ALGORITHM=UNDEFINED */
-/*!50013 DEFINER=`root`@`localhost` SQL SECURITY DEFINER */
-/*!50001 VIEW `projeto_avaliacoes` AS select `p`.`id_projeto` AS `id_projeto`,`p`.`nome` AS `projeto_nome`,`s`.`numero` AS `sala_numero`,count(`a`.`id_avaliacao`) AS `total_avaliacoes`,avg(`a`.`nota`) AS `media_notas` from ((`projeto` `p` left join `avaliacao` `a` on((`p`.`id_projeto` = `a`.`id_projeto`))) left join `sala` `s` on((`p`.`sala_id_sala` = `s`.`id_sala`))) group by `p`.`id_projeto`,`s`.`numero` */;
-/*!50001 SET character_set_client      = @saved_cs_client */;
-/*!50001 SET character_set_results     = @saved_cs_results */;
-/*!50001 SET collation_connection      = @saved_col_connection */;
-
---
--- Final view structure for view `projetos_avaliacoes_adultos`
---
-
-/*!50001 DROP VIEW IF EXISTS `projetos_avaliacoes_adultos`*/;
-/*!50001 SET @saved_cs_client          = @@character_set_client */;
-/*!50001 SET @saved_cs_results         = @@character_set_results */;
-/*!50001 SET @saved_col_connection     = @@collation_connection */;
-/*!50001 SET character_set_client      = utf8mb4 */;
-/*!50001 SET character_set_results     = utf8mb4 */;
-/*!50001 SET collation_connection      = utf8mb4_0900_ai_ci */;
-/*!50001 CREATE ALGORITHM=UNDEFINED */
-/*!50013 DEFINER=`root`@`localhost` SQL SECURITY DEFINER */
-/*!50001 VIEW `projetos_avaliacoes_adultos` AS select `p`.`id_projeto` AS `id_projeto`,`p`.`nome` AS `nome_projeto`,count(`a`.`id_avaliacao`) AS `total_avaliacoes_adultos`,avg(`a`.`nota`) AS `media_notas_adultos` from ((`projeto` `p` left join `avaliacao` `a` on((`p`.`id_projeto` = `a`.`id_projeto`))) left join `usuario` `u` on((`a`.`id_usuario` = `u`.`id_usuario`))) where (`u`.`idade` between 22 and 55) group by `p`.`id_projeto` */;
-/*!50001 SET character_set_client      = @saved_cs_client */;
-/*!50001 SET character_set_results     = @saved_cs_results */;
-/*!50001 SET collation_connection      = @saved_col_connection */;
-
---
--- Final view structure for view `projetos_avaliacoes_feminino`
---
-
-/*!50001 DROP VIEW IF EXISTS `projetos_avaliacoes_feminino`*/;
-/*!50001 SET @saved_cs_client          = @@character_set_client */;
-/*!50001 SET @saved_cs_results         = @@character_set_results */;
-/*!50001 SET @saved_col_connection     = @@collation_connection */;
-/*!50001 SET character_set_client      = utf8mb4 */;
-/*!50001 SET character_set_results     = utf8mb4 */;
-/*!50001 SET collation_connection      = utf8mb4_0900_ai_ci */;
-/*!50001 CREATE ALGORITHM=UNDEFINED */
-/*!50013 DEFINER=`root`@`localhost` SQL SECURITY DEFINER */
-/*!50001 VIEW `projetos_avaliacoes_feminino` AS select `p`.`id_projeto` AS `id_projeto`,`p`.`nome` AS `nome_projeto`,count(`a`.`id_avaliacao`) AS `total_avaliacoes_feminino`,avg(`a`.`nota`) AS `media_notas_feminino` from ((`projeto` `p` left join `avaliacao` `a` on((`p`.`id_projeto` = `a`.`id_projeto`))) left join `usuario` `u` on((`a`.`id_usuario` = `u`.`id_usuario`))) where (`u`.`sexo` = 'Feminino') group by `p`.`id_projeto` */;
-/*!50001 SET character_set_client      = @saved_cs_client */;
-/*!50001 SET character_set_results     = @saved_cs_results */;
-/*!50001 SET collation_connection      = @saved_col_connection */;
-
---
--- Final view structure for view `projetos_avaliacoes_jovens`
---
-
-/*!50001 DROP VIEW IF EXISTS `projetos_avaliacoes_jovens`*/;
-/*!50001 SET @saved_cs_client          = @@character_set_client */;
-/*!50001 SET @saved_cs_results         = @@character_set_results */;
-/*!50001 SET @saved_col_connection     = @@collation_connection */;
-/*!50001 SET character_set_client      = utf8mb4 */;
-/*!50001 SET character_set_results     = utf8mb4 */;
-/*!50001 SET collation_connection      = utf8mb4_0900_ai_ci */;
-/*!50001 CREATE ALGORITHM=UNDEFINED */
-/*!50013 DEFINER=`root`@`localhost` SQL SECURITY DEFINER */
-/*!50001 VIEW `projetos_avaliacoes_jovens` AS select `p`.`id_projeto` AS `id_projeto`,`p`.`nome` AS `nome_projeto`,count(`a`.`id_avaliacao`) AS `total_avaliacoes_jovens`,avg(`a`.`nota`) AS `media_notas_jovens` from ((`projeto` `p` left join `avaliacao` `a` on((`p`.`id_projeto` = `a`.`id_projeto`))) left join `usuario` `u` on((`a`.`id_usuario` = `u`.`id_usuario`))) where (`u`.`idade` < 22) group by `p`.`id_projeto` */;
-/*!50001 SET character_set_client      = @saved_cs_client */;
-/*!50001 SET character_set_results     = @saved_cs_results */;
-/*!50001 SET collation_connection      = @saved_col_connection */;
-
---
--- Final view structure for view `projetos_avaliacoes_masculino`
---
-
-/*!50001 DROP VIEW IF EXISTS `projetos_avaliacoes_masculino`*/;
-/*!50001 SET @saved_cs_client          = @@character_set_client */;
-/*!50001 SET @saved_cs_results         = @@character_set_results */;
-/*!50001 SET @saved_col_connection     = @@collation_connection */;
-/*!50001 SET character_set_client      = utf8mb4 */;
-/*!50001 SET character_set_results     = utf8mb4 */;
-/*!50001 SET collation_connection      = utf8mb4_0900_ai_ci */;
-/*!50001 CREATE ALGORITHM=UNDEFINED */
-/*!50013 DEFINER=`root`@`localhost` SQL SECURITY DEFINER */
-/*!50001 VIEW `projetos_avaliacoes_masculino` AS select `p`.`id_projeto` AS `id_projeto`,`p`.`nome` AS `nome_projeto`,count(`a`.`id_avaliacao`) AS `total_avaliacoes_masculino`,avg(`a`.`nota`) AS `media_notas_masculino` from ((`projeto` `p` left join `avaliacao` `a` on((`p`.`id_projeto` = `a`.`id_projeto`))) left join `usuario` `u` on((`a`.`id_usuario` = `u`.`id_usuario`))) where (`u`.`sexo` = 'Masculino') group by `p`.`id_projeto` */;
-/*!50001 SET character_set_client      = @saved_cs_client */;
-/*!50001 SET character_set_results     = @saved_cs_results */;
-/*!50001 SET collation_connection      = @saved_col_connection */;
-
---
--- Final view structure for view `projetos_avaliacoes_seniores`
---
-
-/*!50001 DROP VIEW IF EXISTS `projetos_avaliacoes_seniores`*/;
-/*!50001 SET @saved_cs_client          = @@character_set_client */;
-/*!50001 SET @saved_cs_results         = @@character_set_results */;
-/*!50001 SET @saved_col_connection     = @@collation_connection */;
-/*!50001 SET character_set_client      = utf8mb4 */;
-/*!50001 SET character_set_results     = utf8mb4 */;
-/*!50001 SET collation_connection      = utf8mb4_0900_ai_ci */;
-/*!50001 CREATE ALGORITHM=UNDEFINED */
-/*!50013 DEFINER=`root`@`localhost` SQL SECURITY DEFINER */
-/*!50001 VIEW `projetos_avaliacoes_seniores` AS select `p`.`id_projeto` AS `id_projeto`,`p`.`nome` AS `nome_projeto`,count(`a`.`id_avaliacao`) AS `total_avaliacoes_seniores`,avg(`a`.`nota`) AS `media_notas_seniores` from ((`projeto` `p` left join `avaliacao` `a` on((`p`.`id_projeto` = `a`.`id_projeto`))) left join `usuario` `u` on((`a`.`id_usuario` = `u`.`id_usuario`))) where (`u`.`idade` > 55) group by `p`.`id_projeto` */;
-/*!50001 SET character_set_client      = @saved_cs_client */;
-/*!50001 SET character_set_results     = @saved_cs_results */;
-/*!50001 SET collation_connection      = @saved_col_connection */;
 /*!40103 SET TIME_ZONE=@OLD_TIME_ZONE */;
 
 /*!40101 SET SQL_MODE=@OLD_SQL_MODE */;
@@ -490,4 +296,4 @@ UNLOCK TABLES;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2024-09-15  5:10:47
+-- Dump completed on 2024-09-17 10:04:28
