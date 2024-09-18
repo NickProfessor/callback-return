@@ -1,40 +1,46 @@
 <?php
 
+
 require_once "../models/Projeto.php";
 
-$projeto = new Projeto();
-$sala = "1";
+if (isset($_GET["id"]) && $_GET["id"] != "") {
 
-$listaDeProjetos = $projeto->obterProjetosDaSala($sala);
+    $sala = $_GET["id"];
+    $pageTitle = "Sala $sala | CallbackReturn";
+    include "../views/header.php";
 
-if (empty($listaDeProjetos)) {
-    echo "Nenhum projeto encontrado para a sala $sala.";
-} else {
+    $projeto = new Projeto();
 
-    foreach ($listaDeProjetos as $projeto) {
+    $listaDeProjetos = $projeto->obterProjetosDaSala($sala);
 
-        echo "Nome do Projeto: " . $projeto['projeto_nome'] . "<br>";
-        echo "Sala do Projeto: " . $projeto['sala_numero'] . "<br>";
-        echo "Curso do Projeto: " . $projeto['cursos'] . "<br>";
-        echo "Integrantes do Projeto: " . $projeto['integrantes'] . "<br>";
-        echo "Temas do Projeto: " . $projeto['temas'] . "<br>";
-        echo "Avaliações do Projeto: " . $projeto['total_avaliacoes'] . "<br>";
-        echo "Média de avaliações do projeto" . $projeto['media_notas'] . "<br>";
-        if ($projeto['popular_adultos']) {
-            echo "Popular entre adultos <br>";
+    if (empty($listaDeProjetos)) {
+        echo "Nenhum projeto encontrado para a sala $sala.";
+    } else {
+
+        foreach ($listaDeProjetos as $projeto) {
+
+            $projetoNome = $projeto['projeto_nome'];
+            $projetoSala = $projeto['sala_numero'];
+            $projetoCursos = $projeto['cursos'];
+            $projetoDescricao = $projeto['projeto_descricao'];
+            $projetoIntegrantes = $projeto['integrantes'];
+            $projetoTemas = $projeto['temas'];
+            $projetoAvaliacoes = $projeto['total_avaliacoes'];
+            $projetoMediaAvaliacoes = $projeto['media_notas'];
+
+            $popularAdultos = isset($projeto['popular_adultos']) && $projeto['popular_adultos'];
+            $popularJovens = isset($projeto['popular_jovens']) && $projeto['popular_jovens'];
+            $popularIdosos = isset($projeto['popular_idosos']) && $projeto['popular_idosos'];
+            $popularMulheres = isset($projeto['popular_mulheres']) && $projeto['popular_mulheres'];
+            $popularHomens = isset($projeto['popular_homens']) && $projeto['popular_homens'];
+
+            include "../views/cardProjeto.php";
         }
-        if ($projeto['popular_jovens']) {
-            echo "Popular entre joves <br>";
-        }
-        if ($projeto['popular_idosos']) {
-            echo "Popular entre idosos <br>";
-        }
-        if ($projeto['popular_mulheres']) {
-            echo "Popular entre mulheres <br>";
-        }
-        if ($projeto['popular_homens']) {
-            echo "Popular entre homens <br>";
-        }
-        echo "<br><br>";
     }
+} else {
+    $pageTitle = "Não encontrado | CallbackReturn";
+    include "../views/header.php";
+    echo "Página não encontrada 404";
 }
+
+include "../views/footer.php";
