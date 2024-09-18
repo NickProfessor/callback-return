@@ -16,6 +16,7 @@ h6,
 label,
 input,
 a,
-button {
+button,
+li {
     font-family: "Montserrat", system-ui;
 }
