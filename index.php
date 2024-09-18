@@ -16,7 +16,7 @@ require_once "./src/config/db_connect.php";
 <body>
     <h2>Hello world</h2>
     <a href="./src/pages/cadastroUsuario.php">cadastra usuario</a>
-
+    <a href="./src/pages/sala.php">projetos de uma sala</a>
 
     <?php
     include "./src/views/footer.php";
