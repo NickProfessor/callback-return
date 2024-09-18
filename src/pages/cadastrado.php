@@ -34,8 +34,10 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
     if ($userController->registraUsuario($data)) {
         $id = $userController->usuarioExiste($data['nome'], $data['dataNasc'], $data['sexo']);
         echo "<p>Registrado com sucesso! Seu número é o $id</p>";
+        echo "<a href='../../index.php'>Voltar para página inicial</a>";
     } else {
         echo "Não conseguiu registrar.";
+        echo "<a href='../../index.php'>Voltar para página inicial</a>";
     }
 
     include "../views/footer.php"

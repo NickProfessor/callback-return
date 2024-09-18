@@ -1,6 +1,7 @@
 <?php
-require_once "../config/config.php";
-require_once "../config/db_connect.php";
+require_once __DIR__ . "/../../config/config.php";
+require_once __DIR__ . "/../../config/db_connect.php";
+
 
 class User
 {
