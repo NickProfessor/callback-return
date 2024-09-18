@@ -1,7 +1,5 @@
 <?php
-require_once "./src/config/config.php";
-require_once "./src/config/db_connect.php";
-
+require_once "./src/models/Projeto.php";
 ?>
 
 <!DOCTYPE html>
@@ -15,9 +13,27 @@ require_once "./src/config/db_connect.php";
 
 <body>
     <h2>Hello world</h2>
-    <a href="./src/pages/cadastroUsuario.php">cadastra usuario</a>
-    <a href="./src/pages/sala.php">projetos de uma sala</a>
+    <a href="./src/pages/cadastroUsuario.php">Cadastrar usuário</a>
 
     <?php
+    $projeto = new Projeto();
+    $listaDeSalas = $projeto->obterSalasComProjetos();
+
+    if (empty($listaDeSalas)) {
+        echo "Nenhuma sala com projetos encontrados.";
+    } else {
+        foreach ($listaDeSalas as $sala) {
+            if (!empty($sala['lista_projetos'])) {
+                $salaNumero = $sala['sala_numero'];
+                $listaProjetos = $sala['lista_projetos']; // projetos concatenados
+                $totalAvaliacoes = $sala['total_avaliacoes'];
+                $mediaNotas = $sala['media_notas'];
+
+                // Inclua a view para exibir o card da sala
+                include __DIR__ . "/src/views/cardSala.php";
+            }
+        }
+    }
+
     include "./src/views/footer.php";
     ?>
