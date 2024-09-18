@@ -36,7 +36,7 @@ CREATE TABLE `avaliacao` (
   KEY `fk_projeto_avaliacao_idx` (`id_projeto`),
   CONSTRAINT `fk_projeto_avaliacao` FOREIGN KEY (`id_projeto`) REFERENCES `projeto` (`id_projeto`) ON DELETE RESTRICT,
   CONSTRAINT `fk_usuario_avaliacao` FOREIGN KEY (`id_usuario`) REFERENCES `usuario` (`id_usuario`) ON DELETE RESTRICT
-) ENGINE=InnoDB AUTO_INCREMENT=4 DEFAULT CHARSET=utf8mb3;
+) ENGINE=InnoDB AUTO_INCREMENT=8 DEFAULT CHARSET=utf8mb3;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -45,7 +45,7 @@ CREATE TABLE `avaliacao` (
 
 LOCK TABLES `avaliacao` WRITE;
 /*!40000 ALTER TABLE `avaliacao` DISABLE KEYS */;
-INSERT INTO `avaliacao` VALUES (1,1,1,'2024-09-13','Muito bom',9),(2,2,2,'2024-09-13','Sem comentario',5),(3,1,2,'2024-09-13','Sem comentario',4);
+INSERT INTO `avaliacao` VALUES (1,1,1,'2024-09-13','Muito bom',9),(2,2,2,'2024-09-13','Sem comentario',5),(3,1,2,'2024-09-13','Sem comentario',4),(4,2,3,'2024-09-10','sem comentario',9),(5,2,5,'2024-09-10','sem comentario',9),(6,2,8,'2024-09-10','sem comentario',9),(7,2,7,'2024-09-10','sem comentario',9);
 /*!40000 ALTER TABLE `avaliacao` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -97,7 +97,7 @@ CREATE TABLE `curso_has_projeto` (
 
 LOCK TABLES `curso_has_projeto` WRITE;
 /*!40000 ALTER TABLE `curso_has_projeto` DISABLE KEYS */;
-INSERT INTO `curso_has_projeto` VALUES (10,1),(1,2);
+INSERT INTO `curso_has_projeto` VALUES (10,1),(1,2),(6,4),(3,5);
 /*!40000 ALTER TABLE `curso_has_projeto` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -149,7 +149,7 @@ CREATE TABLE `integrante_has_projeto` (
 
 LOCK TABLES `integrante_has_projeto` WRITE;
 /*!40000 ALTER TABLE `integrante_has_projeto` DISABLE KEYS */;
-INSERT INTO `integrante_has_projeto` VALUES (1,1),(1,2),(2,2),(3,2);
+INSERT INTO `integrante_has_projeto` VALUES (1,1),(1,2),(2,2),(3,2),(1,4),(3,4),(3,5);
 /*!40000 ALTER TABLE `integrante_has_projeto` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -168,7 +168,7 @@ CREATE TABLE `projeto` (
   PRIMARY KEY (`id_projeto`),
   KEY `fk_projeto_sala1_idx` (`sala_id_sala`),
   CONSTRAINT `fk_projeto_sala1` FOREIGN KEY (`sala_id_sala`) REFERENCES `sala` (`id_sala`)
-) ENGINE=InnoDB AUTO_INCREMENT=4 DEFAULT CHARSET=utf8mb3;
+) ENGINE=InnoDB AUTO_INCREMENT=6 DEFAULT CHARSET=utf8mb3;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -177,7 +177,7 @@ CREATE TABLE `projeto` (
 
 LOCK TABLES `projeto` WRITE;
 /*!40000 ALTER TABLE `projeto` DISABLE KEYS */;
-INSERT INTO `projeto` VALUES (1,'Projeto do marketing','Um projeto bem legal sobre marketing',25),(2,'Projeto de Administração','Um projeto bem legal sobre administração',2);
+INSERT INTO `projeto` VALUES (1,'Projeto do marketing','Um projeto bem legal sobre marketing',25),(2,'Projeto de Administração','Um projeto bem legal sobre administração',2),(4,'Projeto inovador de TCC','Muito legal viu',3),(5,'Mais um projeto bom','Muito legal viu',2);
 /*!40000 ALTER TABLE `projeto` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -207,7 +207,7 @@ CREATE TABLE `projeto_has_tema` (
 
 LOCK TABLES `projeto_has_tema` WRITE;
 /*!40000 ALTER TABLE `projeto_has_tema` DISABLE KEYS */;
-INSERT INTO `projeto_has_tema` VALUES (2,1),(2,9),(2,11),(1,14);
+INSERT INTO `projeto_has_tema` VALUES (2,1),(4,1),(5,1),(4,3),(5,3),(4,5),(5,5),(2,9),(2,11),(1,14);
 /*!40000 ALTER TABLE `projeto_has_tema` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -274,7 +274,7 @@ CREATE TABLE `usuario` (
   `data_nascimento` date DEFAULT NULL,
   PRIMARY KEY (`id_usuario`),
   KEY `idx_sexo` (`sexo`)
-) ENGINE=InnoDB AUTO_INCREMENT=3 DEFAULT CHARSET=utf8mb3;
+) ENGINE=InnoDB AUTO_INCREMENT=16 DEFAULT CHARSET=utf8mb3;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -283,7 +283,7 @@ CREATE TABLE `usuario` (
 
 LOCK TABLES `usuario` WRITE;
 /*!40000 ALTER TABLE `usuario` DISABLE KEYS */;
-INSERT INTO `usuario` VALUES (1,'Maria Josefina','Feminino','Fui na roça','2006-09-17'),(2,'Mario José','Masculino','Tava eu e o jorginho apavorando na festa','1979-09-17');
+INSERT INTO `usuario` VALUES (1,'Maria Josefina','Feminino','Fui na roça','2006-09-17'),(2,'Mario José','Masculino','Tava eu e o jorginho apavorando na festa','1979-09-17'),(3,'Nickollas Gonçalves Silva','masculino','expotin','2024-09-29'),(4,'Clovis','masculino','aaaaA','2024-09-09'),(5,'Nickollas Gonçalves Silva','masculino','aaa','2006-07-29'),(6,'Filipe Arcineto','masculino','123','2006-04-01'),(7,'Mariana','feminino','aaa','2000-01-01'),(8,'Nicole','masculino','aaa','2222-02-22'),(9,'Daiana','feminino','seinao','2022-02-22'),(10,'José Arnaldo','masculino','E9GejBR5j624WPT','2000-03-21'),(11,'Alana','feminino','aaaa','1981-01-09'),(12,'Nathan Leite','masculino','xampp','2004-07-22'),(13,'Olivia Palito','feminino','seinao','1980-09-09'),(14,'Nickollas Gonçalves Silva','masculino','444','2024-09-03'),(15,'aaa','masculino','111','2024-09-03');
 /*!40000 ALTER TABLE `usuario` ENABLE KEYS */;
 UNLOCK TABLES;
 /*!40103 SET TIME_ZONE=@OLD_TIME_ZONE */;
@@ -296,4 +296,4 @@ UNLOCK TABLES;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2024-09-17 10:04:28
+-- Dump completed on 2024-09-18 16:01:46
