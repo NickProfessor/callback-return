@@ -14,7 +14,6 @@ require_once "./src/models/Projeto.php";
 <body>
     <h2>Hello world</h2>
     <a href="./src/pages/cadastroUsuario.php">Cadastrar usuário</a>
-    <a href="./src/pages/avaliaProjeto.php">Avaliar projeto</a>
 
     <?php
     $projeto = new Projeto();
