@@ -162,4 +162,30 @@ class Projeto
 
         return $projetosDaSala;
     }
+
+    public static function obterProjetoPeloId($id)
+{
+    global $conn;
+
+    $sql = "SELECT nome FROM projeto WHERE id_projeto = ?;";
+    $stmt = $conn->prepare($sql);
+
+    if ($stmt) {
+        
+        $stmt->bind_param("i", $id); 
+        $stmt->execute();
+
+        
+        $result = $stmt->get_result();
+        if ($result) {
+            $projeto = $result->fetch_assoc();
+            return $projeto;
+        } else {
+            die("Projeto com ID $id não encontrado.");
+        }
+    } else {
+        die("Erro na preparação da consulta: " . $conn->error);
+    }
+}
+
 }
