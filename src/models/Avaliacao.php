@@ -1,6 +1,7 @@
 <?php
 require_once __DIR__ . "/../../config/config.php";
 require_once __DIR__ . "/../../config/db_connect.php";
+require_once __DIR__ . "/../../src/controllers/UserController.php";
 
 
 class Avaliacao
@@ -20,59 +21,66 @@ class Avaliacao
         $this->fraseSeguranca = $fraseSeguranca;
     }
 
-    private function validaAvaliacao()
-    {
-        global $conn;
 
-        $sql = "SELECT * FROM usuario WHERE id_usuario = ?;";
-        $stmt = $conn->prepare($sql);
-
-        if ($stmt) {
-            $stmt->bind_param("i", $this->id_usuario);  // Corrigido para usar $this->id_usuario
-            $stmt->execute();
-
-            $result = $stmt->get_result();
-            if ($result) {
-                $usuario = $result->fetch_assoc();
-                if ($usuario['frase_seguranca'] == $this->fraseSeguranca) {
-                    return $usuario;
-                } else {
-                    return false;  // Frase de segurança incorreta
-                }
-            }
-        } else {
-            die("Erro na preparação da consulta: " . $conn->error);
-        }
-    }
 
     public function avaliaProjeto()
     {
-        $usuario = $this->validaAvaliacao();
+        $userController = new UserController();
+        $usuario = $userController->validaUsuario($this->id_usuario, $this->fraseSeguranca);
 
         if ($usuario) {
-            if($this->comentario === ""){
+            if (empty($this->comentario)) {
                 $this->comentario = "sem comentario";
             }
-            global $conn;
-
-            $sql = "INSERT INTO avaliacao (id_projeto, id_usuario, data_avaliacao, comentario, nota)
-                    VALUES (?, ?, NOW(), ?, ?);";  // NOW() para a data atual
-            $stmt = $conn->prepare($sql);
-
-            if ($stmt) {
-                // Ajuste no bind_param para passar os parâmetros corretos
-                $stmt->bind_param("iisd", $this->id_projeto, $this->id_usuario, $this->comentario, $this->nota);
-                
-                if ($stmt->execute()) {
-                    return true;
-                } else {
-                    return false;  
-                }
+            if ($this->usuarioJaAvaliou()) {
+                return false;
             } else {
-                die("Erro na preparação da consulta: " . $conn->error);
+                global $conn;
+
+                $sql = "INSERT INTO avaliacao (id_projeto, id_usuario, data_avaliacao, comentario, nota)
+                        VALUES (?, ?, NOW(), ?, ?);";  // NOW() para a data atual
+                $stmt = $conn->prepare($sql);
+
+                if ($stmt) {
+                    // Ajuste no bind_param para passar os parâmetros corretos
+                    $stmt->bind_param("iisd", $this->id_projeto, $this->id_usuario, $this->comentario, $this->nota);
+
+                    if ($stmt->execute()) {
+                        return true;
+                    } else {
+                        throw new Exception("Falha ao inserir avaliação: " . $stmt->error);
+                    }
+                } else {
+                    die("Erro na preparação da consulta: " . $conn->error);
+                }
             }
         } else {
-            die("Validação do usuário falhou.");
+            return false;
+        }
+    }
+
+    private function usuarioJaAvaliou()
+    {
+        global $conn;
+
+        $sql = "SELECT * FROM avaliacao WHERE id_usuario = ? AND id_projeto = ?";
+        $stmt = $conn->prepare($sql);
+
+        if ($stmt) {
+            $stmt->bind_param("ii", $this->id_usuario, $this->id_projeto);
+
+            if ($stmt->execute()) {
+                $result = $stmt->get_result();
+                if ($result->num_rows > 0) {
+                    return true;
+                } else {
+                    return false;
+                }
+            } else {
+                die("Erro na execução da consulta: " . $conn->error);
+            }
+        } else {
+            die("Erro na preparação da consulta: " . $conn->error);
         }
     }
 }
