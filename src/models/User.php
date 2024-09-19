@@ -51,4 +51,5 @@ class User
             return null; // Retorna null se o usuário não existir
         }
     }
+    
 }
