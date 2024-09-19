@@ -29,7 +29,7 @@ if ($etapa == 1) {
             <input type="radio" name="sexo" id="outro" value="outro" required>
             <label for="outro">Prefiro não informar</label>
 
-            <button type="button" onclick="history.back()">Voltar para a tela principal</button>
+            <button type="button" onclick="window.location.href='../../index.php'">Voltar para a tela principal</button>
             <input type="submit" name="submit" value="Continuar">
 
         </form>

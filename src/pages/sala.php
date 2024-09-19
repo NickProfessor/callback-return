@@ -8,10 +8,14 @@ if (isset($_GET["id"]) && $_GET["id"] != "") {
     $sala = $_GET["id"];
     $pageTitle = "Sala $sala | CallbackReturn";
     include "../views/header.php";
+    echo "<h1>Sala $sala</h1>";
 
     $projeto = new Projeto();
 
     $listaDeProjetos = $projeto->obterProjetosDaSala($sala);
+    ?>
+    <a href="../../index.php">Voltar para tela principal</a>
+    <?php
 
     if (empty($listaDeProjetos)) {
         echo "Nenhum projeto encontrado para a sala $sala.";
@@ -19,6 +23,7 @@ if (isset($_GET["id"]) && $_GET["id"] != "") {
 
         foreach ($listaDeProjetos as $projeto) {
 
+            $projetoId = $projeto['id_projeto'];
             $projetoNome = $projeto['projeto_nome'];
             $projetoSala = $projeto['sala_numero'];
             $projetoCursos = $projeto['cursos'];
