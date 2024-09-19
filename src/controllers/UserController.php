@@ -29,4 +29,9 @@ class UserController
     {
         return User::existeNoBanco($nome, $dataNasc, $sexo);
     }
+
+    public function validaUsuario($id, $frase)
+    {
+        return User::validaAcesso($id, $frase);
+    }
 }

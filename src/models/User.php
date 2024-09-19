@@ -51,4 +51,30 @@ class User
             return null; // Retorna null se o usuário não existir
         }
     }
+
+    public static function validaAcesso($id_usuario, $frase)
+    {
+        global $conn;
+
+        $sql = "SELECT * FROM usuario WHERE id_usuario = ?;";
+        $stmt = $conn->prepare($sql);
+
+        if ($stmt) {
+            $stmt->bind_param("i", $id_usuario);  // Corrigido para usar $this->id_usuario
+            $stmt->execute();
+
+            $result = $stmt->get_result();
+            if ($result) {
+                $usuario = $result->fetch_assoc();
+                if (isset($usuario['frase_seguranca']) && $usuario['frase_seguranca'] == $frase) {
+                    return $usuario;
+                } else {
+                    return false;  // Frase de segurança incorreta
+                }
+            }
+        } else {
+            die("Erro na preparação da consulta: " . $conn->error);
+        }
+    }
+
 }
