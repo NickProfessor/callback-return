@@ -1,0 +1,69 @@
+@import url("../components/formularioPadrao.css");
+
+main {
+    width: 80%;
+    max-width: 400px;
+    margin: 30px auto 0;
+    text-align: center;
+    align-items: center;
+    display: flex;
+    flex-direction: column;
+}
+
+main .seu-id-eh {
+    font-size: 14px;
+    font-weight: bold;
+    margin-bottom: 4px;
+}
+
+main .id-registrado {
+    font-size: 32px;
+    padding: 12px 46px;
+    box-shadow: inset 0px 0px 10px rgba(0, 0, 0, 0.4);
+    border-radius: 8px;
+    margin-bottom: 0.5em;
+    font-weight: bold;
+    position: relative;
+}
+
+main .alerta {
+    margin-bottom: 36px;
+    color: var(--cor-vermelho);
+    font-size: 14px;
+}
+
+main .botao-voltar {
+    background-color: none;
+    border: none;
+    box-shadow: 1px 4px 8px hsla(0, 0%, 0%, 0.40);
+    font-weight: bold;
+    font-size: 12px;
+    width: 100%;
+    padding: 1em 2em;
+    border-radius: 28px;
+    margin-top: 82px;
+    text-decoration: none;
+    color: black;
+}
+
+main .icone-texto {
+    color: var(--cor-texto);
+    padding: 2px;
+    border-radius: 6px;
+    box-shadow: 1px 1px 4px rgba(0, 0, 0, 0.25);
+    cursor: pointer;
+}
+
+main .icone-copiar {
+    position: absolute;
+    font-size: 20px;
+    right: 10%;
+    top: 50%;
+    transform: translateY(-50%);
+    cursor: pointer;
+}
+
+main .mensagem-copiada {
+    color: rgb(33, 160, 33);
+    margin-bottom: 1em;
+}
