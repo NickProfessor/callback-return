@@ -1,0 +1,116 @@
+.formulario-padrao {
+    display: flex;
+    flex-direction: column;
+    min-width: 300px;
+    width: 100%;
+    max-width: 600px;
+    margin: 0 auto;
+    padding: 3em 1em;
+    padding-top: 0;
+}
+
+.titulo-formulario {
+    font-size: 20px;
+    font-weight: bold;
+    text-align: center;
+    padding: 0.8em 2em;
+    border-radius: 24px;
+    box-shadow: 1px 4px 4px hsla(0, 0%, 0%, 0.25);
+    min-width: 100px;
+    width: 80%;
+    max-width: 400px;
+    margin: 2em auto 1em;
+}
+
+.formulario-padrao .etapas-formulario {
+    align-self: center;
+    margin: 21px 0;
+}
+
+.formulario-padrao label,
+.formulario-padrao p {
+    font-size: 14px;
+    color: var(--cor-texto);
+    margin-bottom: 6px;
+    margin-left: 4px;
+}
+
+.formulario-padrao .campo-texto {
+    border-radius: 8px;
+    font-size: 14px;
+    padding: 1em;
+    border: none;
+    box-shadow: inset 0px 1px 14px rgba(0, 0, 0, 0.25);
+}
+
+.formulario-padrao input::placeholder {
+    color: #A3A3A3;
+}
+
+.formulario-padrao .form-group {
+    display: flex;
+    flex-direction: column;
+    margin-bottom: 22px;
+}
+
+.formulario-padrao p {
+    margin-bottom: 15px;
+}
+
+.formulario-padrao .radio-formulario {
+    margin: 0px 0 6px 12px;
+    display: flex;
+    align-items: baseline;
+}
+
+.formulario-padrao .botoes-formulario {
+    display: flex;
+    justify-content: space-between;
+    gap: 2em;
+}
+
+.formulario-padrao .botoes-formulario button,
+.formulario-padrao .botoes-formulario input[type="submit"] {
+    background-color: none;
+    border: none;
+    box-shadow: 1px 4px 8px hsla(0, 0%, 0%, 0.40);
+    font-weight: bold;
+    font-size: 12px;
+    min-width: 100px;
+    width: 50%;
+    max-width: 200px;
+    padding: 0.7em 2em;
+    border-radius: 28px;
+    margin-top: 82px;
+}
+
+.formulario-padrao .botoes-formulario button:hover,
+.formulario-padrao .botoes-formulario input[type="submit"]:hover {
+    cursor: pointer;
+}
+
+formulario-padrao .botoes-formulario button:active,
+.formulario-padrao .botoes-formulario input[type="submit"]:active {
+    box-shadow: 0px 2px 10px hsla(0, 0%, 0%, 0.40);
+    transform: scale(0.95);
+}
+
+.formulario-padrao .checkbox-formulario {
+    display: flex;
+    align-items: center;
+    gap: 4px;
+    font-size: 14px;
+}
+
+.formulario-padrao .mensagem-erro {
+    background-color: rgb(255, 77, 77);
+    padding: 1em 2em;
+    color: var(--cor-texto);
+    font-weight: bold;
+    border-radius: 8px;
+}
+
+.formulario-padrao .erro-data,
+.formulario-padrao .erro-frase {
+    color: var(--cor-vermelho);
+}
