@@ -2,19 +2,19 @@
 
 $pageTitle = 'Recuperando o ID | CallbackReturn';
 require_once "../controllers/UserController.php";
-include "../views/header.php";
+
 
 
 if ($_SERVER["REQUEST_METHOD"] === "POST") {
 
 
-    if (!isset($_POST['nome']) || !isset($_POST['data_nasc']) || !isset($_POST['sexo'])) {
+    if (!isset($_POST['nome']) || !isset($_POST['dataNasc']) || !isset($_POST['sexo'])) {
         header("Location: ../../index.php?erro=frase");
         exit();
     }
 
     $nome = $_POST['nome'];
-    $dataNasc = $_POST['data_nasc'];
+    $dataNasc = $_POST['dataNasc'];
     $sexo = $_POST['sexo'];
 
     $userController = new UserController();
@@ -28,12 +28,13 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
     $id = $userController->usuarioExiste($data['nome'], $data['dataNasc'], $data['sexo']);
 
     if ($id) {
-
-        echo "<p>Seu id foi recuperado. Seu id é o $id</p>";
-        echo "<a href='../../index.php'>Voltar para página inicial</a>";
+        $page = "recuperaID";
+        include "../views/header.php";
+        $etapa = 3;
+        $recuperado = true;
+        include "../views/formulario.php";
     } else {
-        echo "Não conseguimos encontrar seu cadastro. <a href='./cadastroUsuario.php'>Deseja se cadastrar?</a>";
-        echo "<a href='../../index.php'>Voltar para página inicial</a>";
+        header("Location: ../pages/esqueceuOID.php?erro=usuario-nao-existe");
     }
 
     include "../views/footer.php"
