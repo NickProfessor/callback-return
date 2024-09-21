@@ -1,6 +1,10 @@
 <?php
 $pageTitle = 'Cadastro de Usuário';
+$page = "cadastroUsuario";
 $etapa = 1;
+if (isset($_GET['erro'])) {
+    $erro = true;
+}
 
 
 

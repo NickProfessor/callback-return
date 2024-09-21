@@ -8,7 +8,7 @@ require_once "./src/models/Projeto.php";
 <head>
     <meta charset="UTF-8">
     <title>CallbackReturn</title>
-    <link rel="stylesheet" href=".assets/src/css/style.css">
+    <link rel="stylesheet" href="./src/assets/css/style.css">
 </head>
 
 <body>
