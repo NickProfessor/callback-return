@@ -1,0 +1,35 @@
+header {
+    display: flex;
+    flex-direction: column;
+    margin-top: 32px;
+    margin-bottom: 18px;
+    gap: 12px;
+}
+
+header .titulo-header {
+    font-size: 1.5em;
+}
+
+header .link-header {
+    font-size: 0.8em;
+    text-align: right;
+    color: var(--cor-azul);
+    font-style: italic;
+}
+
+header p {
+    font-size: 1.5em;
+}
+
+@media (min-width: 600px) {
+    header {
+
+        font-size: 18px;
+    }
+}
+
+@media (min-width: 1000px) {
+    header {
+        font-size: 20px;
+    }
+}
