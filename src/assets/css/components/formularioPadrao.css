@@ -114,3 +114,9 @@ formulario-padrao .botoes-formulario button:active,
 .formulario-padrao .erro-frase {
     color: var(--cor-vermelho);
 }
+
+.formulario-padrao a {
+    font-size: 14px;
+    text-align: right;
+    color: var(--cor-texto);
+}
