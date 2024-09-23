@@ -1,0 +1,8 @@
+@import url("../components/cardSala.css");
+
+main {
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+
+}

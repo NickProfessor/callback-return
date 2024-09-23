@@ -32,14 +32,106 @@ footer {
     font-size: 10px;
     text-align: center;
     width: 90%;
-    margin: 4em auto 0;
+    margin: 4em auto 1em;
     display: flex;
     flex-direction: column;
     gap: 12px;
 
 }
 
+
+body {
+    width: 95%;
+    max-width: 800px;
+    margin: 0 auto;
+}
+
+header {
+    display: flex;
+    flex-direction: column;
+    margin-top: 32px;
+    margin-bottom: 18px;
+    gap: 12px;
+}
+
+header .titulo-header {
+    font-size: 1.5em;
+}
+
+header .link-header {
+    font-size: 0.8em;
+    text-align: right;
+    color: var(--cor-azul);
+    font-style: italic;
+}
+
+header p {
+    font-size: 1.5em;
+}
+
+header .botao-padrao {
+    width: max-content;
+    padding: 8px 20px 8px 12px;
+    margin-bottom: 8px;
+}
+
+.tag {
+    border-radius: 4px;
+    height: 30px;
+    cursor: pointer;
+}
+
+.botao-padrao {
+    font-size: 0.8em;
+    padding: 8px 12px 8px 20px;
+    border-radius: 18px;
+    box-shadow: 1px 1px 5px rgba(0, 0, 0, 0.4);
+    color: var(--cor-texto);
+    text-decoration: none;
+}
+
 footer a {
     color: black;
     font-weight: 500;
+    font-size: 0.8em;
+}
+
+@media (min-width: 600px) {
+    header {
+
+        font-size: 18px;
+    }
+
+    header .botao-padrao {
+        width: max-content;
+        padding: 8px 24px 8px 12px
+    }
+
+    .botao-padrao {
+        padding: 8px 12px 8px 24px;
+    }
+
+    footer {
+        font-size: 14px;
+    }
+
+}
+
+@media (min-width: 1000px) {
+    header {
+        font-size: 20px;
+    }
+
+    header .botao-padrao {
+        width: max-content;
+        padding: 8px 28px 8px 14px
+    }
+
+    .botao-padrao {
+        padding: 8px 14px 8px 28px;
+    }
+
+    footer {
+        font-size: 16px;
+    }
 }
