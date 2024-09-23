@@ -59,14 +59,7 @@
     gap: 6px;
 }
 
-.sala-padrao .botao-padrao {
-    font-size: 0.8em;
-    padding: 8px 12px 8px 20px;
-    border-radius: 18px;
-    box-shadow: 1px 1px 5px rgba(0, 0, 0, 0.4);
-    color: var(--cor-texto);
-    text-decoration: none;
-}
+
 
 .sala-padrao .fa-star {
     color: var(--cor-amarelo);
@@ -80,9 +73,7 @@
         font-size: 18px;
     }
 
-    .sala-padrao .botao-padrao {
-        padding: 8px 12px 8px 24px;
-    }
+
 }
 
 @media (min-width: 1000px) {
@@ -90,7 +81,5 @@
         font-size: 20px;
     }
 
-    .sala-padrao .botao-padrao {
-        padding: 8px 14px 8px 28px;
-    }
+
 }
