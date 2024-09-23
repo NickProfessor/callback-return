@@ -1,0 +1,90 @@
+.projeto-padrao {
+    box-shadow: 3px 3px 5px rgba(0, 0, 0, 0.4);
+    border-radius: 8px;
+    padding: 1em;
+    display: flex;
+    flex-direction: column;
+    margin: 0 auto;
+    width: 100%;
+    color: var(--cor-texto);
+    gap: 8px;
+}
+
+.projeto-titulo {
+    font-weight: 400;
+    font-size: 1.3em;
+    font-weight: bold;
+    padding-left: 0.5em;
+    margin-bottom: 8px;
+}
+
+.projeto-padrao p {
+    font-size: 0.8em;
+    font-weight: 500;
+
+    word-wrap: break-word;
+    word-break: break-word;
+}
+
+
+.projeto-tags {
+    display: flex;
+    align-self: flex-end;
+    gap: 8px;
+}
+
+
+
+.projeto-final {
+    display: flex;
+    flex-direction: column;
+    width: 100%;
+    margin: 8px auto;
+    gap: 1em;
+}
+
+.projeto-secao-avalia {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    font-size: 1em;
+    gap: 6px;
+}
+
+.projeto-secao-acoes {
+    font-size: 0.9em;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.projeto-avalia-btn {
+    color: var(--cor-azul);
+    font-style: italic;
+    font-size: 0.8em;
+}
+
+
+
+.projeto-padrao .fa-star {
+    color: var(--cor-amarelo);
+    font-size: 0.9em;
+    text-shadow: 1px 1px 3px rgba(0, 0, 0, 0.4);
+}
+
+@media (min-width: 600px) {
+    .projeto-padrao {
+
+        font-size: 18px;
+    }
+
+
+}
+
+@media (min-width: 1000px) {
+    .projeto-padrao {
+        font-size: 20px;
+    }
+
+
+}
