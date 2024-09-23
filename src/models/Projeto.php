@@ -68,11 +68,11 @@ class Projeto
                     SUM(CASE WHEN TIMESTAMPDIFF(YEAR, u.data_nascimento, CURDATE()) >= 60 THEN 1 ELSE 0 END) AS total_avaliacoes_idosos,
                     AVG(CASE WHEN TIMESTAMPDIFF(YEAR, u.data_nascimento, CURDATE()) >= 60 THEN a.nota ELSE NULL END) AS media_notas_idosos,
                     
-                    SUM(CASE WHEN TIMESTAMPDIFF(YEAR, u.data_nascimento, CURDATE()) < 30 THEN 1 ELSE 0 END) AS total_avaliacoes_jovens,
-                    AVG(CASE WHEN TIMESTAMPDIFF(YEAR, u.data_nascimento, CURDATE()) < 30 THEN a.nota ELSE NULL END) AS media_notas_jovens,
+                    SUM(CASE WHEN TIMESTAMPDIFF(YEAR, u.data_nascimento, CURDATE()) < 22 THEN 1 ELSE 0 END) AS total_avaliacoes_jovens,
+                    AVG(CASE WHEN TIMESTAMPDIFF(YEAR, u.data_nascimento, CURDATE()) < 22 THEN a.nota ELSE NULL END) AS media_notas_jovens,
                     
-                    SUM(CASE WHEN TIMESTAMPDIFF(YEAR, u.data_nascimento, CURDATE()) BETWEEN 30 AND 59 THEN 1 ELSE 0 END) AS total_avaliacoes_adultos,
-                    AVG(CASE WHEN TIMESTAMPDIFF(YEAR, u.data_nascimento, CURDATE()) BETWEEN 30 AND 59 THEN a.nota ELSE NULL END) AS media_notas_adultos
+                    SUM(CASE WHEN TIMESTAMPDIFF(YEAR, u.data_nascimento, CURDATE()) BETWEEN 22 AND 59 THEN 1 ELSE 0 END) AS total_avaliacoes_adultos,
+                    AVG(CASE WHEN TIMESTAMPDIFF(YEAR, u.data_nascimento, CURDATE()) BETWEEN 22 AND 59 THEN a.nota ELSE NULL END) AS media_notas_adultos
                 FROM 
                     avaliacao a
                     LEFT JOIN usuario u ON a.id_usuario = u.id_usuario
