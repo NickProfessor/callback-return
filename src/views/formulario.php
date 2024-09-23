@@ -245,6 +245,7 @@ if ($etapa == 1) {
                                             <label for="outro">Prefiro não informar</label>
                                         </div>
                                     </div>
+                                    <a href="./cadastroUsuario.php">Não tem cadastro?</a>
 
                                     <div class="botoes-formulario">
                                         <button type="button" onclick="window.location.href='../../index.php'">Voltar para a tela
