@@ -10,6 +10,8 @@
 }
 
 .titulo-formulario {
+    display: flex;
+    align-items: center;
     font-size: 20px;
     font-weight: bold;
     text-align: center;
@@ -19,6 +21,7 @@
     min-width: 100px;
     width: 80%;
     max-width: 400px;
+    min-height: 80px;
     margin: 2em auto 1em;
 }
 
@@ -66,7 +69,7 @@
 .formulario-padrao .botoes-formulario {
     display: flex;
     justify-content: space-between;
-    gap: 2em;
+    gap: 1em;
 }
 
 .formulario-padrao .botoes-formulario button,
@@ -80,6 +83,7 @@
     width: 50%;
     max-width: 200px;
     padding: 0.7em 2em;
+    min-height: 45px;
     border-radius: 28px;
     margin-top: 82px;
 }
