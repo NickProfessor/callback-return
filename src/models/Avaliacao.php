@@ -12,7 +12,7 @@ class Avaliacao
     private $id_usuario;
     private $fraseSeguranca;
 
-    public function __construct($nota, $id_projeto, $comentario, $id_usuario, $fraseSeguranca)
+    public function __construct(int $nota, $id_projeto, $comentario, $id_usuario, $fraseSeguranca)
     {
         $this->nota = $nota;
         $this->id_projeto = $id_projeto;

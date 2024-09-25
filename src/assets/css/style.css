@@ -24,7 +24,8 @@ label,
 input,
 a,
 button,
-li {
+li,
+textarea {
     font-family: "Montserrat", system-ui;
 }
 
@@ -93,7 +94,7 @@ header .botao-padrao {
 footer a {
     color: black;
     font-weight: 500;
-    font-size: 0.8em;
+    font-size: 0.9em;
 }
 
 @media (min-width: 600px) {
