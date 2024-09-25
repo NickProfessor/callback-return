@@ -1,0 +1,45 @@
+@import url("../components/formularioPadrao.css");
+
+.projeto-nome {
+    color: var(--cor-texto);
+    margin-bottom: 22px;
+}
+
+.projeto-estrelas {
+    display: flex;
+    align-items: center;
+    margin-top: 8px;
+    font-size: 20px;
+    color: hsla(0, 0%, 47%, 0.2);
+    justify-content: space-evenly;
+    -webkit-text-stroke: black 1px;
+}
+
+.projeto-estrelas i {
+    cursor: pointer;
+}
+
+.projeto-estrelas .preenchida {
+    color: var(--cor-amarelo);
+}
+
+textarea {
+    resize: none;
+}
+
+@media (min-width: 600px) {
+    .projeto-estrelas {
+
+        font-size: 22px;
+    }
+
+
+}
+
+@media (min-width: 1000px) {
+    .projeto-estrelas {
+        font-size: 24px;
+    }
+
+
+}
