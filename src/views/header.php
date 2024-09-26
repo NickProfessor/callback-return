@@ -37,11 +37,13 @@
             <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.6.0/css/all.min.css"
                 integrity="sha512-Kc323vGBEqzTmouAECnVceyQqyqdsSiqLQISBL29aUW4U/M7pSPA/gEUZQqv1cwx4OnYxTxve5UMg5GT6L4JJg=="
                 crossorigin="anonymous" referrerpolicy="no-referrer" />
-        <?php elseif ($page = 'avaliaProjeto'): ?>
+        <?php elseif ($page == 'avaliaProjeto'): ?>
             <link rel="stylesheet" href="../assets/css/pages/avaliaProjeto.css">
             <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.6.0/css/all.min.css"
                 integrity="sha512-Kc323vGBEqzTmouAECnVceyQqyqdsSiqLQISBL29aUW4U/M7pSPA/gEUZQqv1cwx4OnYxTxve5UMg5GT6L4JJg=="
                 crossorigin="anonymous" referrerpolicy="no-referrer" />
+        <?php elseif ($page == 'projetoAvaliado'): ?>
+            <link rel="stylesheet" href="../assets/css/pages/projetoAvaliado.css">
         <?php endif; ?>
     <?php endif; ?>
 </head>
