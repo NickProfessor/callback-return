@@ -47,6 +47,7 @@ main .botao-padrao {
     font-weight: bold;
     font-size: 0.9em;
     margin: 2em 0;
+    color: var(--cor-azul);
 }
 
 .projeto-info div {
