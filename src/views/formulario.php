@@ -307,7 +307,7 @@
         <input type="hidden" name="id_projeto" value="<?php echo htmlspecialchars($projetoId); ?>">
         <input type="hidden" name="nome_projeto" value="<?php echo $projeto['nome'] ?>">
         <div class="form-group">
-            <label for="nota_projeto">Como avalia esse projeto?</label>
+            <label for="nota_projeto">Como você avalia esse projeto?</label>
             <div class="projeto-estrelas">
                 <i class="fa-solid fa-star" data-value="1"></i>
                 <i class="fa-solid fa-star" data-value="2"></i>
