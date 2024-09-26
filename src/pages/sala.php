@@ -17,7 +17,7 @@ if (isset($_GET["id"]) && $_GET["id"] != "") {
     <header>
         <h1 class="titulo-header">CallbackReturn</h1>
         <a href="./cadastroUsuario.php" class="link-header">Cadastre se ou consulte o ID</a>
-        <a href="../../index.php" class="botao-padrao"><i class="fa-solid fa-arrow-left"></i> Voltar</a>
+        <a href="../../index.php" class="botao-padrao"><i class="fa-solid fa-arrow-left"></i> Voltar </a>
         <p>Sala <?php echo htmlspecialchars($sala) ?></p>
     </header>
     <main>

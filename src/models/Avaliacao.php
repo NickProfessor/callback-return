@@ -12,7 +12,7 @@ class Avaliacao
     private $id_usuario;
     private $fraseSeguranca;
 
-    public function __construct($nota, $id_projeto, $comentario, $id_usuario, $fraseSeguranca)
+    public function __construct(int $nota, $id_projeto, $comentario, $id_usuario, $fraseSeguranca)
     {
         $this->nota = $nota;
         $this->id_projeto = $id_projeto;
@@ -32,32 +32,40 @@ class Avaliacao
             if (empty($this->comentario)) {
                 $this->comentario = "sem comentario";
             }
+
             if ($this->usuarioJaAvaliou()) {
-                return false;
+                header("Location: ./avaliaProjeto.php?id={$this->id_projeto}&erro=ja-avaliado");
+                exit();
             } else {
                 global $conn;
 
                 $sql = "INSERT INTO avaliacao (id_projeto, id_usuario, data_avaliacao, comentario, nota)
-                        VALUES (?, ?, NOW(), ?, ?);";  // NOW() para a data atual
+                    VALUES (?, ?, NOW(), ?, ?);";
                 $stmt = $conn->prepare($sql);
 
                 if ($stmt) {
-                    // Ajuste no bind_param para passar os parâmetros corretos
                     $stmt->bind_param("iisd", $this->id_projeto, $this->id_usuario, $this->comentario, $this->nota);
 
                     if ($stmt->execute()) {
-                        return true;
+                        return [
+                            'status' => 'success',
+                            'message' => 'Avaliação inserida com sucesso.'
+                        ];
                     } else {
-                        throw new Exception("Falha ao inserir avaliação: " . $stmt->error);
+                        header("Location: ./avaliaProjeto.php?id={$this->id_projeto}&erro=falha-insercao");
+                        exit();
                     }
                 } else {
-                    die("Erro na preparação da consulta: " . $conn->error);
+                    header("Location: ./avaliaProjeto.php?id={$this->id_projeto}&erro=preparacao-falha");
+                    exit();
                 }
             }
         } else {
-            return false;
+            header("Location: ./avaliaProjeto.php?id={$this->id_projeto}&erro=usuario-invalido");
+            exit();
         }
     }
+
 
     private function usuarioJaAvaliou()
     {

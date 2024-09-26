@@ -9,18 +9,20 @@ if (isset($_GET["id"]) && $_GET["id"] != "") {
     $projetoExiste = Projeto::obterProjetoPeloId($projetoId);
 
     if (!$projetoExiste) {
+        $page = "detalhesProjeto";
         $pageTitle = "Projeto não encontrado | CallbackReturn";
         include "../views/header.php";
         echo "<h1>Projeto não encontrado</h1>";
     } else {
+
         $projeto = Projeto::obterDetalhesDoProjeto($projetoId);
 
         $projetoNome = $projeto['projeto_nome'];
         $projetoSala = $projeto['sala_numero'];
         $projetoCursos = $projeto['cursos'];
         $projetoDescricao = $projeto['projeto_descricao'];
-        $projetoIntegrantes = $projeto['integrantes'];
-        $projetoTemas = $projeto['temas'];
+        $projetoIntegrantes = explode(',', $projeto['integrantes']);
+        $projetoTemas = explode(',', $projeto['temas']);
         $projetoAvaliacoes = $projeto['total_avaliacoes'];
         $projetoMediaAvaliacoes = $projeto['media_notas'];
 
@@ -43,6 +45,9 @@ if (isset($_GET["id"]) && $_GET["id"] != "") {
         $popularMulheres = isset($projeto['popular_mulheres']) && $projeto['popular_mulheres'];
         $popularHomens = isset($projeto['popular_homens']) && $projeto['popular_homens'];
 
+        $page = "detalhesProjeto";
+        $pageTitle = "$projetoNome | CallbackReturn";
+        include "../views/header.php";
         include "../views/projetoDetalhado.php";
     }
 } else {
