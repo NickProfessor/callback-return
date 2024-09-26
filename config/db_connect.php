@@ -1,9 +1,7 @@
 <?php
-$mysqli = new mysqli(DB_HOST, DB_USER, DB_PASS, DB_NAME);
+$conn = new mysqli(DB_HOST, DB_USER, DB_PASS, DB_NAME);
 
 // Verifica se houve erro na conexão
-if ($mysqli->connect_error) {
-    die('Erro de conexão: ' . $mysqli->connect_error);
+if ($conn->connect_error) {
+    die('Erro de conexão: ' . $conn->connect_error);
 }
-
-echo 'Conexão bem-sucedida!';
