@@ -282,12 +282,30 @@
     <form action="projetoAvaliado.php" method="POST" class="formulario-padrao">
         <h2 class="projeto-nome"><?php echo htmlspecialchars($projeto['nome']) ?></h2>
 
-        <?php if (isset($notaInvalida)): ?>
-            <p>Informe uma nota válida</p>
+        <?php if (isset($_GET['erro'])): ?>
+            <p class="mensagem-erro">
+                <?php
+                switch ($_GET['erro']) {
+                    case 'ja-avaliado':
+                        echo "Você já avaliou esse projeto.";
+                        break;
+                    case 'falha-insercao':
+                        echo "Ocorreu uma falha ao inserir sua avaliação. Tente novamente.";
+                        break;
+                    case 'preparacao-falha':
+                        echo "Erro ao preparar a consulta. Entre em contato com o suporte.";
+                        break;
+                    case 'usuario-invalido':
+                        echo "Usuário inválido ou frase de segurança incorreta.";
+                        break;
+                    default:
+                        echo "Ocorreu um erro desconhecido.";
+                }
+                ?>
+            </p>
         <?php endif; ?>
-
         <input type="hidden" name="id_projeto" value="<?php echo htmlspecialchars($projetoId); ?>">
-
+        <input type="hidden" name="nome_projeto" value="<?php echo $projeto['nome'] ?>">
         <div class="form-group">
             <label for="nota_projeto">Como avalia esse projeto?</label>
             <div class="projeto-estrelas">
@@ -356,6 +374,30 @@
             });
         });
     </script>
+
+
+<?php elseif ($etapa == 6): ?>
+
+
+    <?php if (isset($sucesso) && $sucesso == true): ?>
+        <h1 class="titulo-formulario">Projeto avaliado com sucesso!</h1>
+        <main>
+            <p class="mensagem">Você avaliou o projeto "<?php echo $projetoNome ?>"</p>
+            <p class="mensagem">Agradecemos a colaboração</p>
+            <a href="./detalhesProjeto.php?id=<?php echo $id_projeto ?>" class="botao-padrao">Voltar para detalhes do
+                projeto</a>
+        </main>
+
+    <?php else: ?>
+        <h1 class="titulo-formulario">Algo deu errado...</h1>
+        <main>
+            <p class="mensagem">Algo não ocorreu como esperado. Certifique-se que é a primeira vez que está avaliando esse
+                projeto</p>
+            <p class="mensagem">Agradecemos a colaboração</p>
+            <a href="./detalhesProjeto.php?id=<?php echo $id_projeto ?>" class="botao-padrao">Voltar para detalhes do
+                projeto</a>
+        </main>
+    <?php endif; ?>
 
 
 
