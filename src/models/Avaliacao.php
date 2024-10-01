@@ -34,7 +34,7 @@ class Avaliacao
             }
 
             if ($this->usuarioJaAvaliou()) {
-                header("Location: ./avaliaProjeto.php?id={$this->id_projeto}&erro=ja-avaliado");
+                header("Location: ./avaliaProjeto.php?id=" . $this->id_projeto . "&erro=ja-avaliado");
                 exit();
             } else {
                 global $conn;
