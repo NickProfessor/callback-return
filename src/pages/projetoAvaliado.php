@@ -2,9 +2,9 @@
 
 $pageTitle = "Avaliado | CallBackReturn";
 $page = "projetoAvaliado";
-include "../views/header.php";
-
 require_once "../models/Avaliacao.php";
+
+
 
 if (isset($_POST['id_projeto'], $_POST['nome_projeto'], $_POST['nota_projeto'], $_POST['comentario_projeto'], $_POST['id_usuario'], $_POST['frase'])) {
     // Dados foram passados corretamente
@@ -29,12 +29,13 @@ if (isset($_POST['id_projeto'], $_POST['nome_projeto'], $_POST['nota_projeto'], 
 
         try {
             $sucesso = $avaliacao->avaliaProjeto();
-
+            include "../views/header.php";
 
             $etapa = 6;
             include "../views/formulario.php";
 
         } catch (Exception $e) {
+            include "../views/header.php";
             echo "Ocorreu um erro: " . $e->getMessage() . "<br>";
             echo "<a href='../../index.php'>Voltar para tela principal</a>";
         }

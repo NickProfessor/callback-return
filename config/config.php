@@ -1,9 +1,11 @@
 <?php
-// Configurações do banco de dados
-define('DB_HOST', 'localhost');
-define('DB_USER', 'root');
-define('DB_PASS', 'root');
-define('DB_NAME', 'callback_bd');
+if (session_status() === PHP_SESSION_NONE) {
+    session_start();
+}
 
-// Iniciar sessão
-session_start();
+// Configurações do banco de dados
+define('DB_HOST', '108.167.151.51');
+define('DB_USER', 'progro40_etec_expodev');
+define('DB_PASS', 'Expot1n@24!');
+define('DB_NAME', 'progro40_etec_expotin');
+
