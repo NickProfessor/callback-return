@@ -1,9 +1,10 @@
 <?php
+require_once "../models/Projeto.php";
+
 $page = "avaliaProjeto";
 $pageTitle = "Avaliando | CallBackReturn";
-include "../views/header.php";
 
-require_once "../models/Projeto.php";
+
 
 
 if (isset($_GET["id"]) && $_GET["id"] != "") {
@@ -16,9 +17,11 @@ if (isset($_GET["id"]) && $_GET["id"] != "") {
 
     $projetoNome = $projeto['nome'];
 
+    include "../views/header.php";
     $etapa = 5;
     include "../views/formulario.php";
 } else {
+    include "../views/header.php";
     echo "Algo deu errado";
 }
 include "../views/footer.php";
