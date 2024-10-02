@@ -1,11 +1,18 @@
 <?php
 $email = "teste@teste";
 $senha = "teste";
-if (isset($_POST['user-email']) && isset($_POST['user-password']) && $_POST['user-email'] == $email && $_POST['user-password'] == $senha): ?>
+if (isset($_POST['user-email']) && isset($_POST['user-password']) && $_POST['user-email'] == $email && $_POST['user-password'] == $senha) {
+    require_once "../models/Projeto.php";
 
-    <a href="">aaa</a>
+    $page = "cadastroProjeto";
+    $pageTitle = "Cadastra Projeto";
+    include "../views/header.php";
+    $projetoController = new Projeto();
+    $listaDeProjetos = $projetoController->obterProjetos();
 
-<?php else:
+    $etapa = 7;
+    include "../views/formulario.php";
+
+} else {
     header("Location: ../../index.php");
-endif;
-?>
+}

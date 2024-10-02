@@ -397,8 +397,35 @@
             <a href="./detalhesProjeto.php?id=<?php echo $id_projeto ?>" class="botao-padrao">Voltar para detalhes do
                 projeto</a>
         </main>
+
+
     <?php endif; ?>
 
+<?php elseif ($etapa == 7): ?>
+    <h1 class="titulo-formulario">Registre um projeto</h1>
+    <form action="confirmarCadastro.php" method="POST" class="formulario-padrao">
+        <?php if (isset($erro)): ?>
+            <p class="mensagem-erro">Algo deu errado. Tente novamente</p>
+        <?php endif; ?>
+        <div class="form-group">
+            <label for="nome">Informe o nome do projeto:</label>
+            <input type="text" name="nome" id="nome" class="campo-texto" placeholder="Projeto de marketing" required>
+        </div>
+        <div class="form-group">
+            <label for="sala">Informe a sala/local do projeto</label>
+            <input type="text" name="sala" id="sala" class="campo-texto" placeholder="02" required>
+        </div>
+        <div class="form-group">
+            <label for="temas">Informe os temas do projeto</label>
+            <label for="administracao">Administracao</label>
+            <input type="checkbox" name="temas" id="administracao" placeholder="02" required>
+        </div>
 
 
+        <div class="botoes-formulario">
+            <button type="button" onclick="window.location.href='../../index.php'">Voltar para a tela principal</button>
+            <button>Continuar <i class="fa-solid fa-arrow-right"></i></button>
+        </div>
+
+    </form>
 <?php endif; ?>
