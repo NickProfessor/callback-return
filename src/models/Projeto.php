@@ -285,4 +285,18 @@ class Projeto
         }
     }
 
+    public static function cadastraProjeto(
+        $nome,
+        $local,
+        $cursos,
+        $temas,
+        $descricao,
+        $integrantes,
+    ) {
+        //Verificar se o local ja consta no banco
+        //insere os dados na tabela de relacionamentos curso_has_projeto
+        //insere os dados na tabela de relacionamentos projeto_has_temas
+        //insere os dados na tabela de relacionamentos integrante_has_projeto
+
+    }
 }
