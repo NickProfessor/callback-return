@@ -293,10 +293,75 @@ class Projeto
         $descricao,
         $integrantes,
     ) {
-        //Verificar se o local ja consta no banco
-        //insere os dados na tabela de relacionamentos curso_has_projeto
-        //insere os dados na tabela de relacionamentos projeto_has_temas
-        //insere os dados na tabela de relacionamentos integrante_has_projeto
+        global $conn;
+        if (!Projeto::verificarSala($local)) {
+            $query = "INSERT INTO sala (numero) VALUES (?)";
+            $stmt = $conn->prepare($query);
+            $stmt->bind_param("s", $local);
 
+            if ($stmt->execute()) {
+                $stmt->close();
+            } else {
+                $stmt->close();
+                return "Erro ao criar a sala.";
+            }
+        }
+
+
+        //insere os dados na tabela de relacionamentos curso_has_projeto
+
+        $sql = "INSERT INTO projeto_curso (id_projeto, id_curso) VALUES (?, ?)";
+
+        // Preparar a declaração para evitar SQL injection
+        $stmt = $conn->prepare($sql);
+
+        if (!$stmt) {
+            // Caso não consiga preparar a consulta
+            echo "Erro ao preparar consulta: " . $conn->error;
+            return;
+        }
+
+        // Iniciar uma transação
+        $conn->begin_transaction();
+
+
+
+        // Percorrer a lista de cursos e registrar cada um
+        foreach ($cursos as $idCurso) {
+            // Associar os valores aos parâmetros e executar a consulta
+            $stmt->bind_param("ii", $idProjeto, $idCurso);
+
+            if (!$stmt->execute()) {
+                // Se falhar na execução de alguma query, marcar erro
+                $erro = true;
+                break;
+            }
+        }
+
+        // Se ocorreu algum erro, fazer rollback, senão fazer commit
+        if ($erro) {
+            $conn->rollback();
+            echo "Erro ao registrar cursos: " . $stmt->error;
+        } else {
+            $conn->commit();
+            echo "Cursos registrados com sucesso!";
+        }
+    }
+    //insere os dados na tabela de relacionamentos projeto_has_temas
+    //insere os dados na tabela de relacionamentos integrante_has_projeto
+
+    public static function verificarSala($local)
+    {
+        global $conn;
+        $query = "SELECT COUNT(*) FROM sala WHERE numero = ?";
+        $stmt = $conn->prepare($query);
+        $stmt->bind_param("s", $local);
+        $stmt->execute();
+        $stmt->bind_result($count);
+        $stmt->fetch();
+        $stmt->close();
+
+        // Verifica se a sala já existe
+        return $count > 0;
     }
 }
