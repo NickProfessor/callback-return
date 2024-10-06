@@ -5,15 +5,26 @@ require_once __DIR__ . "/../../config/db_connect.php";
 
 class Projeto
 {
+    private $nome;
+    private $local;
+    private $descricao;
+    private $temas = [];
+    private $cursos = [];
+    private $integrantes = [];
     private $listaDeProjetos = [];
     private $listaDeSalas = [];
 
-    public function __construct()
+    public function __construct($nome = null, $local = null, $descricao = null, $temas = null, $cursos = null, $integrantes = null)
     {
-        $this->carregaProjetos();
+        $this->nome = $nome;
+        $this->local = $local;
+        $this->descricao = $descricao;
+        $this->temas = $temas;
+        $this->cursos = $cursos;
+        $this->integrantes = $integrantes;
     }
 
-    private function carregaProjetos()
+    public function carregaProjetos()
     {
         global $conn;
         $sql = "SELECT 
@@ -103,7 +114,7 @@ class Projeto
 
     public function obterProjetos()
     {
-        return $this->listaDeProjetos;
+        return $this->carregaProjetos();
     }
 
     private function carregaSalasComProjetos()
@@ -152,6 +163,7 @@ class Projeto
 
     public function obterProjetosDaSala($sala)
     {
+        $this->carregaProjetos();
         $projetos = $this->listaDeProjetos;
         $projetosDaSala = [];
         foreach ($projetos as $projeto) {
@@ -285,19 +297,52 @@ class Projeto
         }
     }
 
-    public static function cadastraProjeto(
-        $nome,
-        $local,
-        $cursos,
-        $temas,
-        $descricao,
-        $integrantes,
-    ) {
+    public function cadastraProjeto()
+    {
+
+        $this->registraSalaDoProjeto();
+        $projetoId = $this->criaProjeto();
+        if ($projetoId) {
+            $this->registraCursosDoProjeto($projetoId);
+            $this->registraTemasDoProjeto($projetoId);
+            echo "foi rapeize";
+        } else {
+            echo "Deu ruim na CRIAÇÃO";
+        }
+        // if ($projetoId) {
+        //     
+        // }
+
+
+
+    }
+    //insere os dados na tabela de relacionamentos projeto_has_temas
+
+
+    //insere os dados na tabela de relacionamentos integrante_has_projeto
+
+    private function verificarSala()
+    {
         global $conn;
-        if (!Projeto::verificarSala($local)) {
+        $query = "SELECT COUNT(*) FROM sala WHERE numero = ?";
+        $stmt = $conn->prepare($query);
+        $stmt->bind_param("s", $this->local);
+        $stmt->execute();
+        $stmt->bind_result($count);
+        $stmt->fetch();
+        $stmt->close();
+
+        // Verifica se a sala já existe
+        return $count > 0;
+    }
+
+    private function registraSalaDoProjeto()
+    {
+        global $conn;
+        if (!$this->verificarSala()) {
             $query = "INSERT INTO sala (numero) VALUES (?)";
             $stmt = $conn->prepare($query);
-            $stmt->bind_param("s", $local);
+            $stmt->bind_param("s", $this->local);
 
             if ($stmt->execute()) {
                 $stmt->close();
@@ -306,11 +351,14 @@ class Projeto
                 return "Erro ao criar a sala.";
             }
         }
+    }
 
-
+    private function registraCursosDoProjeto($idProjeto)
+    {
+        global $conn;
         //insere os dados na tabela de relacionamentos curso_has_projeto
 
-        $sql = "INSERT INTO projeto_curso (id_projeto, id_curso) VALUES (?, ?)";
+        $sql = "INSERT INTO curso_has_projeto (curso_id_curso, projeto_id_projeto) VALUES (?, ?)";
 
         // Preparar a declaração para evitar SQL injection
         $stmt = $conn->prepare($sql);
@@ -327,9 +375,10 @@ class Projeto
 
 
         // Percorrer a lista de cursos e registrar cada um
+        $cursos = $this->cursos;
         foreach ($cursos as $idCurso) {
             // Associar os valores aos parâmetros e executar a consulta
-            $stmt->bind_param("ii", $idProjeto, $idCurso);
+            $stmt->bind_param("ii", $idCurso, $idProjeto);
 
             if (!$stmt->execute()) {
                 // Se falhar na execução de alguma query, marcar erro
@@ -339,7 +388,7 @@ class Projeto
         }
 
         // Se ocorreu algum erro, fazer rollback, senão fazer commit
-        if ($erro) {
+        if (isset($erro) && $erro == true) {
             $conn->rollback();
             echo "Erro ao registrar cursos: " . $stmt->error;
         } else {
@@ -347,21 +396,80 @@ class Projeto
             echo "Cursos registrados com sucesso!";
         }
     }
-    //insere os dados na tabela de relacionamentos projeto_has_temas
-    //insere os dados na tabela de relacionamentos integrante_has_projeto
 
-    public static function verificarSala($local)
+    private function registraTemasDoProjeto($idProjeto)
     {
         global $conn;
-        $query = "SELECT COUNT(*) FROM sala WHERE numero = ?";
-        $stmt = $conn->prepare($query);
-        $stmt->bind_param("s", $local);
-        $stmt->execute();
-        $stmt->bind_result($count);
-        $stmt->fetch();
-        $stmt->close();
+        //insere os dados na tabela de relacionamentos curso_has_projeto
 
-        // Verifica se a sala já existe
-        return $count > 0;
+        $sql = "INSERT INTO projeto_has_tema (projeto_id_projeto, tema_id_tema) VALUES (?, ?)";
+
+        // Preparar a declaração para evitar SQL injection
+        $stmt = $conn->prepare($sql);
+
+        if (!$stmt) {
+            // Caso não consiga preparar a consulta
+            echo "Erro ao preparar consulta: " . $conn->error;
+            return;
+        }
+
+        // Iniciar uma transação
+        $conn->begin_transaction();
+
+
+
+        // Percorrer a lista de cursos e registrar cada um
+        $temas = $this->temas;
+        foreach ($temas as $idTema) {
+            // Associar os valores aos parâmetros e executar a consulta
+            $stmt->bind_param("ii", $idProjeto, $idTema);
+
+            if (!$stmt->execute()) {
+                // Se falhar na execução de alguma query, marcar erro
+                $erro = true;
+                break;
+            }
+        }
+
+        // Se ocorreu algum erro, fazer rollback, senão fazer commit
+        if (isset($erro) && $erro == true) {
+            $conn->rollback();
+            echo "Erro ao registrar temas: " . $stmt->error;
+        } else {
+            $conn->commit();
+            echo "Temas registrados com sucesso!";
+        }
+    }
+    private function criaProjeto()
+    {
+        $nomeDoProjeto = $this->nome;
+        $descricaoDoProjeto = $this->descricao;
+        $salaId = $this->pegaIDSala();
+
+        global $conn;
+
+        $stmt = $conn->prepare("INSERT INTO projeto (nome, descricao, sala_id_sala) VALUES (?, ?, ?)");
+        $stmt->bind_param("ssi", $nomeDoProjeto, $descricaoDoProjeto, $salaId); // 'ssi' significa string, string, inteiro
+        if ($stmt->execute()) {
+            return $conn->insert_id; // Retorna o ID do projeto inserido
+        } else {
+            return false; // Retorna false em caso de erro
+        }
+    }
+
+    private function pegaIDSala()
+    {
+        global $conn;
+        $stmt = $conn->prepare("SELECT id_sala FROM sala WHERE numero = ?");
+        $stmt->bind_param("s", $this->local); // 's' indica que estamos passando uma string
+        $stmt->execute();
+        $resultado = $stmt->get_result();
+
+        if ($resultado->num_rows > 0) {
+            $row = $resultado->fetch_assoc();
+            return $row['id_sala'];
+        } else {
+            return null; // Se a sala não for encontrada
+        }
     }
 }

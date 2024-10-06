@@ -7,11 +7,12 @@ if (isset($_POST['user-email']) && isset($_POST['user-password']) && $_POST['use
     $page = "cadastroProjeto";
     $pageTitle = "Cadastra Projeto";
     include "../views/header.php";
-    $projetoController = new Projeto();
-    $listaDeProjetos = $projetoController->obterProjetos();
+    $projetoController = new Projeto("Projeto de criação de teto", "22", "Muito incrível tetar", ["2", "5"], ["2"]);
+    $projetoController->cadastraProjeto();
+    // $listaDeProjetos = $projetoController->obterProjetos();
 
-    $etapa = 7;
-    include "../views/formulario.php";
+    // $etapa = 7;
+    // include "../views/formulario.php";
 
 } else {
     header("Location: ../../index.php");

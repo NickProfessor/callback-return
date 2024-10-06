@@ -10,9 +10,8 @@ if (isset($_GET["id"]) && $_GET["id"] != "") {
     $page = "sala";
     include "../views/header.php";
 
-    $projeto = new Projeto();
-
-    $listaDeProjetos = $projeto->obterProjetosDaSala($sala);
+    $projetoController = new Projeto();
+    $listaDeProjetos = $projetoController->obterProjetosDaSala($sala);
     ?>
     <header>
         <h1 class="titulo-header">CallbackReturn</h1>
