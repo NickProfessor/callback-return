@@ -29,7 +29,7 @@ class Avaliacao
         $usuario = $userController->validaUsuario($this->id_usuario, $this->fraseSeguranca);
 
         if ($usuario) {
-            if (empty($this->comentario)) {
+            if (trim($this->comentario) === "") {
                 $this->comentario = "sem comentario";
             }
 
