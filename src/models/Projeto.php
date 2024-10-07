@@ -5,15 +5,26 @@ require_once __DIR__ . "/../../config/db_connect.php";
 
 class Projeto
 {
+    private $nome;
+    private $local;
+    private $descricao;
+    private $temas = [];
+    private $cursos = [];
+    private $integrantes = [];
     private $listaDeProjetos = [];
     private $listaDeSalas = [];
 
-    public function __construct()
+    public function __construct($nome = null, $local = null, $descricao = null, $temas = null, $cursos = null, $integrantes = null)
     {
-        $this->carregaProjetos();
+        $this->nome = $nome;
+        $this->local = $local;
+        $this->descricao = $descricao;
+        $this->temas = $temas;
+        $this->cursos = $cursos;
+        $this->integrantes = $integrantes;
     }
 
-    private function carregaProjetos()
+    public function carregaProjetos()
     {
         global $conn;
         $sql = "SELECT 
@@ -96,6 +107,7 @@ class Projeto
             }
 
             $this->listaDeProjetos = $projetos;
+            return $this->listaDeProjetos;
         } else {
             die("Algo deu errado na consulta dos projetos");
         }
@@ -103,7 +115,7 @@ class Projeto
 
     public function obterProjetos()
     {
-        return $this->listaDeProjetos;
+        return $this->carregaProjetos();
     }
 
     private function carregaSalasComProjetos()
@@ -152,7 +164,7 @@ class Projeto
 
     public function obterProjetosDaSala($sala)
     {
-        $projetos = $this->listaDeProjetos;
+        $projetos = $this->carregaProjetos();
         $projetosDaSala = [];
         foreach ($projetos as $projeto) {
             if ($projeto['sala_numero'] == $sala) {
@@ -259,30 +271,397 @@ class Projeto
             LEFT JOIN avaliacao a ON p.id_projeto = a.id_projeto
 
         WHERE 
-            p.id_projeto = $id  
+            p.id_projeto = ? 
 
         GROUP BY 
             p.id_projeto, p.nome, p.descricao, s.numero;
 
 
         ";
-        $result = $conn->query($sql);
 
-        if ($result) {
-            $projeto = $result->fetch_assoc();
+        $stmt = $conn->prepare($sql);
+        if ($stmt) {
+            $stmt->bind_param("i", $id);
+            $stmt->execute();
+            $result = $stmt->get_result();
 
-
-            $projeto['popular_adultos'] = ($projeto['media_notas_adultos'] >= 8) ? true : false;
-            $projeto['popular_jovens'] = ($projeto['media_notas_jovens'] >= 8) ? true : false;
-            $projeto['popular_idosos'] = ($projeto['media_notas_idosos'] >= 8) ? true : false;
-            $projeto['popular_mulheres'] = ($projeto['media_notas_mulheres'] >= 8) ? true : false;
-            $projeto['popular_homens'] = ($projeto['media_notas_homens'] >= 8) ? true : false;
+            if ($result) {
+                $projeto = $result->fetch_assoc();
 
 
-            return $projeto;
+                $projeto['popular_adultos'] = ($projeto['media_notas_adultos'] >= 8) ? true : false;
+                $projeto['popular_jovens'] = ($projeto['media_notas_jovens'] >= 8) ? true : false;
+                $projeto['popular_idosos'] = ($projeto['media_notas_idosos'] >= 8) ? true : false;
+                $projeto['popular_mulheres'] = ($projeto['media_notas_mulheres'] >= 8) ? true : false;
+                $projeto['popular_homens'] = ($projeto['media_notas_homens'] >= 8) ? true : false;
+
+
+                return $projeto;
+            } else {
+                die("Algo deu errado na consulta do projeto");
+            }
         } else {
-            die("Algo deu errado na consulta do projeto");
+            die("Algo deu errado na preparação da consulta do projeto");
         }
     }
+
+    public function cadastraProjeto()
+    {
+        global $conn;
+
+        // Inicia uma transação
+        $conn->begin_transaction();
+
+        try {
+            if (!$this->projetoJaExiste()) {
+
+                $this->registraSalaDoProjeto(); // Certifique-se de que este método lance exceções
+                $projetoId = $this->criaProjeto();
+
+                if (!$projetoId) {
+                    throw new Exception("Erro ao criar o projeto.");
+                }
+
+                $this->registraCursosDoProjeto($projetoId);
+                $this->registraTemasDoProjeto($projetoId);
+                $this->registraIntegrantesDoProjeto($projetoId);
+
+                // Se tudo deu certo, fazemos o commit da transação
+                $conn->commit();
+                $this->registrarNotaAutomatica($projetoId);
+            } else {
+                header("Location: ./createProjects.php?erro=projeto-ja-existe");
+            }
+        } catch (Exception $e) {
+            // Se qualquer erro ocorrer, desfazemos a transação
+            $conn->rollback();
+            echo "Erro no cadastro do projeto: " . $e->getMessage();
+        }
+    }
+
+
+
+
+    //insere os dados na tabela de relacionamentos integrante_has_projeto
+
+    private function verificarSala()
+    {
+        global $conn;
+        $query = "SELECT COUNT(*) FROM sala WHERE numero = ?";
+        $stmt = $conn->prepare($query);
+        $stmt->bind_param("s", $this->local);
+        $stmt->execute();
+        $stmt->bind_result($count);
+        $stmt->fetch();
+        $stmt->close();
+
+        // Verifica se a sala já existe
+        return $count > 0;
+    }
+
+    private function registraSalaDoProjeto()
+    {
+        global $conn;
+        if (!$this->verificarSala()) {
+            $query = "INSERT INTO sala (numero) VALUES (?)";
+            $stmt = $conn->prepare($query);
+            $stmt->bind_param("s", $this->local);
+
+            if (!$stmt->execute()) {
+                $stmt->close();
+                throw new Exception("Erro ao criar a sala: " . $stmt->error);
+            }
+            $stmt->close();
+        }
+    }
+
+    private function registraCursosDoProjeto($idProjeto)
+    {
+        global $conn;
+        $sql = "INSERT INTO curso_has_projeto (curso_id_curso, projeto_id_projeto) VALUES (?, ?)";
+        $stmt = $conn->prepare($sql);
+
+        if (!$stmt) {
+            throw new Exception("Erro ao preparar consulta: " . $conn->error);
+        }
+
+        $cursos = $this->cursos;
+        foreach ($cursos as $idCurso) {
+            $stmt->bind_param("ii", $idCurso, $idProjeto);
+            if (!$stmt->execute()) {
+                $stmt->close();
+                throw new Exception("Erro ao registrar cursos: " . $stmt->error);
+            }
+        }
+
+        $stmt->close();
+    }
+    private function registraTemasDoProjeto($idProjeto)
+    {
+        global $conn;
+        $sql = "INSERT INTO projeto_has_tema (projeto_id_projeto, tema_id_tema) VALUES (?, ?)";
+        $stmt = $conn->prepare($sql);
+
+        if (!$stmt) {
+            throw new Exception("Erro ao preparar consulta: " . $conn->error);
+        }
+
+        $temas = $this->temas;
+        foreach ($temas as $idTema) {
+            $stmt->bind_param("ii", $idProjeto, $idTema);
+            if (!$stmt->execute()) {
+                $stmt->close();
+                throw new Exception("Erro ao registrar temas: " . $stmt->error);
+            }
+        }
+
+        $stmt->close();
+    }
+
+    private function criaProjeto()
+    {
+        $nomeDoProjeto = $this->nome;
+        $descricaoDoProjeto = $this->descricao;
+        $salaId = $this->pegaIDSala();
+
+        global $conn;
+
+        $stmt = $conn->prepare("INSERT INTO projeto (nome, descricao, sala_id_sala) VALUES (?, ?, ?)");
+        if (!$stmt) {
+            return false;
+        }
+
+        $stmt->bind_param("ssi", $nomeDoProjeto, $descricaoDoProjeto, $salaId);
+
+        if ($stmt->execute()) {
+            $insertId = $conn->insert_id; // Retorna o ID do projeto inserido
+            $stmt->close();
+            return $insertId;
+        } else {
+            $stmt->close();
+            return false; // Retorna false em caso de erro
+        }
+    }
+
+
+    private function pegaIDSala()
+    {
+        global $conn;
+        $stmt = $conn->prepare("SELECT id_sala FROM sala WHERE numero = ?");
+        if (!$stmt) {
+            die("Erro na preparação da consulta: " . $conn->error);
+        }
+
+        $stmt->bind_param("s", $this->local);
+        $stmt->execute();
+        $resultado = $stmt->get_result();
+
+        if ($resultado->num_rows > 0) {
+            $row = $resultado->fetch_assoc();
+            $stmt->close();
+            return $row['id_sala'];
+        } else {
+            $stmt->close();
+            return null; // Se a sala não for encontrada
+        }
+    }
+
+
+    private function registraIntegrantesDoProjeto($id_projeto)
+    {
+        global $conn;
+        $integrantes = $this->integrantes;
+
+        foreach ($integrantes as $nomeIntegrante) {
+            if (!$this->verificaIntegrante($nomeIntegrante)) {
+                $query = "INSERT INTO integrante (nome) VALUES (?)";
+                $stmt = $conn->prepare($query);
+                if (!$stmt) {
+                    return "Erro na preparação da consulta: " . $conn->error;
+                }
+                $stmt->bind_param("s", $nomeIntegrante);
+
+                if (!$stmt->execute()) {
+                    $stmt->close();
+                    return "Erro ao cadastrar integrante.";
+                }
+                $stmt->close();
+            }
+
+            $idIntegrante = $this->pegaIDIntegrante($nomeIntegrante);
+            if ($idIntegrante) {
+                $query = "INSERT INTO integrante_has_projeto (id_integrante, id_projeto) VALUES (?, ?)";
+                $stmt = $conn->prepare($query);
+                if (!$stmt) {
+                    return "Erro na preparação da consulta: " . $conn->error;
+                }
+                $stmt->bind_param("ii", $idIntegrante, $id_projeto);
+
+                if (!$stmt->execute()) {
+                    $stmt->close();
+                    return "Erro ao registrar integrante na tabela de relacionamentos.";
+                }
+                $stmt->close();
+            } else {
+                return "Algo deu errado ao encontrar integrante no banco.";
+            }
+        }
+    }
+
+
+    private function verificaIntegrante($nomeIntegrante)
+    {
+        global $conn;
+        $query = "SELECT COUNT(*) FROM integrante WHERE nome = ?";
+        $stmt = $conn->prepare($query);
+        if (!$stmt) {
+            die("Erro na preparação da consulta: " . $conn->error);
+        }
+
+        $stmt->bind_param("s", $nomeIntegrante);
+        $stmt->execute();
+        $stmt->bind_result($count);
+        $stmt->fetch();
+        $stmt->close();
+
+        return $count > 0; // Verifica se o integrante já existe
+    }
+
+
+    private function pegaIDIntegrante($nomeIntegrante)
+    {
+        global $conn;
+        $stmt = $conn->prepare("SELECT id_integrante FROM integrante WHERE nome = ?");
+        if (!$stmt) {
+            die("Erro na preparação da consulta: " . $conn->error);
+        }
+
+        $stmt->bind_param("s", $nomeIntegrante);
+        $stmt->execute();
+        $resultado = $stmt->get_result();
+
+        if ($resultado->num_rows > 0) {
+            $row = $resultado->fetch_assoc();
+            $stmt->close();
+            return $row['id_integrante'];
+        } else {
+            $stmt->close();
+            return null; // Se o integrante não for encontrado
+        }
+    }
+
+
+    private function projetoJaExiste()
+    {
+        global $conn;
+        $stmt = $conn->prepare("SELECT COUNT(*) FROM projeto WHERE nome = ?");
+        if (!$stmt) {
+            die("Erro na preparação da consulta: " . $conn->error);
+        }
+
+        $stmt->bind_param("s", $this->nome);
+        $stmt->execute();
+        $stmt->bind_result($count);
+        $stmt->fetch();
+        $stmt->close();
+
+        return $count > 0; // Verifica se o projeto já existe
+    }
+
+
+    private function registrarNotaAutomatica($id_projeto)
+    {
+        global $conn;
+
+        // Prepare a consulta para inserir a nota automática
+        $sql = "INSERT INTO avaliacao (id_projeto, id_usuario, data_avaliacao, nota, comentario) VALUES (?, ?, NOW(), ?, 'sem comentario')";
+        $stmt = $conn->prepare($sql);
+        if (!$stmt) {
+            die("Erro na preparação da consulta: " . $conn->error);
+        }
+
+        $nota = 10;
+        $id_usuario = 1; // Substitua pelo ID do usuário apropriado
+        $stmt->bind_param("iii", $id_projeto, $id_usuario, $nota);
+
+        if ($stmt->execute()) {
+            $stmt->close();
+            return true; // Nota registrada com sucesso
+        } else {
+            $stmt->close();
+            die("Erro ao registrar a nota: " . $stmt->error);
+        }
+    }
+
+    public static function buscaTemasDoBanco()
+    {
+        global $conn;
+        $sql = "SELECT id_tema, nome FROM tema;"; // Certifique-se de que o campo 'id' existe na sua tabela
+        $stmt = $conn->prepare($sql);
+        if (!$stmt) {
+            die("Algo de errado aconteceu na preparação da consulta de temas: " . $conn->error);
+        }
+
+        if ($stmt->execute()) {
+            $resultado = $stmt->get_result();
+            $listaDeTemas = []; // Array para armazenar os IDs e nomes dos temas
+            while ($row = $resultado->fetch_assoc()) {
+                $listaDeTemas[$row['id_tema']] = $row['nome']; // Adiciona o ID e o nome ao array
+            }
+            $stmt->close();
+            return $listaDeTemas; // Retorna o array associativo com IDs como chaves e nomes como valores
+        } else {
+            $stmt->close();
+            die("Erro ao buscar os temas: " . $stmt->error);
+        }
+    }
+
+
+    public static function buscaCursosDoBanco()
+    {
+        global $conn;
+        $sql = "SELECT id_curso, nome FROM curso;"; // Certifique-se de que o campo 'id' existe na sua tabela
+        $stmt = $conn->prepare($sql);
+        if (!$stmt) {
+            die("Algo de errado aconteceu na preparação da consulta de cursos: " . $conn->error);
+        }
+
+        if ($stmt->execute()) {
+            $resultado = $stmt->get_result();
+            $listaDeCursos = []; // Array para armazenar os IDs e nomes dos temas
+            while ($row = $resultado->fetch_assoc()) {
+                $listaDeCursos[$row['id_curso']] = $row['nome']; // Adiciona o ID e o nome ao array
+            }
+            $stmt->close();
+            return $listaDeCursos; // Retorna o array associativo com IDs como chaves e nomes como valores
+        } else {
+            $stmt->close();
+            die("Erro ao buscar os cursos: " . $stmt->error);
+        }
+    }
+
+    public static function buscaSalasDoBanco()
+    {
+        global $conn;
+        $sql = "SELECT numero FROM sala;";
+        $stmt = $conn->prepare($sql);
+        if (!$stmt) {
+            die("Algo de errado aconteceu na preparação da consulta de salas: " . $conn->error);
+        }
+
+        if ($stmt->execute()) {
+            $resultado = $stmt->get_result();
+            $listaDeSalas = []; // Array para armazenar os números das salas
+            while ($row = $resultado->fetch_assoc()) {
+                $listaDeSalas[] = $row['numero']; // Adiciona o número da sala ao array
+            }
+            $stmt->close();
+            return $listaDeSalas; // Retorna o array com os números das salas
+        } else {
+            $stmt->close();
+            die("Erro ao buscar as salas: " . $stmt->error);
+        }
+    }
+
 
 }

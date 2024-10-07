@@ -2,8 +2,15 @@
     <header>
         <h1 class="titulo-header">CallbackReturn</h1>
         <a href="./cadastroUsuario.php" class="link-header">Cadastre se ou consulte o ID</a>
-        <a href="./sala.php?id=<?php echo $projetoSala ?>" class="botao-padrao"><i class="fa-solid fa-arrow-left"></i>
-            Sala <?php echo $projetoSala ?></a>
+        <?php if (is_numeric($projetoSala)): ?>
+            <a href="./sala.php?local=<?php echo $projetoSala ?>" class="botao-padrao"><i
+                    class="fa-solid fa-arrow-left"></i>
+                Sala <?php echo $projetoSala ?></a>
+        <?php else: ?>
+            <a href="./sala.php?local=<?php echo $projetoSala ?>" class="botao-padrao"><i
+                    class="fa-solid fa-arrow-left"></i>
+                <?php echo $projetoSala ?></a>
+        <?php endif; ?>
     </header>
     <main>
         <h2 class="projeto-titulo"><?php echo htmlspecialchars($projetoNome); ?></h2>
