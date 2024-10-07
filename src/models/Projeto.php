@@ -328,10 +328,9 @@ class Projeto
 
                 // Se tudo deu certo, fazemos o commit da transação
                 $conn->commit();
-                echo "Projeto cadastrado com sucesso!";
                 $this->registrarNotaAutomatica($projetoId);
             } else {
-                throw new Exception("Esse projeto já existe.");
+                header("Location: ./createProjects.php?erro=projeto-ja-existe");
             }
         } catch (Exception $e) {
             // Se qualquer erro ocorrer, desfazemos a transação
@@ -396,7 +395,6 @@ class Projeto
         }
 
         $stmt->close();
-        echo "Cursos registrados com sucesso!";
     }
     private function registraTemasDoProjeto($idProjeto)
     {
@@ -418,7 +416,6 @@ class Projeto
         }
 
         $stmt->close();
-        echo "Temas registrados com sucesso!";
     }
 
     private function criaProjeto()

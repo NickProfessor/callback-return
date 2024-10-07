@@ -1,20 +1,25 @@
 <?php
-$email = "teste@teste";
-$senha = "teste";
-if (isset($_POST['user-email']) && isset($_POST['user-password']) && $_POST['user-email'] == $email && $_POST['user-password'] == $senha) {
+session_start();
+
+if (!isset($_SESSION['logado']) || $_SESSION['logado'] !== true) {
+
+
+    header("Location: ../../index.php");
+
+} else {
+    if (isset($_GET['erro'])) {
+        $erro = true;
+    }
     require_once "../models/Projeto.php";
 
     $page = "cadastroProjeto";
     $pageTitle = "Cadastra Projeto";
     include "../views/header.php";
 
-    $salas = Projeto::buscaSalasDoBanco();
+    $locais = Projeto::buscaSalasDoBanco();
     $cursos = Projeto::buscaCursosDoBanco();
     $temas = Projeto::buscaTemasDoBanco();
 
     $etapa = 7;
     include "../views/formulario.php";
-
-} else {
-    header("Location: ../../index.php");
 }
