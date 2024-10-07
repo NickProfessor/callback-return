@@ -3,9 +3,9 @@
 
 require_once "../models/Projeto.php";
 
-if (isset($_GET["id"]) && $_GET["id"] != "") {
+if (isset($_GET["local"]) && $_GET["local"] != "") {
 
-    $sala = $_GET["id"];
+    $sala = $_GET["local"];
     $pageTitle = "Sala $sala | CallbackReturn";
     $page = "sala";
     include "../views/header.php";
@@ -17,7 +17,11 @@ if (isset($_GET["id"]) && $_GET["id"] != "") {
         <h1 class="titulo-header">CallbackReturn</h1>
         <a href="./cadastroUsuario.php" class="link-header">Cadastre se ou consulte o ID</a>
         <a href="../../index.php" class="botao-padrao"><i class="fa-solid fa-arrow-left"></i> Voltar </a>
-        <p>Sala <?php echo htmlspecialchars($sala) ?></p>
+        <?php if (is_numeric($sala)): ?>
+            <p>Sala <?php echo htmlspecialchars($sala) ?></p>
+        <?php else: ?>
+            <p><?php echo htmlspecialchars($sala) ?></p>
+        <?php endif; ?>
     </header>
     <main>
         <?php

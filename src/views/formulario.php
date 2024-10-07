@@ -405,46 +405,70 @@
     <h1 class="titulo-formulario">Registre um projeto</h1>
     <form action="registraProjeto.php" method="POST" class="formulario-padrao">
         <?php if (isset($erro)): ?>
-            <p class="mensagem-erro">Algo deu errado. Tente novamente</p>
+            <p class="mensagem-erro">
+
+                <?php switch ($_GET['erro']) {
+                    case 'projeto-ja-existe':
+                        echo "Você já cadastrou esse projeto antes.";
+                        break;
+                    case 'dados-insuficientes':
+                        echo "Você informou dados insuficientes.";
+                        break;
+                    default:
+                        echo "Ocorreu um erro desconhecido.";
+                } ?>
+            </p>
         <?php endif; ?>
         <div class="form-group">
             <label for="nome">Informe o nome do projeto:</label>
             <input type="text" name="nome" id="nome" class="campo-texto" placeholder="Projeto de marketing" required>
         </div>
         <div class="form-group">
-            <label for="sala">Informe a sala/local do projeto</label>
-            <select name="sala" id="sala" class="campo-texto" required>
+            <label for="local">Informe a sala/local do projeto</label>
+            <select name="local" id="local" class="campo-texto" required>
                 <option value="">Selecione:</option>
                 <option value="outro" id="outro">Outro</option>
-                <?php foreach ($salas as $sala): ?>
-                    <option value="<?php echo $sala ?>"><?php echo $sala ?></option>
+                <?php foreach ($locais as $local): ?>
+                    <option value="<?php echo $local ?>"><?php echo $local ?></option>
                 <?php endforeach; ?>
             </select>
         </div>
 
         <div class="form-group">
-            <label for="curso">Informe a curso do projeto</label>
-            <select name="curso" id="curso" class="campo-texto" required>
-                <option value="">Selecione:</option>
+            <label for="cursos">Informe os cursos do projeto</label>
+            <div class="checkboxes">
                 <?php foreach ($cursos as $id_curso => $curso): ?>
-                    <option value="<?php echo $id_curso ?>"><?php echo $curso ?></option>
+                    <div class="checkbox-formulario">
+                        <input type="checkbox" name="cursos[]" id="<?php echo strtolower($curso) ?>"
+                            value="<?php echo $id_curso ?>">
+                        <label for="<?php echo strtolower($curso) ?>"><?php echo $curso ?></label>
+                    </div>
                 <?php endforeach; ?>
-            </select>
+            </div>
         </div>
 
         <div class="form-group">
             <label for="temas">Informe os temas do projeto</label>
-            <?php foreach ($temas as $id_tema => $tema): ?>
-                <div class="form-group">
-                    <input type="checkbox" name="temas[]" id="<?php echo strtolower($tema) ?>" value="<?php echo $id_tema ?>">
-                    <label for="<?php echo strtolower($tema) ?>"><?php echo $tema ?></label>
-                </div>
-            <?php endforeach; ?>
+            <div class="checkboxes">
+                <?php foreach ($temas as $id_tema => $tema): ?>
+                    <div class="checkbox-formulario">
+                        <input type="checkbox" name="temas[]" id="<?php echo strtolower($tema) ?>"
+                            value="<?php echo $id_tema ?>">
+                        <label for="<?php echo strtolower($tema) ?>"><?php echo $tema ?></label>
+                    </div>
+                <?php endforeach; ?>
+            </div>
         </div>
 
         <div class="form-group">
-            <label for="integrante">Informe o nome do integrante 1:</label>
-            <input type="text" name="integrante" id="integrante" class="campo-texto" placeholder="Ana Catarina" required>
+            <label for="integrantes">Informe o nome do integrante 1:</label>
+            <input type="text" name="integrantes[]" id="integrante" class="campo-texto" placeholder="Ana Catarina" required>
+        </div>
+
+        <div class="form-group">
+            <label for="descricao">Informe uma descrição do projeto:</label>
+            <textarea type="text" name="descricao" id="descricao" class="campo-texto" cols="40" rows="8"
+                required></textarea>
         </div>
 
 
@@ -457,7 +481,7 @@
 
     <script>
         // Função para lidar com a seleção "outro" para salas
-        document.getElementById('sala').addEventListener('change', function () {
+        document.getElementById('local').addEventListener('change', function () {
             const outroInputDiv = document.getElementById('outro-input');
 
             // Mostrar campo de input para seleção "Outro"
@@ -467,9 +491,9 @@
                     inputDiv.id = 'outro-input';
                     inputDiv.className = 'form-group';
                     inputDiv.innerHTML = `
-                                            <label for="novaSala">Informe o nome da nova sala:</label>
-                                            <input type="text" name="novaSala" id="novaSala" class="campo-texto" placeholder="Nome da nova sala" required>
-                                        `;
+                                                                                                            <label for="novoLocal">Informe o nome da novo local:</label>
+                                                                                                            <input type="text" name="novoLocal" id="novoLocal" class="campo-texto" placeholder="Nome do novo local" required>
+                                                                                                        `;
                     this.parentNode.appendChild(inputDiv);
                 }
             } else {
@@ -480,42 +504,7 @@
             }
         });
 
-        // Função para lidar com a adição de mais cursos
-        let courseCount = 0;
 
-        document.getElementById('curso').addEventListener('change', function () {
-            const courseButtonDiv = document.getElementById('novoCursoBtn');
-            if (!courseButtonDiv) {
-                const buttonDiv = document.createElement('div');
-                buttonDiv.id = 'novoCursoBtn';
-                buttonDiv.className = 'form-group';
-                buttonDiv.innerHTML = `
-                                        <button type="button" id="adicionaCurso">Adicionar mais um curso</button>
-                                    `;
-                this.parentNode.appendChild(buttonDiv);
-
-                document.getElementById('adicionaCurso').addEventListener('click', function () {
-                    const newSelect = document.createElement('select');
-                    newSelect.name = `curso${++courseCount}`;
-                    newSelect.id = `curso${courseCount}`;
-                    newSelect.required = true;
-
-                    // Criar opção padrão
-                    const defaultOption = document.createElement('option');
-                    defaultOption.value = '';
-                    defaultOption.textContent = 'Selecione:';
-                    newSelect.appendChild(defaultOption);
-
-                    // Criar opções para cada curso
-                    <?php foreach ($cursos as $id_curso => $curso): ?>
-                        newSelect.innerHTML += `<option value="<?php echo $id_curso; ?>"><?php echo $curso; ?></option>`;
-                    <?php endforeach; ?>
-
-                    newSelect.className = 'campo-texto';
-                    buttonDiv.parentNode.appendChild(newSelect);
-                });
-            }
-        });
 
         // Função para adicionar mais integrantes
         let memberCount = 1;
@@ -529,8 +518,8 @@
                 buttonDiv.id = 'adicionaMembroBtn';
                 buttonDiv.className = 'form-group';
                 buttonDiv.innerHTML = `
-                                        <button type="button" id="adicionaMembroBtn">Adicionar mais um integrante</button>
-                                    `;
+                                                                                                        <button type="button" id="adicionaMembroBtn">Adicionar mais um integrante</button>
+                                                                                                    `;
                 this.parentNode.appendChild(buttonDiv);
 
                 document.getElementById('adicionaMembroBtn').addEventListener('click', function () {
@@ -538,10 +527,10 @@
                     newMemberInput.id = `inputMembro${++memberCount}`;
                     newMemberInput.className = 'form-group';
                     newMemberInput.innerHTML = `
-                                            <label for="integrante${memberCount}">Informe o nome do integrante ${memberCount}:</label>
-                                            <input type="text" name="integrante${memberCount}" id="integrante${memberCount}" class="campo-texto" placeholder="Nome do integrante" required>
-                                            <button type="button" onclick="removeMembro(${memberCount})">Remover</button>
-                                        `;
+                                                                                                            <label for="integrante${memberCount}">Informe o nome do integrante ${memberCount}:</label>
+                                                                                                            <input type="text" name="integrantes[]" id="integrante${memberCount}" class="campo-texto" placeholder="Nome do integrante" required>
+                                                                                                            <button type="button" onclick="removeMembro(${memberCount})">Remover</button>
+                                                                                                        `;
                     buttonDiv.parentNode.appendChild(newMemberInput);
                 });
             }
@@ -556,4 +545,14 @@
         }
 
     </script>
+
+<?php elseif ($etapa == 8): ?>
+    <h1 class="titulo-formulario">Projeto cadastrado com sucesso!</h1>
+    <main>
+        <p class="mensagem">Você cadastrou o projeto "<?php echo $nomeProjeto ?>"</p>
+        <p class="mensagem">Agradecemos a colaboração</p>
+        <a href="./createProjects.php" class="botao-padrao">Voltar para cadastrar mais projetos</a>
+    </main>
+
+
 <?php endif; ?>
