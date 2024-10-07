@@ -403,7 +403,7 @@
 
 <?php elseif ($etapa == 7): ?>
     <h1 class="titulo-formulario">Registre um projeto</h1>
-    <form action="confirmarCadastro.php" method="POST" class="formulario-padrao">
+    <form action="registraProjeto.php" method="POST" class="formulario-padrao">
         <?php if (isset($erro)): ?>
             <p class="mensagem-erro">Algo deu errado. Tente novamente</p>
         <?php endif; ?>
@@ -413,19 +413,147 @@
         </div>
         <div class="form-group">
             <label for="sala">Informe a sala/local do projeto</label>
-            <input type="text" name="sala" id="sala" class="campo-texto" placeholder="02" required>
+            <select name="sala" id="sala" class="campo-texto" required>
+                <option value="">Selecione:</option>
+                <option value="outro" id="outro">Outro</option>
+                <?php foreach ($salas as $sala): ?>
+                    <option value="<?php echo $sala ?>"><?php echo $sala ?></option>
+                <?php endforeach; ?>
+            </select>
         </div>
+
+        <div class="form-group">
+            <label for="curso">Informe a curso do projeto</label>
+            <select name="curso" id="curso" class="campo-texto" required>
+                <option value="">Selecione:</option>
+                <?php foreach ($cursos as $id_curso => $curso): ?>
+                    <option value="<?php echo $id_curso ?>"><?php echo $curso ?></option>
+                <?php endforeach; ?>
+            </select>
+        </div>
+
         <div class="form-group">
             <label for="temas">Informe os temas do projeto</label>
-            <label for="administracao">Administracao</label>
-            <input type="checkbox" name="temas" id="administracao" placeholder="02" required>
+            <?php foreach ($temas as $id_tema => $tema): ?>
+                <div class="form-group">
+                    <input type="checkbox" name="temas[]" id="<?php echo strtolower($tema) ?>" value="<?php echo $id_tema ?>">
+                    <label for="<?php echo strtolower($tema) ?>"><?php echo $tema ?></label>
+                </div>
+            <?php endforeach; ?>
+        </div>
+
+        <div class="form-group">
+            <label for="integrante">Informe o nome do integrante 1:</label>
+            <input type="text" name="integrante" id="integrante" class="campo-texto" placeholder="Ana Catarina" required>
         </div>
 
 
         <div class="botoes-formulario">
             <button type="button" onclick="window.location.href='../../index.php'">Voltar para a tela principal</button>
-            <button>Continuar <i class="fa-solid fa-arrow-right"></i></button>
+            <button type="submit">Continuar <i class="fa-solid fa-arrow-right"></i></button>
         </div>
 
     </form>
+
+    <script>
+        // Função para lidar com a seleção "outro" para salas
+        document.getElementById('sala').addEventListener('change', function () {
+            const outroInputDiv = document.getElementById('outro-input');
+
+            // Mostrar campo de input para seleção "Outro"
+            if (this.value === 'outro') {
+                if (!outroInputDiv) {
+                    const inputDiv = document.createElement('div');
+                    inputDiv.id = 'outro-input';
+                    inputDiv.className = 'form-group';
+                    inputDiv.innerHTML = `
+                                            <label for="novaSala">Informe o nome da nova sala:</label>
+                                            <input type="text" name="novaSala" id="novaSala" class="campo-texto" placeholder="Nome da nova sala" required>
+                                        `;
+                    this.parentNode.appendChild(inputDiv);
+                }
+            } else {
+                // Remover o campo de input "Outro" se outra seleção for feita
+                if (outroInputDiv) {
+                    outroInputDiv.remove();
+                }
+            }
+        });
+
+        // Função para lidar com a adição de mais cursos
+        let courseCount = 0;
+
+        document.getElementById('curso').addEventListener('change', function () {
+            const courseButtonDiv = document.getElementById('novoCursoBtn');
+            if (!courseButtonDiv) {
+                const buttonDiv = document.createElement('div');
+                buttonDiv.id = 'novoCursoBtn';
+                buttonDiv.className = 'form-group';
+                buttonDiv.innerHTML = `
+                                        <button type="button" id="adicionaCurso">Adicionar mais um curso</button>
+                                    `;
+                this.parentNode.appendChild(buttonDiv);
+
+                document.getElementById('adicionaCurso').addEventListener('click', function () {
+                    const newSelect = document.createElement('select');
+                    newSelect.name = `curso${++courseCount}`;
+                    newSelect.id = `curso${courseCount}`;
+                    newSelect.required = true;
+
+                    // Criar opção padrão
+                    const defaultOption = document.createElement('option');
+                    defaultOption.value = '';
+                    defaultOption.textContent = 'Selecione:';
+                    newSelect.appendChild(defaultOption);
+
+                    // Criar opções para cada curso
+                    <?php foreach ($cursos as $id_curso => $curso): ?>
+                        newSelect.innerHTML += `<option value="<?php echo $id_curso; ?>"><?php echo $curso; ?></option>`;
+                    <?php endforeach; ?>
+
+                    newSelect.className = 'campo-texto';
+                    buttonDiv.parentNode.appendChild(newSelect);
+                });
+            }
+        });
+
+        // Função para adicionar mais integrantes
+        let memberCount = 1;
+
+        document.getElementById('integrante').addEventListener('input', function () {
+            const addMemberButtonDiv = document.getElementById('adicionaMembroBtn');
+
+            // Adicionar botão para adicionar mais integrantes
+            if (!addMemberButtonDiv) {
+                const buttonDiv = document.createElement('div');
+                buttonDiv.id = 'adicionaMembroBtn';
+                buttonDiv.className = 'form-group';
+                buttonDiv.innerHTML = `
+                                        <button type="button" id="adicionaMembroBtn">Adicionar mais um integrante</button>
+                                    `;
+                this.parentNode.appendChild(buttonDiv);
+
+                document.getElementById('adicionaMembroBtn').addEventListener('click', function () {
+                    const newMemberInput = document.createElement('div');
+                    newMemberInput.id = `inputMembro${++memberCount}`;
+                    newMemberInput.className = 'form-group';
+                    newMemberInput.innerHTML = `
+                                            <label for="integrante${memberCount}">Informe o nome do integrante ${memberCount}:</label>
+                                            <input type="text" name="integrante${memberCount}" id="integrante${memberCount}" class="campo-texto" placeholder="Nome do integrante" required>
+                                            <button type="button" onclick="removeMembro(${memberCount})">Remover</button>
+                                        `;
+                    buttonDiv.parentNode.appendChild(newMemberInput);
+                });
+            }
+        });
+
+        // Função para remover integrante
+        function removeMembro(memberId) {
+            const memberInput = document.getElementById(`inputMembro${memberId}`);
+            if (memberInput) {
+                memberInput.remove();
+            }
+        }
+
+    </script>
 <?php endif; ?>

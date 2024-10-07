@@ -596,4 +596,75 @@ class Projeto
         }
     }
 
+    public static function buscaTemasDoBanco()
+    {
+        global $conn;
+        $sql = "SELECT id_tema, nome FROM tema;"; // Certifique-se de que o campo 'id' existe na sua tabela
+        $stmt = $conn->prepare($sql);
+        if (!$stmt) {
+            die("Algo de errado aconteceu na preparação da consulta de temas: " . $conn->error);
+        }
+
+        if ($stmt->execute()) {
+            $resultado = $stmt->get_result();
+            $listaDeTemas = []; // Array para armazenar os IDs e nomes dos temas
+            while ($row = $resultado->fetch_assoc()) {
+                $listaDeTemas[$row['id_tema']] = $row['nome']; // Adiciona o ID e o nome ao array
+            }
+            $stmt->close();
+            return $listaDeTemas; // Retorna o array associativo com IDs como chaves e nomes como valores
+        } else {
+            $stmt->close();
+            die("Erro ao buscar os temas: " . $stmt->error);
+        }
+    }
+
+
+    public static function buscaCursosDoBanco()
+    {
+        global $conn;
+        $sql = "SELECT id_curso, nome FROM curso;"; // Certifique-se de que o campo 'id' existe na sua tabela
+        $stmt = $conn->prepare($sql);
+        if (!$stmt) {
+            die("Algo de errado aconteceu na preparação da consulta de cursos: " . $conn->error);
+        }
+
+        if ($stmt->execute()) {
+            $resultado = $stmt->get_result();
+            $listaDeCursos = []; // Array para armazenar os IDs e nomes dos temas
+            while ($row = $resultado->fetch_assoc()) {
+                $listaDeCursos[$row['id_curso']] = $row['nome']; // Adiciona o ID e o nome ao array
+            }
+            $stmt->close();
+            return $listaDeCursos; // Retorna o array associativo com IDs como chaves e nomes como valores
+        } else {
+            $stmt->close();
+            die("Erro ao buscar os cursos: " . $stmt->error);
+        }
+    }
+
+    public static function buscaSalasDoBanco()
+    {
+        global $conn;
+        $sql = "SELECT numero FROM sala;";
+        $stmt = $conn->prepare($sql);
+        if (!$stmt) {
+            die("Algo de errado aconteceu na preparação da consulta de salas: " . $conn->error);
+        }
+
+        if ($stmt->execute()) {
+            $resultado = $stmt->get_result();
+            $listaDeSalas = []; // Array para armazenar os números das salas
+            while ($row = $resultado->fetch_assoc()) {
+                $listaDeSalas[] = $row['numero']; // Adiciona o número da sala ao array
+            }
+            $stmt->close();
+            return $listaDeSalas; // Retorna o array com os números das salas
+        } else {
+            $stmt->close();
+            die("Erro ao buscar as salas: " . $stmt->error);
+        }
+    }
+
+
 }
