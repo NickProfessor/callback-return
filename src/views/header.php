@@ -44,6 +44,10 @@
                 crossorigin="anonymous" referrerpolicy="no-referrer" />
         <?php elseif ($page == 'projetoAvaliado'): ?>
             <link rel="stylesheet" href="../assets/css/pages/projetoAvaliado.css">
+        <?php elseif ($page == 'cadastroProjeto'): ?>
+            <link rel="stylesheet" href="../assets/css/pages/cadastroProjeto.css">
+        <?php elseif ($page == 'registraProjeto'): ?>
+            <link rel="stylesheet" href="../assets/css/pages/registraProjeto.css">
         <?php endif; ?>
     <?php endif; ?>
 </head>
