@@ -1,80 +1,6 @@
 <?php if ($etapa == 1): ?>
 
-
-    <h1 class="titulo-formulario">Registre-se para avaliar os projetos</h1>
-    <form action="confirmarCadastro.php" method="POST" class="formulario-padrao">
-        <div class="etapas-formulario">
-            <img src="../assets/images/umDeDuas.png" alt="">
-        </div>
-        <?php if (isset($erro)): ?>
-            <p class="mensagem-erro">Algo deu errado. Tente novamente</p>
-        <?php endif; ?>
-        <div class="form-group">
-            <label for="nome">Informe seu email:</label>
-            <input type="email" name="email" id="email" class="campo-texto" placeholder="Clóvis da Silva" required>
-        </div>
-        <!-- <div class="form-group">
-            <label for="dataNasc">Informe sua data de nascimento</label>
-            <input type="date" name="dataNasc" id="dataNasc" class="campo-texto" required>
-        </div>
-        <div class="form-group">
-            <p>Informe seu sexo:</p>
-            <div class="radio-formulario">
-                <input type="radio" name="sexo" id="masculino" value="masculino" required>
-                <label for="masculino">Masculino</label>
-            </div>
-            <div class="radio-formulario">
-                <input type="radio" name="sexo" id="feminino" value="feminino" required>
-                <label for="feminino">Feminino</label>
-            </div>
-
-            <div class="radio-formulario">
-                <input type="radio" name="sexo" id="outro" value="outro" required>
-                <label for="outro">Prefiro não informar</label>
-            </div>
-        </div> -->
-        <a href="./esqueceuOID.php">Já tem cadastro?</a>
-
-        <div class="botoes-formulario">
-            <button type="button" onclick="window.location.href='../../index.php'">Voltar para a tela principal</button>
-            <button>Continuar <i class="fa-solid fa-arrow-right"></i></button>
-        </div>
-
-    </form>
-
-
-
-    <script>
-        const dataNascInput = document.querySelector("input[name='dataNasc']");
-
-        dataNascInput.addEventListener("input", function () {
-            const dataNasc = new Date(dataNascInput.value);
-            const dataAtual = new Date();
-            dataAtual.setHours(0, 0, 0, 0);
-
-            // Verifica se o erro já existe, para evitar duplicação
-            let erroExistente = document.querySelector(".erro-data");
-
-            // Remove a mensagem de erro caso exista
-            if (erroExistente) {
-                erroExistente.remove();
-            }
-
-            // Valida a data
-            if (dataNasc > dataAtual) {
-                const erroData = document.createElement("p");
-                erroData.classList.add("erro-data");
-                erroData.textContent = "A data de nascimento não é válida.";
-
-                // Insere o erro logo após o input de data
-                dataNascInput.parentNode.appendChild(erroData);
-            }
-        });
-    </script>
-<?php elseif ($etapa == 2): ?>
-
-
-
+    </div>
     <h1 class="titulo-formulario">Registre-se para avaliar os projetos</h1>
     <form action="cadastrado.php" method="POST" class="formulario-padrao">
         <div class="etapas-formulario">
@@ -82,22 +8,51 @@
         </div>
 
         <div class="form-group">
-            <label for="frase">Informe uma frase de segurança:</label>
-            <input type="password" name="frase" id="frase" class="campo-texto" required>
-        </div>
-        <div class="form-group">
-            <label for="confirmacao">Repita a frase de segurança:</label>
-            <input type="password" name="confirmacao" id="confirmacao" class="campo-texto" required>
-        </div>
-        <div class="checkbox-formulario">
-            <input type="checkbox" name="termos" id="termos" required>
-            <label for="termos">Aceito que o software utilize os dados coletados para fins acadêmicos</label>
+            <label for="nome">Informe seu nome:</label>
+            <input type="nome" name="nome" id="nome" class="campo-texto" placeholder="Clóvis da Silva" required>
+            <div class="form-group">
+                <label for="nome">Informe seu email:</label>
+                <input type="email" name="email" id="email" class="campo-texto" placeholder="Clóvis da Silva" required>
+            </div>
+            <div class="form-group">
+                <label for="dataNasc">Informe sua data de nascimento</label>
+                <input type="date" name="dataNasc" id="dataNasc" class="campo-texto" required>
+            </div>
+            <div class="form-group">
+                <p>Informe seu sexo:</p>
+                <div class="radio-formulario">
+                    <input type="radio" name="sexo" id="masculino" value="masculino" required>
+                    <label for="masculino">Masculino</label>
+                </div>
+                <div class="radio-formulario">
+                    <input type="radio" name="sexo" id="feminino" value="feminino" required>
+                    <label for="feminino">Feminino</label>
+                </div>
 
-        </div>
-        <div class="botoes-formulario">
-            <button type="button" onclick="history.back()">Voltar</button>
-            <button>Continuar <i class="fa-solid fa-arrow-right"></i></button>
-        </div>
+                <div class="radio-formulario">
+                    <input type="radio" name="sexo" id="outro" value="outro" required>
+                    <label for="outro">Prefiro não informar</label>
+                </div>
+            </div>
+
+            <div class="form-group">
+                <label for="frase">Informe uma frase de segurança:</label>
+                <input type="password" name="frase" id="frase" class="campo-texto" required>
+            </div>
+            <div class="form-group">
+                <label for="confirmacao">Repita a frase de segurança:</label>
+                <input type="password" name="confirmacao" id="confirmacao" class="campo-texto" required>
+            </div>
+            <div class="checkbox-formulario">
+                <input type="checkbox" name="termos" id="termos" required>
+                <label for="termos">Aceito que o software utilize os dados coletados para fins acadêmicos</label>
+
+            </div>
+            <a href="./login.php">Já tem cadastro?</a>
+            <div class="botoes-formulario">
+                <button type="button" onclick="history.back()">Voltar</button>
+                <button>Continuar <i class="fa-solid fa-arrow-right"></i></button>
+            </div>
     </form>
 
 
@@ -142,6 +97,70 @@
             }
         }
     </script>
+
+
+
+<?php elseif ($etapa == 2): ?>
+
+    <h1 class="titulo-formulario">Entre na sua conta para avaliar projetos</h1>
+    <form action="confirmarCadastro.php" method="POST" class="formulario-padrao">
+        <div class="etapas-formulario">
+            <img src="../assets/images/umDeDuas.png" alt="">
+        </div>
+        <?php if (isset($erro)): ?>
+            <p class="mensagem-erro">Algo deu errado. Tente novamente</p>
+        <?php endif; ?>
+        <div class="form-group">
+            <label for="nome">Informe seu email:</label>
+            <input type="email" name="email" id="email" class="campo-texto" placeholder="Clóvis da Silva" required>
+        </div>
+
+        <div class="form-group">
+            <label for="frase">Informe sua frase de segurança:</label>
+            <input type="password" name="frase" id="frase" class="campo-texto" required>
+        </div>
+
+        <a href="./cadastroUsuario.php">Não possui cadastro? Crie uma conta</a>
+
+        <div class="botoes-formulario">
+            <button type="button" onclick="window.location.href='../../index.php'">Voltar para a tela principal</button>
+            <button>Continuar <i class="fa-solid fa-arrow-right"></i></button>
+        </div>
+
+    </form>
+
+
+
+    <script>
+        const dataNascInput = document.querySelector("input[name='dataNasc']");
+
+        dataNascInput.addEventListener("input", function () {
+            const dataNasc = new Date(dataNascInput.value);
+            const dataAtual = new Date();
+            dataAtual.setHours(0, 0, 0, 0);
+
+            // Verifica se o erro já existe, para evitar duplicação
+            let erroExistente = document.querySelector(".erro-data");
+
+            // Remove a mensagem de erro caso exista
+            if (erroExistente) {
+                erroExistente.remove();
+            }
+
+            // Valida a data
+            if (dataNasc > dataAtual) {
+                const erroData = document.createElement("p");
+                erroData.classList.add("erro-data");
+                erroData.textContent = "A data de nascimento não é válida.";
+
+                // Insere o erro logo após o input de data
+                dataNascInput.parentNode.appendChild(erroData);
+            }
+        });
+    </script>
+
+
+
 <?php elseif ($etapa == 3): ?>
 
 
@@ -344,7 +363,7 @@
 
         </div>
 
-        <a href="./esqueceuOID.php">Esqueci meu ID</a>
+        <a href="./login.php">Esqueci meu ID</a>
 
 
         <div class="botoes-formulario">

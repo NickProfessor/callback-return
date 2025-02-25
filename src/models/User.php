@@ -17,7 +17,7 @@ class User
     private $fraseSeguranca;
     private $tipo_usuario;
 
-    public function __construct($conn, string $nome, string $email, string $dataNasc, string $foto = null, string $sexo, string $fraseSeguranca, int $tipo_usuario = 1)
+    public function __construct($conn, string $nome, string $email, string $dataNasc, string $sexo, string $fraseSeguranca, string $foto = null, int $tipo_usuario = 1)
     {
         $this->conn = $conn;
         $this->nome = $nome;
@@ -38,7 +38,7 @@ class User
             }
 
             $stmt->bind_param(
-                "ssss",
+                "sssssss",
                 $this->nome,
                 $this->email,
                 $this->fraseSeguranca,

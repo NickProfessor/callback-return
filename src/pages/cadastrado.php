@@ -12,20 +12,24 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
         exit();
     }
 
+    $email = $_POST['email'];
+    $nome = $_POST['nome'];
+    $dataNasc = $_POST['dataNasc'];
+    $sexo = $_POST['sexo'];
+    $fraseSeguranca = $_POST["frase"];
 
-    if (!isset($_SESSION['nome']) || !isset($_SESSION['data_nasc']) || !isset($_SESSION['sexo']) || !isset($_POST["frase"])) {
+
+    if (!isset($email) || !isset($nome) || !isset($dataNasc) || !isset($sexo) || !isset($fraseSeguranca)) {
         header("Location: ../../index.php?erro=algo-deu-errado");
         exit();
     }
 
-    $nome = $_SESSION['nome'];
-    $dataNasc = $_SESSION['data_nasc'];
-    $sexo = $_SESSION['sexo'];
-    $fraseSeguranca = $_POST["frase"];
+
 
     $userController = new UserController();
 
     $data = [
+        "email" => $email,
         "nome" => $nome,
         "dataNasc" => $dataNasc,
         "sexo" => $sexo,
@@ -33,22 +37,24 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
     ];
 
     if ($userController->registraUsuario($data)) {
-        $id = $userController->usuarioExiste($data['nome'], $data['dataNasc'], $data['sexo']);
+        $id = $userController->usuarioExiste($data['email']);
         include "../views/header.php";
         $registrado = true;
         $etapa = 3;
         include "../views/formulario.php";
+        $_SESSION['id'] = $id;
     } else {
         include "../views/header.php";
         echo "Não conseguiu registrar.";
         echo "<a href='../../index.php'>Voltar para página inicial</a>";
+        session_unset();
+        session_destroy();
     }
 
     include "../views/footer.php"
     ;
 
-    session_unset();
-    session_destroy();
+
 } else {
     header("Location: ../../index.php");
     exit();

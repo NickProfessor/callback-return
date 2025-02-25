@@ -18,7 +18,9 @@ class UserController
     public function registraUsuario($data)
     {
         $user = new User(
+            $this->conn,
             $data['nome'],
+            $data['email'],
             $data['dataNasc'],
             $data['sexo'],
             $data['fraseSeguranca'],
@@ -43,6 +45,6 @@ class UserController
 
     public function validaUsuario($id, $frase)
     {
-        return User::validaAcesso($id, $frase);
+        return User::validaAcesso($this->conn, $id, $frase);
     }
 }

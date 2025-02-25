@@ -1,13 +1,13 @@
 <?php
 
 $page = "confirmarCadastro";
-$pageTitle = 'Cadastro de Usuário';
 require_once "../controllers/UserController.php";
 
 
 
 
 $email = $_POST['email'];
+$frase = $_POST['frase'];
 // $dataNasc = $_POST['dataNasc'];
 // $sexo = $_POST['sexo'];
 
@@ -23,19 +23,22 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
         )
     ) {
         $jaCadastrado = true;
-        $page = "cadastrado";
-        $etapa = 3;
-        include "../views/header.php";
-        include "../views/formulario.php";
-        include "../views/footer.php";
-        session_unset();
-        session_destroy();
-        exit();
+        if ($userController->validaUsuario($id, $frase)) {
+            $pageTitle = "Logado com sucesso!";
+            $etapa = 3;
+            $_SESSION['id'] = $id;
+            include "../views/header.php";
+            include "../views/formulario.php";
+            include "../views/footer.php";
+            exit();
+        } else {
+            echo "algo de errado ocorreu";
+        }
+
+
     } else {
         $etapa = 2;
-        $_SESSION['nome'] = "nick";
-        $_SESSION['data_nasc'] = '2024-05-29';
-        $_SESSION['sexo'] = "masculino";
+        $_SESSION['email'] = $email;
         include "../views/header.php";
         include "../views/formulario.php";
     }

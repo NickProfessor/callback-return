@@ -40,6 +40,7 @@
   - A coluna 'tipo_resposta' tem como objetivo identificar se a resposta é numérica ou texto.
 
 - A tabela 'mensagem' foi criada para armazenar as mensagens que transitaram de administradores/professores para alunos. Essa tabela conta com as seguintes colunas: 'id_mensagem', 'id_remetente', 'tipo_remetente', 'id_destinatario', 'titulo', 'conteudo', 'data_envio', 'lida':
+
   - A coluna 'id_mensagem' serve para identificar unicamnete uma mensagem
   - A coluna 'id_remetente' refere-se a quem está enviando a mensagem
   - A coluna 'id_destinatario' refere-se a quem receberá a mensagem
@@ -47,3 +48,6 @@
   - A coluna 'conteudo' armazena o texto com a mensagem propriamente dita
   - A coluna 'data_envio' serve para registrar o momento em que a mensagem foi enviada
   - A coluna 'lida' serve para identificar se o aluno leu ou não a mensagem (0-Não, 1-sim)
+
+- O usuário está sendo identifiado pelo email.
+- Ao logar, ou cadastrar, o usuário já define uma sessão.
