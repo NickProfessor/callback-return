@@ -2,10 +2,8 @@
 
     </div>
     <h1 class="titulo-formulario">Registre-se para avaliar os projetos</h1>
-    <form action="cadastrado.php" method="POST" class="formulario-padrao">
-        <div class="etapas-formulario">
-            <img src="../assets/images/duasDeDuas.png" alt="">
-        </div>
+    <form action="confirmarCadastro.php" method="POST" class="formulario-padrao">
+
 
         <div class="form-group">
             <label for="nome">Informe seu nome:</label>
@@ -102,13 +100,12 @@
 
 <?php elseif ($etapa == 2): ?>
 
+
     <h1 class="titulo-formulario">Entre na sua conta para avaliar projetos</h1>
-    <form action="confirmarCadastro.php" method="POST" class="formulario-padrao">
-        <div class="etapas-formulario">
-            <img src="../assets/images/umDeDuas.png" alt="">
-        </div>
-        <?php if (isset($erro)): ?>
-            <p class="mensagem-erro">Algo deu errado. Tente novamente</p>
+    <form action="logado.php" method="POST" class="formulario-padrao">
+
+        <?php if (isset($_GET['dados-incorretos'])): ?>
+            <p class="mensagem-erro">Algo deu errado. Confirme os dados</p>
         <?php endif; ?>
         <div class="form-group">
             <label for="nome">Informe seu email:</label>

@@ -120,16 +120,28 @@ class User
         ];
     }
 
-    public static function verificaSessao()
+    public static function consultaDados($conn, $id_usuario)
     {
-        return isset($_SESSION['usuario']) ? $_SESSION['usuario'] : null;
+        try {
+            $stmt = $conn->prepare("SELECT * FROM usuario WHERE id_usuario = ?");
+            if (!$stmt) {
+                throw new Exception("Erro ao preparar a consulta: " . $conn->error);
+            }
+
+            $stmt->bind_param("i", $id_usuario);
+            $stmt->execute();
+            $result = $stmt->get_result();
+
+            if ($result && $usuario = $result->fetch_assoc()) {
+                return $usuario;
+            }
+
+            return false;
+
+        } catch (Exception $e) {
+            error_log("Erro na validação de acesso: " . $e->getMessage());
+            return false;
+        }
     }
 
-    public static function logout()
-    {
-        session_unset();
-        session_destroy();
-        header("Location: login.php"); // 🔹 Redireciona para a página de login após logout
-        exit;
-    }
 }

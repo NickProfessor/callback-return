@@ -6,17 +6,17 @@ $page = "cadastrado";
 
 
 
-if ($_SERVER["REQUEST_METHOD"] === "POST") {
-    if ($_POST['frase'] !== $_POST['confirmacao']) {
+if (isset($_SESSION['email'])) {
+    if ($_SESSION['frase'] !== $_SESSION['confirmacao']) {
         header("Location: ./cadastroUsuario.php?erro=frase");
         exit();
     }
 
-    $email = $_POST['email'];
-    $nome = $_POST['nome'];
-    $dataNasc = $_POST['dataNasc'];
-    $sexo = $_POST['sexo'];
-    $fraseSeguranca = $_POST["frase"];
+    $email = $_SESSION['email'];
+    $nome = $_SESSION['nome'];
+    $dataNasc = $_SESSION['dataNasc'];
+    $sexo = $_SESSION['sexo'];
+    $fraseSeguranca = $_SESSION["frase"];
 
 
     if (!isset($email) || !isset($nome) || !isset($dataNasc) || !isset($sexo) || !isset($fraseSeguranca)) {
@@ -38,11 +38,9 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
 
     if ($userController->registraUsuario($data)) {
         $id = $userController->usuarioExiste($data['email']);
-        include "../views/header.php";
         $registrado = true;
-        $etapa = 3;
-        include "../views/formulario.php";
         $_SESSION['id'] = $id;
+        header("Location: ../../index.php?cadastrado-com-sucesso");
     } else {
         include "../views/header.php";
         echo "Não conseguiu registrar.";

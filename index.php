@@ -1,5 +1,12 @@
 <?php
+require_once "./src/controllers/UserController.php";
 require_once "./src/models/Projeto.php";
+
+if (isset($_SESSION['id'])) {
+    $id = $_SESSION['id'];
+    $userController = new UserController();
+    $usuario = $userController->consultaDadosDoUsuario($id);
+}
 ?>
 
 <!DOCTYPE html>
@@ -19,14 +26,14 @@ require_once "./src/models/Projeto.php";
 <body>
     <?php if (isset($_SESSION['id'])): ?>
         <header>
-            <h1 class="titulo-header">Bem-vindo, usuário <?php echo $_SESSION['id']; ?></h1>
-            <a href="./src/pages/cadastroUsuario.php" class="link-header">Cadastre se ou consulte o ID</a>
+            <h1 class="titulo-header">Bem-vindo, <?php echo $usuario['nome']; ?></h1>
+            <a href="./src/pages/logout.php" class="link-header">Logout</a>
             <p>Salas</p>
         </header>
     <?php else: ?>
         <header>
             <h1 class="titulo-header">Bem-vindo</h1>
-            <a href="./src/pages/cadastroUsuario.php" class="link-header">Cadastre se ou consulte o ID</a>
+            <a href="./src/pages/login.php" class="link-header">Entre ou crie sua conta!</a>
             <p>Salas</p>
         </header>
     <?php endif; ?>

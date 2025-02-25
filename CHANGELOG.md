@@ -49,5 +49,11 @@
   - A coluna 'data_envio' serve para registrar o momento em que a mensagem foi enviada
   - A coluna 'lida' serve para identificar se o aluno leu ou não a mensagem (0-Não, 1-sim)
 
-- O usuário está sendo identifiado pelo email.
+### Adicionado
+
+- Agora o usuário será identificado pelo email.
 - Ao logar, ou cadastrar, o usuário já define uma sessão.
+
+### Removido
+
+- O ID não é mais exibido para o usuário, e foram removidas as telas que exibiam o ID.

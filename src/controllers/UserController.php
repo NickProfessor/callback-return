@@ -2,7 +2,7 @@
 
 require_once __DIR__ . "/../../config/config.php";
 require_once __DIR__ . "/../../config/db_connect.php";
-require_once '../models/User.php';
+require_once __DIR__ . '/../models/User.php';
 
 class UserController
 {
@@ -46,5 +46,18 @@ class UserController
     public function validaUsuario($id, $frase)
     {
         return User::validaAcesso($this->conn, $id, $frase);
+    }
+
+    public function consultaDadosDoUsuario($id)
+    {
+        return User::consultaDados($this->conn, $id);
+    }
+
+    public static function logout()
+    {
+        session_unset();
+        session_destroy();
+        header("Location: ../../index.php?voce-foi-desconectado"); // 🔹 Redireciona para a página de login após logout
+        exit;
     }
 }
