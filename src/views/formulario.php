@@ -10,10 +10,10 @@
             <p class="mensagem-erro">Algo deu errado. Tente novamente</p>
         <?php endif; ?>
         <div class="form-group">
-            <label for="nome">Informe seu nome completo:</label>
-            <input type="text" name="nome" id="nome" class="campo-texto" placeholder="Clóvis da Silva" required>
+            <label for="nome">Informe seu email:</label>
+            <input type="email" name="email" id="email" class="campo-texto" placeholder="Clóvis da Silva" required>
         </div>
-        <div class="form-group">
+        <!-- <div class="form-group">
             <label for="dataNasc">Informe sua data de nascimento</label>
             <input type="date" name="dataNasc" id="dataNasc" class="campo-texto" required>
         </div>
@@ -32,7 +32,7 @@
                 <input type="radio" name="sexo" id="outro" value="outro" required>
                 <label for="outro">Prefiro não informar</label>
             </div>
-        </div>
+        </div> -->
         <a href="./esqueceuOID.php">Já tem cadastro?</a>
 
         <div class="botoes-formulario">

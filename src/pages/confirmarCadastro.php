@@ -5,25 +5,21 @@ $pageTitle = 'Cadastro de Usuário';
 require_once "../controllers/UserController.php";
 
 
-if (session_status() === PHP_SESSION_NONE) {
-    session_start();
-}
 
-$nome = $_POST['nome'];
-$dataNasc = $_POST['dataNasc'];
-$sexo = $_POST['sexo'];
+
+$email = $_POST['email'];
+// $dataNasc = $_POST['dataNasc'];
+// $sexo = $_POST['sexo'];
 
 if ($_SERVER["REQUEST_METHOD"] === "POST") {
-    if (strtotime($dataNasc) > time()) {
-        header("Location: ./cadastroUsuario.php?erro=data");
-    }
+    // if (strtotime($dataNasc) > time()) {
+    //     header("Location: ./cadastroUsuario.php?erro=data");
+    // }
 
     $userController = new UserController();
     if (
         $id = $userController->usuarioExiste(
-            $nome,
-            $dataNasc,
-            $sexo
+            $email,
         )
     ) {
         $jaCadastrado = true;
@@ -37,9 +33,9 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
         exit();
     } else {
         $etapa = 2;
-        $_SESSION['nome'] = $nome;
-        $_SESSION['data_nasc'] = $dataNasc;
-        $_SESSION['sexo'] = $sexo;
+        $_SESSION['nome'] = "nick";
+        $_SESSION['data_nasc'] = '2024-05-29';
+        $_SESSION['sexo'] = "masculino";
         include "../views/header.php";
         include "../views/formulario.php";
     }
