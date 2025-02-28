@@ -1,31 +1,36 @@
 <?php
 require_once "../controllers/UserController.php";
+require_once "../helpers/SessionManager.php";
 
 $pageTitle = 'Cadastrado';
 $page = "cadastrado";
 
 
 
-if ($_SERVER["REQUEST_METHOD"] === "POST") {
-    if ($_POST['frase'] !== $_POST['confirmacao']) {
+if (isset($_SESSION['email'])) {
+    if ($_SESSION['frase'] !== $_SESSION['confirmacao']) {
         header("Location: ./cadastroUsuario.php?erro=frase");
         exit();
     }
 
+    $email = $_SESSION['email'];
+    $nome = $_SESSION['nome'];
+    $dataNasc = $_SESSION['dataNasc'];
+    $sexo = $_SESSION['sexo'];
+    $fraseSeguranca = $_SESSION["frase"];
 
-    if (!isset($_SESSION['nome']) || !isset($_SESSION['data_nasc']) || !isset($_SESSION['sexo']) || !isset($_POST["frase"])) {
+
+    if (!isset($email) || !isset($nome) || !isset($dataNasc) || !isset($sexo) || !isset($fraseSeguranca)) {
         header("Location: ../../index.php?erro=algo-deu-errado");
         exit();
     }
 
-    $nome = $_SESSION['nome'];
-    $dataNasc = $_SESSION['data_nasc'];
-    $sexo = $_SESSION['sexo'];
-    $fraseSeguranca = $_POST["frase"];
+
 
     $userController = new UserController();
 
     $data = [
+        "email" => $email,
         "nome" => $nome,
         "dataNasc" => $dataNasc,
         "sexo" => $sexo,
@@ -33,22 +38,25 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
     ];
 
     if ($userController->registraUsuario($data)) {
-        $id = $userController->usuarioExiste($data['nome'], $data['dataNasc'], $data['sexo']);
-        include "../views/header.php";
+        $id = $userController->usuarioExiste($data['email']);
+        $usuario = $userController->consultaDadosDoUsuario($id);
         $registrado = true;
-        $etapa = 3;
-        include "../views/formulario.php";
+        SessionManager::destroy();
+        SessionManager::set('usuario', $usuario);
+
+        header("Location: ../../index.php?cadastrado-com-sucesso");
     } else {
         include "../views/header.php";
         echo "Não conseguiu registrar.";
         echo "<a href='../../index.php'>Voltar para página inicial</a>";
+        session_unset();
+        session_destroy();
     }
 
     include "../views/footer.php"
     ;
 
-    session_unset();
-    session_destroy();
+
 } else {
     header("Location: ../../index.php");
     exit();

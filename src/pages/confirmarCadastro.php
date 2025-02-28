@@ -1,51 +1,44 @@
 <?php
 
 $page = "confirmarCadastro";
-$pageTitle = 'Cadastro de Usuário';
 require_once "../controllers/UserController.php";
 
 
-if (session_status() === PHP_SESSION_NONE) {
-    session_start();
-}
-
+$email = $_POST['email'];
 $nome = $_POST['nome'];
 $dataNasc = $_POST['dataNasc'];
 $sexo = $_POST['sexo'];
+$fraseSeguranca = $_POST["frase"];
+$fraseConfirmacao = $_POST['confirmacao'];
+// $dataNasc = $_POST['dataNasc'];
+// $sexo = $_POST['sexo'];
 
 if ($_SERVER["REQUEST_METHOD"] === "POST") {
-    if (strtotime($dataNasc) > time()) {
-        header("Location: ./cadastroUsuario.php?erro=data");
-    }
+    // if (strtotime($dataNasc) > time()) {
+    //     header("Location: ./cadastroUsuario.php?erro=data");
+    // }
 
     $userController = new UserController();
     if (
         $id = $userController->usuarioExiste(
-            $nome,
-            $dataNasc,
-            $sexo
+            $email,
         )
+
     ) {
         $jaCadastrado = true;
-        $page = "cadastrado";
-        $etapa = 3;
-        include "../views/header.php";
-        include "../views/formulario.php";
-        include "../views/footer.php";
-        session_unset();
-        session_destroy();
-        exit();
+
+        header("Location: ./login.php?ja-possui-cadastro");
+
+
     } else {
-        $etapa = 2;
         $_SESSION['nome'] = $nome;
-        $_SESSION['data_nasc'] = $dataNasc;
+        $_SESSION['email'] = $email;
+        $_SESSION['dataNasc'] = $dataNasc;
         $_SESSION['sexo'] = $sexo;
-        include "../views/header.php";
-        include "../views/formulario.php";
+        $_SESSION['frase'] = $fraseSeguranca;
+        $_SESSION['confirmacao'] = $fraseConfirmacao;
+        header("Location: cadastrado.php");
     }
 } else {
     header("Location: ../../index.php");
 }
-
-
-include "../views/footer.php";

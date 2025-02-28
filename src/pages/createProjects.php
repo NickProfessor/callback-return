@@ -1,25 +1,23 @@
 <?php
-session_start();
 
-if (!isset($_SESSION['logado']) || $_SESSION['logado'] !== true) {
+require_once __DIR__ . "/../helpers/SessionManager.php";
+require_once "../models/Projeto.php";
 
 
-    header("Location: ../../index.php");
+SessionManager::requireLogin(2);
 
-} else {
-    if (isset($_GET['erro'])) {
-        $erro = true;
-    }
-    require_once "../models/Projeto.php";
-
-    $page = "cadastroProjeto";
-    $pageTitle = "Cadastra Projeto";
-    include "../views/header.php";
-
-    $locais = Projeto::buscaSalasDoBanco();
-    $cursos = Projeto::buscaCursosDoBanco();
-    $temas = Projeto::buscaTemasDoBanco();
-
-    $etapa = 7;
-    include "../views/formulario.php";
+if (isset($_GET['erro'])) {
+    $erro = true;
 }
+
+
+$page = "cadastroProjeto";
+$pageTitle = "Cadastra Projeto";
+include "../views/header.php";
+
+$locais = Projeto::buscaSalasDoBanco();
+$cursos = Projeto::buscaCursosDoBanco();
+$temas = Projeto::buscaTemasDoBanco();
+
+$etapa = 7;
+include "../views/formulario.php";

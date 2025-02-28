@@ -1,13 +1,26 @@
 <?php
 
-require_once '../models/User.php';
+require_once __DIR__ . "/../../config/config.php";
+require_once __DIR__ . "/../../config/db_connect.php";
+require_once __DIR__ . '/../models/User.php';
 
 class UserController
 {
+    private $conn;
+
+    public function __construct()
+    {
+        global $conn;
+        $this->conn = $conn;
+    }
+
+
     public function registraUsuario($data)
     {
         $user = new User(
+            $this->conn,
             $data['nome'],
+            $data['email'],
             $data['dataNasc'],
             $data['sexo'],
             $data['fraseSeguranca'],
@@ -25,13 +38,26 @@ class UserController
 
     }
 
-    public function usuarioExiste($nome, $dataNasc, $sexo)
+    public function usuarioExiste($email)
     {
-        return User::existeNoBanco($nome, $dataNasc, $sexo);
+        return User::existeNoBanco($this->conn, $email);
     }
 
     public function validaUsuario($id, $frase)
     {
-        return User::validaAcesso($id, $frase);
+        return User::validaAcesso($this->conn, $id, $frase);
+    }
+
+    public function consultaDadosDoUsuario($id)
+    {
+        return User::consultaDados($this->conn, $id);
+    }
+
+    public static function logout()
+    {
+        session_unset();
+        session_destroy();
+        header("Location: ../../index.php?voce-foi-desconectado"); // 🔹 Redireciona para a página de login após logout
+        exit;
     }
 }
