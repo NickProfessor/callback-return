@@ -37,7 +37,7 @@ CREATE TABLE `aluno` (
   PRIMARY KEY (`id_aluno`),
   KEY `fk_usuario` (`id_usuario`),
   CONSTRAINT `fk_usuario` FOREIGN KEY (`id_usuario`) REFERENCES `usuario` (`id_usuario`)
-) ENGINE=InnoDB AUTO_INCREMENT=11 DEFAULT CHARSET=utf8mb3;
+) ENGINE=InnoDB AUTO_INCREMENT=2 DEFAULT CHARSET=utf8mb3;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -46,6 +46,7 @@ CREATE TABLE `aluno` (
 
 LOCK TABLES `aluno` WRITE;
 /*!40000 ALTER TABLE `aluno` DISABLE KEYS */;
+INSERT INTO `aluno` VALUES (1,'Aluno Registrado','11111','22222','B','3','Marketing',1,2);
 /*!40000 ALTER TABLE `aluno` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -62,12 +63,11 @@ CREATE TABLE `aluno_has_projeto` (
   `data_registro` datetime DEFAULT CURRENT_TIMESTAMP,
   `data_atualizacao` datetime DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
   PRIMARY KEY (`id_aluno`,`id_projeto`),
-  KEY `fk_aluno_has_projeto_projeto1_idx` (`id_projeto`),  -- Renomeado para refletir corretamente
-  KEY `fk_aluno_has_projeto_aluno1_idx` (`id_aluno`),      -- Renomeado para refletir corretamente
+  KEY `fk_aluno_has_projeto_projeto1_idx` (`id_projeto`),
+  KEY `fk_aluno_has_projeto_aluno1_idx` (`id_aluno`),
   CONSTRAINT `fk_aluno_has_projeto_aluno1` FOREIGN KEY (`id_aluno`) REFERENCES `aluno` (`id_aluno`),
   CONSTRAINT `fk_aluno_has_projeto_projeto1` FOREIGN KEY (`id_projeto`) REFERENCES `projeto` (`id_projeto`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb3;
-
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -243,7 +243,7 @@ CREATE TABLE `projeto` (
   PRIMARY KEY (`id_projeto`),
   KEY `fk_projeto_sala1_idx` (`sala_id_sala`),
   CONSTRAINT `fk_projeto_sala1` FOREIGN KEY (`sala_id_sala`) REFERENCES `sala` (`id_sala`)
-) ENGINE=InnoDB AUTO_INCREMENT=43 DEFAULT CHARSET=utf8mb3;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb3;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -389,7 +389,7 @@ CREATE TABLE `usuario` (
   `data_atualizacao` datetime DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
   PRIMARY KEY (`id_usuario`),
   KEY `idx_sexo` (`sexo`)
-) ENGINE=InnoDB AUTO_INCREMENT=32 DEFAULT CHARSET=utf8mb3;
+) ENGINE=InnoDB AUTO_INCREMENT=5 DEFAULT CHARSET=utf8mb3;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -398,7 +398,7 @@ CREATE TABLE `usuario` (
 
 LOCK TABLES `usuario` WRITE;
 /*!40000 ALTER TABLE `usuario` DISABLE KEYS */;
-INSERT INTO `usuario` VALUES (31,'Administrador Geral','teste@teste','teste','masculino','2006-07-29',NULL,2,1,'2025-02-23 13:02:44','2025-02-23 13:03:02');
+INSERT INTO `usuario` VALUES (1,'Administrador Geral','teste@teste','teste','masculino','2006-07-29',NULL,2,1,'2025-02-27 13:04:41','2025-02-27 13:04:41'),(2,'Aluno','aluno@aluno.com','aluno','masculino','2006-07-29',NULL,3,1,'2025-02-27 13:14:32','2025-02-27 13:19:02'),(3,'Usuário comum','user@user','user','masculino','2006-07-29',NULL,1,1,'2025-02-28 14:55:31','2025-02-28 14:55:31'),(4,'Professor','professor@professor','professor','masculino','2006-07-29',NULL,4,1,'2025-02-28 15:04:22','2025-02-28 15:04:22');
 /*!40000 ALTER TABLE `usuario` ENABLE KEYS */;
 UNLOCK TABLES;
 /*!40103 SET TIME_ZONE=@OLD_TIME_ZONE */;
@@ -411,4 +411,4 @@ UNLOCK TABLES;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2025-02-23 18:08:17
+-- Dump completed on 2025-02-28 15:07:34

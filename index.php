@@ -1,12 +1,9 @@
 <?php
+require_once "./src/helpers/SessionManager.php";
 require_once "./src/controllers/UserController.php";
 require_once "./src/models/Projeto.php";
 
-if (isset($_SESSION['id'])) {
-    $id = $_SESSION['id'];
-    $userController = new UserController();
-    $usuario = $userController->consultaDadosDoUsuario($id);
-}
+$usuario = SessionManager::get('usuario');
 ?>
 
 <!DOCTYPE html>
@@ -24,10 +21,38 @@ if (isset($_SESSION['id'])) {
 </head>
 
 <body>
-    <?php if (isset($_SESSION['id'])): ?>
+    <?php if ($usuario): ?>
         <header>
             <h1 class="titulo-header">Bem-vindo, <?php echo $usuario['nome']; ?></h1>
             <a href="./src/pages/logout.php" class="link-header">Logout</a>
+
+            <?php
+            $linkTexto = "";
+            $linkURL = "#";
+
+            switch ($usuario['tipo_usuario']) {
+                case '1':
+                    $linkTexto = "Sou usuário";
+                    $linkURL = "./src/pages/perfilUsuario.php";
+                    break;
+                case '2':
+                    $linkTexto = "Criar projeto";
+                    $linkURL = "./src/pages/createProjects.php";
+                    break;
+                case '3':
+                    $linkTexto = "Sou aluno";
+                    $linkURL = "./src/pages/perfilAluno.php";
+                    break;
+                case '4':
+                    $linkTexto = "Sou professor";
+                    $linkURL = "./src/pages/dashboard.php";
+                    break;
+            }
+
+            if ($linkTexto): ?>
+                <a href="<?php echo $linkURL; ?>"><?php echo $linkTexto; ?></a>
+            <?php endif; ?>
+
             <p>Salas</p>
         </header>
     <?php else: ?>
@@ -37,6 +62,7 @@ if (isset($_SESSION['id'])) {
             <p>Salas</p>
         </header>
     <?php endif; ?>
+
     <main>
 
         <?php

@@ -1,5 +1,6 @@
 <?php
 require_once "../controllers/UserController.php";
+require_once "../helpers/SessionManager.php";
 
 $pageTitle = 'Cadastrado';
 $page = "cadastrado";
@@ -38,8 +39,11 @@ if (isset($_SESSION['email'])) {
 
     if ($userController->registraUsuario($data)) {
         $id = $userController->usuarioExiste($data['email']);
+        $usuario = $userController->consultaDadosDoUsuario($id);
         $registrado = true;
-        $_SESSION['id'] = $id;
+        SessionManager::destroy();
+        SessionManager::set('usuario', $usuario);
+
         header("Location: ../../index.php?cadastrado-com-sucesso");
     } else {
         include "../views/header.php";

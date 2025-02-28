@@ -2,6 +2,7 @@
 
 require_once __DIR__ . "/../helpers/SessionManager.php";
 
-SessionManager::destroy();
+SessionManager::requireLogin(1);
+?>
 
-header("Location: ../../index.php");
+<h1>Sou usuario comum</h1>

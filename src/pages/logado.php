@@ -1,5 +1,6 @@
 <?php
 require_once __DIR__ . "/../controllers/UserController.php";
+require_once __DIR__ . "/../helpers/SessionManager.php";
 
 if ($_SERVER["REQUEST_METHOD"] === "POST") {
 
@@ -16,7 +17,7 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
     ) {
 
         if ($userController->validaUsuario($id, $frase)) {
-            $_SESSION['id'] = $id;
+            SessionManager::set('usuario', $userController->consultaDadosDoUsuario($id));
             header("Location: ../../index.php?logado-com-sucesso");
         } else {
             header("Location: ./login.php?dados-incorretos");

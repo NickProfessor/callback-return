@@ -49,10 +49,14 @@
   - A coluna 'data_envio' serve para registrar o momento em que a mensagem foi enviada
   - A coluna 'lida' serve para identificar se o aluno leu ou não a mensagem (0-Não, 1-sim)
 
+- A contagem de auto_increment de todas as tabelas foi zerada
+
 ### Adicionado
 
 - Agora o usuário será identificado pelo email.
 - Ao logar, ou cadastrar, o usuário já define uma sessão.
+- Uma nova classe 'SessionManager' foi criada, isso para armazenar todas as funcionalidades necessárias sobre sessão
+- Como forma de teste, foram criados 3 páginas que só permitem determinado tipo de usuário
 
 ### Removido
 
