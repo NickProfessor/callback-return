@@ -2,13 +2,13 @@
 if ($_SERVER["REQUEST_METHOD"] !== "POST") {
     header("Location: ../../index.php");
 } else {
-    if (isset($_POST['nome']) && isset($_POST['local']) && isset($_POST['descricao']) && isset($_POST['cursos']) && isset($_POST['temas']) && isset($_POST['integrantes'])) {
+    if (isset($_POST['nome']) && isset($_POST['local']) && isset($_POST['descricao']) && isset($_POST['cursos']) && isset($_POST['temas']) && isset($_POST['alunos'])) {
         $nomeProjeto = $_POST['nome'];
         $localProjeto = $_POST['local'];
         $descricaoProjeto = $_POST['descricao'];
         $temasProjeto = $_POST['temas'];
         $cursosProjeto = $_POST['cursos'];
-        $integrantesProjeto = $_POST['integrantes'];
+        $alunosProjeto = $_POST['alunos'];
         require_once "../models/Projeto.php";
         if ($localProjeto == "outro") {
             $localProjeto = $_POST['novoLocal'];
@@ -19,7 +19,7 @@ if ($_SERVER["REQUEST_METHOD"] !== "POST") {
             $descricaoProjeto,
             $temasProjeto,
             $cursosProjeto,
-            $integrantesProjeto
+            $alunosProjeto
         );
 
         $projetoController->cadastraProjeto();

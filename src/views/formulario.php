@@ -477,8 +477,8 @@
         </div>
 
         <div class="form-group">
-            <label for="integrantes">Informe o nome do integrante 1:</label>
-            <input type="text" name="integrantes[]" id="integrante" class="campo-texto" placeholder="Ana Catarina" required>
+            <label for="alunos">Informe o nome do aluno 1:</label>
+            <input type="text" name="alunos[]" id="aluno" class="campo-texto" placeholder="Ana Catarina" required>
         </div>
 
         <div class="form-group">
@@ -522,19 +522,19 @@
 
 
 
-        // Função para adicionar mais integrantes
+        // Função para adicionar mais alunos
         let memberCount = 1;
 
-        document.getElementById('integrante').addEventListener('input', function () {
+        document.getElementById('aluno').addEventListener('input', function () {
             const addMemberButtonDiv = document.getElementById('adicionaMembroBtn');
 
-            // Adicionar botão para adicionar mais integrantes
+            // Adicionar botão para adicionar mais alunos
             if (!addMemberButtonDiv) {
                 const buttonDiv = document.createElement('div');
                 buttonDiv.id = 'adicionaMembroBtn';
                 buttonDiv.className = 'form-group';
                 buttonDiv.innerHTML = `
-                                                                                                        <button type="button" id="adicionaMembroBtn">Adicionar mais um integrante</button>
+                                                                                                        <button type="button" id="adicionaMembroBtn">Adicionar mais um aluno</button>
                                                                                                     `;
                 this.parentNode.appendChild(buttonDiv);
 
@@ -543,8 +543,8 @@
                     newMemberInput.id = `inputMembro${++memberCount}`;
                     newMemberInput.className = 'form-group';
                     newMemberInput.innerHTML = `
-                                                                                                            <label for="integrante${memberCount}">Informe o nome do integrante ${memberCount}:</label>
-                                                                                                            <input type="text" name="integrantes[]" id="integrante${memberCount}" class="campo-texto" placeholder="Nome do integrante" required>
+                                                                                                            <label for="aluno${memberCount}">Informe o nome do aluno ${memberCount}:</label>
+                                                                                                            <input type="text" name="alunos[]" id="aluno${memberCount}" class="campo-texto" placeholder="Nome do aluno" required>
                                                                                                             <button type="button" onclick="removeMembro(${memberCount})">Remover</button>
                                                                                                         `;
                     buttonDiv.parentNode.appendChild(newMemberInput);
@@ -552,7 +552,7 @@
             }
         });
 
-        // Função para remover integrante
+        // Função para remover aluno
         function removeMembro(memberId) {
             const memberInput = document.getElementById(`inputMembro${memberId}`);
             if (memberInput) {
