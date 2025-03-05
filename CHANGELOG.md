@@ -57,6 +57,7 @@
 - Ao logar, ou cadastrar, o usuário já define uma sessão.
 - Uma nova classe 'SessionManager' foi criada, isso para armazenar todas as funcionalidades necessárias sobre sessão
 - Como forma de teste, foram criados 3 páginas que só permitem determinado tipo de usuário
+- Foi adicionado um log que registra toda interação com o banco de dados através do sistema
 
 ### Removido
 
