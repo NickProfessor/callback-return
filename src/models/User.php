@@ -1,10 +1,8 @@
 <?php
 require_once __DIR__ . "/../../config/config.php";
 require_once __DIR__ . "/../../config/db_connect.php";
+require_once __DIR__ . "/../helpers/Logger.php";
 
-if (session_status() === PHP_SESSION_NONE) {
-    session_start();
-}
 
 class User
 {
@@ -34,7 +32,7 @@ class User
         try {
             $stmt = $this->conn->prepare("INSERT INTO usuario (nome, email, frase_seguranca, sexo, data_nascimento, foto, tipo_usuario ) VALUES (?, ?, ?, ?, ?, ?, ?)");
             if (!$stmt) {
-                throw new Exception("Erro ao preparar a query: " . $this->conn->error);
+                Logger::log("Erro ao preparar a query: " . $this->conn->error);
             }
 
             $stmt->bind_param(
@@ -49,10 +47,13 @@ class User
             );
             $stmt->execute();
             $stmt->close();
+
+            Logger::log("Criou um novo usuário no banco", "ADD");
+
             return true;
 
         } catch (Exception $e) {
-            error_log("Erro ao salvar usuário no banco: " . $e->getMessage());
+            Logger::log("Erro ao criar usuário: " . $e->getMessage(), "ERROR");
             return false;
         }
     }
@@ -62,7 +63,7 @@ class User
         try {
             $stmt = $conn->prepare("SELECT id_usuario FROM usuario WHERE email = ?");
             if (!$stmt) {
-                throw new Exception("Erro ao preparar a consulta: " . $conn->error);
+                Logger::log("Erro ao preparar a consulta: " . $conn->error);
             }
 
             $stmt->bind_param("s", $email);
@@ -75,10 +76,12 @@ class User
             }
 
             $stmt->close();
+
+
             return null;
 
         } catch (Exception $e) {
-            error_log("Erro na consulta de usuário: " . $e->getMessage());
+            Logger::log("Erro ao consultar usuário: " . $e->getMessage(), "ERROR");
             return null;
         }
     }
@@ -88,7 +91,7 @@ class User
         try {
             $stmt = $conn->prepare("SELECT * FROM usuario WHERE id_usuario = ?");
             if (!$stmt) {
-                throw new Exception("Erro ao preparar a consulta: " . $conn->error);
+                Logger::log("Erro ao preparar a consulta: " . $conn->error);
             }
 
             $stmt->bind_param("i", $id_usuario);
@@ -105,7 +108,7 @@ class User
             return false;
 
         } catch (Exception $e) {
-            error_log("Erro na validação de acesso: " . $e->getMessage());
+            Logger::log("Erro ao validar acesso: " . $e->getMessage(), "ERROR");
             return false;
         }
     }
@@ -125,7 +128,7 @@ class User
         try {
             $stmt = $conn->prepare("SELECT * FROM usuario WHERE id_usuario = ?");
             if (!$stmt) {
-                throw new Exception("Erro ao preparar a consulta: " . $conn->error);
+                Logger::log("Erro ao preparar a consulta: " . $conn->error);
             }
 
             $stmt->bind_param("i", $id_usuario);
@@ -139,7 +142,7 @@ class User
             return false;
 
         } catch (Exception $e) {
-            error_log("Erro na validação de acesso: " . $e->getMessage());
+            Logger::log("Erro ao consultar dados: " . $e->getMessage(), "ERROR");
             return false;
         }
     }

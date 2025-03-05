@@ -3,13 +3,13 @@
         <h1 class="titulo-header">CallbackReturn</h1>
         <a href="./cadastroUsuario.php" class="link-header">Cadastre se ou consulte o ID</a>
         <?php if (is_numeric($projetoSala)): ?>
-            <a href="./sala.php?local=<?php echo $projetoSala ?>" class="botao-padrao"><i
-                    class="fa-solid fa-arrow-left"></i>
-                Sala <?php echo $projetoSala ?></a>
+                <a href="./sala.php?local=<?php echo $projetoSala ?>" class="botao-padrao"><i
+                        class="fa-solid fa-arrow-left"></i>
+                    Sala <?php echo $projetoSala ?></a>
         <?php else: ?>
-            <a href="./sala.php?local=<?php echo $projetoSala ?>" class="botao-padrao"><i
-                    class="fa-solid fa-arrow-left"></i>
-                <?php echo $projetoSala ?></a>
+                <a href="./sala.php?local=<?php echo $projetoSala ?>" class="botao-padrao"><i
+                        class="fa-solid fa-arrow-left"></i>
+                    <?php echo $projetoSala ?></a>
         <?php endif; ?>
     </header>
     <main>
@@ -27,7 +27,7 @@
             <p>Temas:</p>
             <div class="projeto-info-desc">
                 <?php foreach ($projetoTemas as $tema): ?>
-                    <p><?php echo htmlspecialchars($tema); ?></p>
+                        <p><?php echo htmlspecialchars($tema); ?></p>
                 <?php endforeach; ?>
             </div>
         </div>
@@ -36,10 +36,10 @@
             <p class="projeto-info-desc"><?php echo htmlspecialchars($projetoDescricao); ?></p>
         </div>
         <div class="projeto-info">
-            <p>Integrantes:</p>
+            <p>Alunos:</p>
             <div class="projeto-info-desc">
-                <?php foreach ($projetoIntegrantes as $integrante): ?>
-                    <p><?php echo htmlspecialchars($integrante); ?></p>
+                <?php foreach ($projetoAlunos as $aluno): ?>
+                        <p><?php echo htmlspecialchars($aluno); ?></p>
                 <?php endforeach; ?>
             </div>
         </div>
@@ -48,41 +48,41 @@
 
 
             <?php if ($popularJovens): ?>
-                <div>
-                    <img src="../assets/images/icone-jovem.svg" alt="ícone jovem"
-                        title="Popular entre jovens de 0 a 21 anos">
-                    <p>Popular entre jovens</p>
-                </div>
+                    <div>
+                        <img src="../assets/images/icone-jovem.svg" alt="ícone jovem"
+                            title="Popular entre jovens de 0 a 21 anos">
+                        <p>Popular entre jovens</p>
+                    </div>
             <?php endif; ?>
 
             <?php if ($popularAdultos): ?>
-                <div>
-                    <img src="../assets/images/icone-adulto.svg" alt="ícone adulto"
-                        title="Popular entre adultos de 22 a 59 anos">
-                    <p>Popular entre adultos</p>
-                </div>
+                    <div>
+                        <img src="../assets/images/icone-adulto.svg" alt="ícone adulto"
+                            title="Popular entre adultos de 22 a 59 anos">
+                        <p>Popular entre adultos</p>
+                    </div>
             <?php endif; ?>
 
             <?php if ($popularIdosos): ?>
-                <div>
-                    <img src="../assets/images/icone-idoso.svg" alt="ícone idoso"
-                        title="Popular idosos com mais de 60 anos">
-                    <p>Popular entre idosos</p>
-                </div>
+                    <div>
+                        <img src="../assets/images/icone-idoso.svg" alt="ícone idoso"
+                            title="Popular idosos com mais de 60 anos">
+                        <p>Popular entre idosos</p>
+                    </div>
             <?php endif; ?>
 
             <?php if ($popularHomens): ?>
-                <div>
-                    <img src="../assets/images/icone-homem.svg" alt="ícone homem" title="Popular entre homens">
-                    <p>Popular entre homens</p>
-                </div>
+                    <div>
+                        <img src="../assets/images/icone-homem.svg" alt="ícone homem" title="Popular entre homens">
+                        <p>Popular entre homens</p>
+                    </div>
             <?php endif; ?>
 
             <?php if ($popularMulheres): ?>
-                <div>
-                    <img src="../assets/images/icone-mulher.svg" alt="ícone mulher" title="Popular entre mulheres">
-                    <p>Popular entre mulheres</p>
-                </div>
+                    <div>
+                        <img src="../assets/images/icone-mulher.svg" alt="ícone mulher" title="Popular entre mulheres">
+                        <p>Popular entre mulheres</p>
+                    </div>
             <?php endif; ?>
         </div>
 
@@ -94,11 +94,11 @@
             <p>Comentários:</p>
             <?php if (!empty($projetoComentarios)): ?>
 
-                <?php foreach ($projetoComentarios as $comentario): ?>
-                    <p class="projeto-comentario"><?php echo htmlspecialchars($comentario); ?></p>
-                <?php endforeach; ?>
+                    <?php foreach ($projetoComentarios as $comentario): ?>
+                            <p class="projeto-comentario"><?php echo htmlspecialchars($comentario); ?></p>
+                    <?php endforeach; ?>
             <?php else: ?>
-                <p>Sem comentários.</p>
+                    <p>Sem comentários.</p>
             <?php endif; ?>
         </div>
 

@@ -2,6 +2,7 @@
 
 require_once __DIR__ . "/../../config/config.php";
 require_once __DIR__ . "/../../config/db_connect.php";
+require_once __DIR__ . "/../helpers/Logger.php";
 
 class Projeto
 {
@@ -10,18 +11,18 @@ class Projeto
     private $descricao;
     private $temas = [];
     private $cursos = [];
-    private $integrantes = [];
+    private $alunos = [];
     private $listaDeProjetos = [];
     private $listaDeSalas = [];
 
-    public function __construct($nome = null, $local = null, $descricao = null, $temas = null, $cursos = null, $integrantes = null)
+    public function __construct($nome = null, $local = null, $descricao = null, $temas = null, $cursos = null, $alunos = null)
     {
         $this->nome = $nome;
         $this->local = $local;
         $this->descricao = $descricao;
         $this->temas = $temas;
         $this->cursos = $cursos;
-        $this->integrantes = $integrantes;
+        $this->alunos = $alunos;
     }
 
     public function carregaProjetos()
@@ -33,7 +34,7 @@ class Projeto
             p.descricao AS projeto_descricao,
             s.numero AS sala_numero,
             GROUP_CONCAT(DISTINCT c.nome) AS cursos,
-            GROUP_CONCAT(DISTINCT i.nome) AS integrantes,
+            GROUP_CONCAT(DISTINCT i.nome) AS alunos,
             GROUP_CONCAT(DISTINCT t.nome) AS temas,
             
             COALESCE(a.total_avaliacoes, 0) AS total_avaliacoes,
@@ -59,9 +60,9 @@ class Projeto
             LEFT JOIN sala s ON p.sala_id_sala = s.id_sala
             LEFT JOIN curso_has_projeto chp ON p.id_projeto = chp.projeto_id_projeto
             LEFT JOIN curso c ON chp.curso_id_curso = c.id_curso
-            LEFT JOIN integrante_has_projeto ihp ON p.id_projeto = ihp.id_projeto
-            LEFT JOIN integrante i ON ihp.id_integrante = i.id_integrante
-            LEFT JOIN projeto_has_tema pht ON p.id_projeto = pht.projeto_id_projeto
+            LEFT JOIN aluno_has_projeto ihp ON p.id_projeto = ihp.id_projeto
+            LEFT JOIN aluno i ON ihp.id_aluno = i.id_aluno
+            LEFT JOIN tema_has_projeto pht ON p.id_projeto = pht.projeto_id_projeto
             LEFT JOIN tema t ON pht.tema_id_tema = t.id_tema
             
             LEFT JOIN (
@@ -209,7 +210,7 @@ class Projeto
             p.descricao AS projeto_descricao,
             s.numero AS sala_numero,
             GROUP_CONCAT(DISTINCT c.nome) AS cursos,
-            GROUP_CONCAT(DISTINCT i.nome) AS integrantes,
+            GROUP_CONCAT(DISTINCT i.nome) AS alunos,
             GROUP_CONCAT(DISTINCT t.nome) AS temas,
             
             COALESCE(ag.total_avaliacoes, 0) AS total_avaliacoes,
@@ -237,9 +238,9 @@ class Projeto
             LEFT JOIN sala s ON p.sala_id_sala = s.id_sala
             LEFT JOIN curso_has_projeto chp ON p.id_projeto = chp.projeto_id_projeto
             LEFT JOIN curso c ON chp.curso_id_curso = c.id_curso
-            LEFT JOIN integrante_has_projeto ihp ON p.id_projeto = ihp.id_projeto
-            LEFT JOIN integrante i ON ihp.id_integrante = i.id_integrante
-            LEFT JOIN projeto_has_tema pht ON p.id_projeto = pht.projeto_id_projeto
+            LEFT JOIN aluno_has_projeto ihp ON p.id_projeto = ihp.id_projeto
+            LEFT JOIN aluno i ON ihp.id_aluno = i.id_aluno
+            LEFT JOIN tema_has_projeto pht ON p.id_projeto = pht.projeto_id_projeto
             LEFT JOIN tema t ON pht.tema_id_tema = t.id_tema
             
             LEFT JOIN (
@@ -319,30 +320,32 @@ class Projeto
                 $projetoId = $this->criaProjeto();
 
                 if (!$projetoId) {
-                    throw new Exception("Erro ao criar o projeto.");
+                    Logger::log("Erro ao criar o projeto.", "ERROR");
                 }
 
                 $this->registraCursosDoProjeto($projetoId);
                 $this->registraTemasDoProjeto($projetoId);
-                $this->registraIntegrantesDoProjeto($projetoId);
+                $this->registraAlunosDoProjeto($projetoId);
 
                 // Se tudo deu certo, fazemos o commit da transação
                 $conn->commit();
                 $this->registrarNotaAutomatica($projetoId);
+                Logger::log("Projeto cadastrado com sucesso! ", "ADD");
             } else {
                 header("Location: ./createProjects.php?erro=projeto-ja-existe");
             }
         } catch (Exception $e) {
             // Se qualquer erro ocorrer, desfazemos a transação
             $conn->rollback();
-            echo "Erro no cadastro do projeto: " . $e->getMessage();
+            header("Location: ./createProjects.php?erro=nao-foi-possivel-adicionar");
+            Logger::log("Erro ao cadastrar projeto: " . $e->getMessage(), "ERROR");
         }
     }
 
 
 
 
-    //insere os dados na tabela de relacionamentos integrante_has_projeto
+    //insere os dados na tabela de relacionamentos aluno_has_projeto
 
     private function verificarSala()
     {
@@ -369,7 +372,7 @@ class Projeto
 
             if (!$stmt->execute()) {
                 $stmt->close();
-                throw new Exception("Erro ao criar a sala: " . $stmt->error);
+                Logger::log("Erro ao criar a sala: " . $stmt->error, "ERROR");
             }
             $stmt->close();
         }
@@ -382,7 +385,7 @@ class Projeto
         $stmt = $conn->prepare($sql);
 
         if (!$stmt) {
-            throw new Exception("Erro ao preparar consulta: " . $conn->error);
+            Logger::log("Erro ao preparar consulta: " . $conn->error, "ERROR");
         }
 
         $cursos = $this->cursos;
@@ -390,7 +393,7 @@ class Projeto
             $stmt->bind_param("ii", $idCurso, $idProjeto);
             if (!$stmt->execute()) {
                 $stmt->close();
-                throw new Exception("Erro ao registrar cursos: " . $stmt->error);
+                Logger::log("Erro ao registrar cursos: " . $stmt->error, "ERROR");
             }
         }
 
@@ -399,11 +402,11 @@ class Projeto
     private function registraTemasDoProjeto($idProjeto)
     {
         global $conn;
-        $sql = "INSERT INTO projeto_has_tema (projeto_id_projeto, tema_id_tema) VALUES (?, ?)";
+        $sql = "INSERT INTO tema_has_projeto (projeto_id_projeto, tema_id_tema) VALUES (?, ?)";
         $stmt = $conn->prepare($sql);
 
         if (!$stmt) {
-            throw new Exception("Erro ao preparar consulta: " . $conn->error);
+            Logger::log("Erro ao preparar consulta: " . $conn->error, "ERROR");
         }
 
         $temas = $this->temas;
@@ -411,7 +414,7 @@ class Projeto
             $stmt->bind_param("ii", $idProjeto, $idTema);
             if (!$stmt->execute()) {
                 $stmt->close();
-                throw new Exception("Erro ao registrar temas: " . $stmt->error);
+                Logger::log("Erro ao registrar temas: " . $stmt->error, "ERROR");
             }
         }
 
@@ -467,86 +470,86 @@ class Projeto
     }
 
 
-    private function registraIntegrantesDoProjeto($id_projeto)
+    private function registraAlunosDoProjeto($id_projeto)
     {
         global $conn;
-        $integrantes = $this->integrantes;
+        $alunos = $this->alunos;
 
-        foreach ($integrantes as $nomeIntegrante) {
-            if (!$this->verificaIntegrante($nomeIntegrante)) {
-                $query = "INSERT INTO integrante (nome) VALUES (?)";
+        foreach ($alunos as $nomeAluno) {
+            if (!$this->verificaAluno($nomeAluno)) {
+                $query = "INSERT INTO aluno (nome) VALUES (?)";
                 $stmt = $conn->prepare($query);
                 if (!$stmt) {
                     return "Erro na preparação da consulta: " . $conn->error;
                 }
-                $stmt->bind_param("s", $nomeIntegrante);
+                $stmt->bind_param("s", $nomeAluno);
 
                 if (!$stmt->execute()) {
                     $stmt->close();
-                    return "Erro ao cadastrar integrante.";
+                    return "Erro ao cadastrar aluno.";
                 }
                 $stmt->close();
             }
 
-            $idIntegrante = $this->pegaIDIntegrante($nomeIntegrante);
-            if ($idIntegrante) {
-                $query = "INSERT INTO integrante_has_projeto (id_integrante, id_projeto) VALUES (?, ?)";
+            $idAluno = $this->pegaIDAluno($nomeAluno);
+            if ($idAluno) {
+                $query = "INSERT INTO aluno_has_projeto (id_aluno, id_projeto) VALUES (?, ?)";
                 $stmt = $conn->prepare($query);
                 if (!$stmt) {
                     return "Erro na preparação da consulta: " . $conn->error;
                 }
-                $stmt->bind_param("ii", $idIntegrante, $id_projeto);
+                $stmt->bind_param("ii", $idAluno, $id_projeto);
 
                 if (!$stmt->execute()) {
                     $stmt->close();
-                    return "Erro ao registrar integrante na tabela de relacionamentos.";
+                    return "Erro ao registrar aluno na tabela de relacionamentos.";
                 }
                 $stmt->close();
             } else {
-                return "Algo deu errado ao encontrar integrante no banco.";
+                return "Algo deu errado ao encontrar aluno no banco.";
             }
         }
     }
 
 
-    private function verificaIntegrante($nomeIntegrante)
+    private function verificaAluno($nomeAluno)
     {
         global $conn;
-        $query = "SELECT COUNT(*) FROM integrante WHERE nome = ?";
+        $query = "SELECT COUNT(*) FROM aluno WHERE nome = ?";
         $stmt = $conn->prepare($query);
         if (!$stmt) {
             die("Erro na preparação da consulta: " . $conn->error);
         }
 
-        $stmt->bind_param("s", $nomeIntegrante);
+        $stmt->bind_param("s", $nomeAluno);
         $stmt->execute();
         $stmt->bind_result($count);
         $stmt->fetch();
         $stmt->close();
 
-        return $count > 0; // Verifica se o integrante já existe
+        return $count > 0; // Verifica se o aluno já existe
     }
 
 
-    private function pegaIDIntegrante($nomeIntegrante)
+    private function pegaIDAluno($nomeAluno)
     {
         global $conn;
-        $stmt = $conn->prepare("SELECT id_integrante FROM integrante WHERE nome = ?");
+        $stmt = $conn->prepare("SELECT id_aluno FROM aluno WHERE nome = ?");
         if (!$stmt) {
             die("Erro na preparação da consulta: " . $conn->error);
         }
 
-        $stmt->bind_param("s", $nomeIntegrante);
+        $stmt->bind_param("s", $nomeAluno);
         $stmt->execute();
         $resultado = $stmt->get_result();
 
         if ($resultado->num_rows > 0) {
             $row = $resultado->fetch_assoc();
             $stmt->close();
-            return $row['id_integrante'];
+            return $row['id_aluno'];
         } else {
             $stmt->close();
-            return null; // Se o integrante não for encontrado
+            return null; // Se o aluno não for encontrado
         }
     }
 

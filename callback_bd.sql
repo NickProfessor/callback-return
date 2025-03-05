@@ -243,7 +243,7 @@ CREATE TABLE `projeto` (
   PRIMARY KEY (`id_projeto`),
   KEY `fk_projeto_sala1_idx` (`sala_id_sala`),
   CONSTRAINT `fk_projeto_sala1` FOREIGN KEY (`sala_id_sala`) REFERENCES `sala` (`id_sala`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb3;
+) ENGINE=InnoDB AUTO_INCREMENT=8 DEFAULT CHARSET=utf8mb3;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -354,8 +354,8 @@ CREATE TABLE `tema_has_projeto` (
   KEY `fk_projeto_has_tema_projeto1_idx` (`tema_id_tema`),
   KEY `idx_projeto_tema_id_projeto` (`tema_id_tema`),
   KEY `idx_projeto_tema_id_tema` (`projeto_id_projeto`),
-  CONSTRAINT `fk_projeto_has_tema_projeto1` FOREIGN KEY (`tema_id_tema`) REFERENCES `projeto` (`id_projeto`),
-  CONSTRAINT `fk_projeto_has_tema_tema1` FOREIGN KEY (`projeto_id_projeto`) REFERENCES `tema` (`id_tema`)
+  CONSTRAINT `fk_tema_has_projeto_projeto1` FOREIGN KEY (`projeto_id_projeto`) REFERENCES `projeto` (`id_projeto`),
+  CONSTRAINT `fk_tema_has_projeto_tema1` FOREIGN KEY (`tema_id_tema`) REFERENCES `tema` (`id_tema`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb3;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
@@ -389,7 +389,7 @@ CREATE TABLE `usuario` (
   `data_atualizacao` datetime DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
   PRIMARY KEY (`id_usuario`),
   KEY `idx_sexo` (`sexo`)
-) ENGINE=InnoDB AUTO_INCREMENT=5 DEFAULT CHARSET=utf8mb3;
+) ENGINE=InnoDB AUTO_INCREMENT=10 DEFAULT CHARSET=utf8mb3;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -398,7 +398,7 @@ CREATE TABLE `usuario` (
 
 LOCK TABLES `usuario` WRITE;
 /*!40000 ALTER TABLE `usuario` DISABLE KEYS */;
-INSERT INTO `usuario` VALUES (1,'Administrador Geral','teste@teste','teste','masculino','2006-07-29',NULL,2,1,'2025-02-27 13:04:41','2025-02-27 13:04:41'),(2,'Aluno','aluno@aluno.com','aluno','masculino','2006-07-29',NULL,3,1,'2025-02-27 13:14:32','2025-02-27 13:19:02'),(3,'Usuário comum','user@user','user','masculino','2006-07-29',NULL,1,1,'2025-02-28 14:55:31','2025-02-28 14:55:31'),(4,'Professor','professor@professor','professor','masculino','2006-07-29',NULL,4,1,'2025-02-28 15:04:22','2025-02-28 15:04:22');
+INSERT INTO `usuario` VALUES (1,'Administrador Geral','teste@teste','teste','masculino','2006-07-29',NULL,2,1,'2025-02-27 13:04:41','2025-02-27 13:04:41'),(2,'Aluno','aluno@aluno.com','aluno','masculino','2006-07-29',NULL,3,1,'2025-02-27 13:14:32','2025-02-27 13:19:02'),(3,'Usuário comum','user@user','user','masculino','2006-07-29',NULL,1,1,'2025-02-28 14:55:31','2025-02-28 14:55:31'),(4,'Professor','professor@professor','professor','masculino','2006-07-29',NULL,4,1,'2025-02-28 15:04:22','2025-02-28 15:04:22'),(5,'Yoshida','yoshida@yoshida.com','yoshida','masculino','2006-07-29',NULL,1,1,'2025-03-03 17:23:53','2025-03-03 17:23:53'),(6,'Teste','teste00@teste','teste','masculino','2006-07-29',NULL,1,1,'2025-03-05 19:03:43','2025-03-05 19:03:43'),(7,'Teste','teste00@teste','teste','masculino','2006-07-29',NULL,1,1,'2025-03-05 19:04:46','2025-03-05 19:04:46'),(8,'Teste01','teste01@teste','teste','masculino','2006-07-29',NULL,1,1,'2025-03-05 19:06:17','2025-03-05 19:06:17'),(9,'Teste02','teste02@teste','teste','masculino','2006-07-29',NULL,1,1,'2025-03-05 19:08:12','2025-03-05 19:08:12');
 /*!40000 ALTER TABLE `usuario` ENABLE KEYS */;
 UNLOCK TABLES;
 /*!40103 SET TIME_ZONE=@OLD_TIME_ZONE */;
@@ -411,4 +411,4 @@ UNLOCK TABLES;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2025-02-28 15:07:34
+-- Dump completed on 2025-03-05 20:00:43
