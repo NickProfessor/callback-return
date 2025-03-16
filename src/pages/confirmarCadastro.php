@@ -8,15 +8,11 @@ $email = $_POST['email'];
 $nome = $_POST['nome'];
 $dataNasc = $_POST['dataNasc'];
 $sexo = $_POST['sexo'];
-$fraseSeguranca = $_POST["frase"];
-$fraseConfirmacao = $_POST['confirmacao'];
-// $dataNasc = $_POST['dataNasc'];
-// $sexo = $_POST['sexo'];
+
+$fraseSeguranca = $_POST["frase"] ?? null;
+$fraseConfirmacao = $_POST['confirmacao'] ?? null;
 
 if ($_SERVER["REQUEST_METHOD"] === "POST") {
-    // if (strtotime($dataNasc) > time()) {
-    //     header("Location: ./cadastroUsuario.php?erro=data");
-    // }
 
     $userController = new UserController();
     if (
@@ -35,9 +31,13 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
         $_SESSION['email'] = $email;
         $_SESSION['dataNasc'] = $dataNasc;
         $_SESSION['sexo'] = $sexo;
-        $_SESSION['frase'] = $fraseSeguranca;
-        $_SESSION['confirmacao'] = $fraseConfirmacao;
-        header("Location: cadastrado.php");
+        if ($fraseSeguranca === null) {
+            header("Location: cadastrado.php?cadastro-aluno");
+        } else {
+            $_SESSION['frase'] = $fraseSeguranca;
+            $_SESSION['confirmacao'] = $fraseConfirmacao;
+            header("Location: cadastrado.php");
+        }
     }
 } else {
     header("Location: ../../index.php");
