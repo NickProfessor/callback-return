@@ -7,22 +7,33 @@ $page = "cadastrado";
 
 
 
-if (isset($_SESSION['email'])) {
-    if ($_SESSION['frase'] !== $_SESSION['confirmacao']) {
-        header("Location: ./cadastroUsuario.php?erro=frase");
-        exit();
-    }
+if (SessionManager::isLoggedIn()) {
 
     $email = $_SESSION['email'];
     $nome = $_SESSION['nome'];
     $dataNasc = $_SESSION['dataNasc'];
     $sexo = $_SESSION['sexo'];
-    $fraseSeguranca = $_SESSION["frase"];
+    $fraseSeguranca = $_SESSION["frase"] ?? $dataNasc;
+    $fraseConfirmacao = $_SESSION["confirmacao"] ?? $dataNasc;
+
+    if (isset($_GET['cadastro-aluno']) && $_GET['cadastro-aluno'] == true) {
+        $ra = $_SESSION['ra'];
+        $rm = $_SESSION['rm'];
+        $curso = $_SESSION['curso'];
+    } else {
+
+        if ($fraseSeguranca !== $fraseConfirmacao) {
+            header("Location: ./cadastroUsuario.php?erro=frase");
+            exit();
+        }
 
 
-    if (!isset($email) || !isset($nome) || !isset($dataNasc) || !isset($sexo) || !isset($fraseSeguranca)) {
-        header("Location: ../../index.php?erro=algo-deu-errado");
-        exit();
+
+
+        if (!isset($email) || !isset($nome) || !isset($dataNasc) || !isset($sexo) || !isset($fraseSeguranca)) {
+            header("Location: ../../index.php?erro=algo-deu-errado");
+            exit();
+        }
     }
 
 
@@ -38,9 +49,9 @@ if (isset($_SESSION['email'])) {
     ];
 
     if ($userController->registraUsuario($data)) {
+        // TODO: REGISTRA O ALUNO E VERIFICA SE DEU TUDO CERTO
         $id = $userController->usuarioExiste($data['email']);
         $usuario = $userController->consultaDadosDoUsuario($id);
-        $registrado = true;
         SessionManager::destroy();
         SessionManager::set('usuario', $usuario);
 

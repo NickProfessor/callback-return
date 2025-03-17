@@ -32,7 +32,10 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
         $_SESSION['dataNasc'] = $dataNasc;
         $_SESSION['sexo'] = $sexo;
         if ($fraseSeguranca === null) {
-            header("Location: cadastrado.php?cadastro-aluno");
+            $_SESSION['ra'] = $_POST['ra'];
+            $_SESSION['rm'] = $_POST['rm'];
+            $_SESSION['curso'] = $_POST['curso'];
+            header("Location: cadastrado.php?cadastro-aluno=true");
         } else {
             $_SESSION['frase'] = $fraseSeguranca;
             $_SESSION['confirmacao'] = $fraseConfirmacao;
