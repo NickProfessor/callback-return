@@ -612,9 +612,20 @@
             <input type="number" name="ra" id="ra" class="campo-texto" placeholder="11111" value="11111" required>
         </div>
         <div class="form-group">
-            <label for="ra">Informe o rm do aluno:</label>
-            <input type="number" name="ra" id="ra" class="campo-texto" placeholder="11111" value="11111" required>
+            <label for="rm">Informe o rm do aluno:</label>
+            <input type="number" name="rm" id="rm" class="campo-texto" placeholder="11111" value="11111" required>
         </div>
+
+        <div class="form-group">
+            <label for="serie">Informe a serie do aluno:</label>
+            <input type="number" name="serie" id="serie" class="campo-texto" placeholder="11111" value="3" required>
+        </div>
+
+        <div class="form-group">
+            <label for="turma">Informe a turma do aluno:</label>
+            <input type="text" name="turma" id="turma" class="campo-texto" placeholder="11111" value="B" required>
+        </div>
+
 
         <div class="form-group">
             <label for="cursos">Informe os cursos do projeto</label>

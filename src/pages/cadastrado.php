@@ -1,5 +1,6 @@
 <?php
 require_once "../controllers/UserController.php";
+require_once "../controllers/AlunoController.php";
 require_once "../helpers/SessionManager.php";
 
 $pageTitle = 'Cadastrado';
@@ -19,6 +20,8 @@ if (SessionManager::isLoggedIn()) {
     if (isset($_GET['cadastro-aluno']) && $_GET['cadastro-aluno'] == true) {
         $ra = $_SESSION['ra'];
         $rm = $_SESSION['rm'];
+        $serie = $_SESSION['serie'];
+        $turma = $_SESSION['turma'];
         $curso = $_SESSION['curso'];
     } else {
 
@@ -45,12 +48,29 @@ if (SessionManager::isLoggedIn()) {
         "nome" => $nome,
         "dataNasc" => $dataNasc,
         "sexo" => $sexo,
-        "fraseSeguranca" => $fraseSeguranca
+        "fraseSeguranca" => $fraseSeguranca,
     ];
 
+    if (isset($_GET['cadastro-aluno']) && $_GET['cadastro-aluno'] == true) {
+        $data['tipo_usuario'] = 3;
+    }
+
     if ($userController->registraUsuario($data)) {
-        // TODO: REGISTRA O ALUNO E VERIFICA SE DEU TUDO CERTO
         $id = $userController->usuarioExiste($data['email']);
+        if (isset($_GET['cadastro-aluno']) && $_GET['cadastro-aluno'] == true) {
+            $alunoController = new AlunoController();
+            $data = [
+                "nome" => $nome,
+                "ra" => $ra,
+                "rm" => $rm,
+                "turma" => $turma,
+                "serie" => $serie,
+                "curso" => $curso,
+                "id_usuario" => $id
+            ];
+            $alunoController->registraAluno($data);
+        }
+        // TODO: REGISTRA O ALUNO E VERIFICA SE DEU TUDO CERTO
         $usuario = $userController->consultaDadosDoUsuario($id);
         SessionManager::destroy();
         SessionManager::set('usuario', $usuario);

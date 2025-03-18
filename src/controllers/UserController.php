@@ -24,11 +24,13 @@ class UserController
             $data['dataNasc'],
             $data['sexo'],
             $data['fraseSeguranca'],
+            $data['foto'],
+            $data['tipo_usuario']
         );
 
 
         // Verificar se o usuário já existe
-        if ($this->usuarioExiste($data['nome'], $data['dataNasc'], $data['sexo'])) {
+        if ($this->usuarioExiste($data['email'])) {
             return ['success' => false, 'message' => 'Usuário já cadastrado.'];
         }
 
@@ -53,11 +55,11 @@ class UserController
         return User::consultaDados($this->conn, $id);
     }
 
-    public static function logout()
-    {
-        session_unset();
-        session_destroy();
-        header("Location: ../../index.php?voce-foi-desconectado"); // 🔹 Redireciona para a página de login após logout
-        exit;
-    }
+    // public static function logout()
+    // {
+    //     session_unset();
+    //     session_destroy();
+    //     header("Location: ../../index.php?voce-foi-desconectado"); // 🔹 Redireciona para a página de login após logout
+    //     exit;
+    // }
 }

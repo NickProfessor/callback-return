@@ -34,6 +34,8 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
         if ($fraseSeguranca === null) {
             $_SESSION['ra'] = $_POST['ra'];
             $_SESSION['rm'] = $_POST['rm'];
+            $_SESSION['serie'] = $_POST['serie'];
+            $_SESSION['turma'] = $_POST['turma'] ?? null;
             $_SESSION['curso'] = $_POST['curso'];
             header("Location: cadastrado.php?cadastro-aluno=true");
         } else {
