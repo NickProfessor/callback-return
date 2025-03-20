@@ -1,4 +1,4 @@
-## [1.2.0] - 2025-02-25
+## [2.0] - 2025-03-20
 
 ### Alterado
 
@@ -58,6 +58,7 @@
 - Uma nova classe 'SessionManager' foi criada, isso para armazenar todas as funcionalidades necessárias sobre sessão
 - Como forma de teste, foram criados 3 páginas que só permitem determinado tipo de usuário
 - Foi adicionado um log que registra toda interação com o banco de dados através do sistema
+- Agora o usuário do tipo administrador pode adicionar usuários do tipo aluno. Todo usuário do tipo aluno é registrado na tabela 'aluno'
 
 ### Removido
 

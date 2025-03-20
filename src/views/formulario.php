@@ -418,6 +418,9 @@
     <?php endif; ?>
 
 <?php elseif ($etapa == 7): ?>
+    <!-- REMOVER DEPOIS -->
+    <a href="cadastroAluno.php">cadastrar aluno</a>
+    <!-- REMOVER DEPOIS -->
     <h1 class="titulo-formulario">Registre um projeto</h1>
     <form action="registraProjeto.php" method="POST" class="formulario-padrao">
         <?php if (isset($erro)): ?>
@@ -569,6 +572,127 @@
         <p class="mensagem">Agradecemos a colaboração</p>
         <a href="./createProjects.php" class="botao-padrao">Voltar para cadastrar mais projetos</a>
     </main>
+
+<?php elseif ($etapa == 9): ?>
+    <h1 class="titulo-formulario">Registre alunos</h1>
+    <form action="confirmarCadastro.php" method="POST" class="formulario-padrao">
+
+
+        <div class="form-group">
+            <label for="nome">Informe o nome do aluno:</label>
+            <input type="nome" name="nome" id="nome" class="campo-texto" placeholder="Clóvis da Silva" required>
+        </div>
+        <div class="form-group">
+            <label for="nome">Informe o email do aluno:</label>
+            <input type="email" name="email" id="email" class="campo-texto" placeholder="Clóvis da Silva" required>
+        </div>
+        <div class="form-group">
+            <label for="dataNasc">Informe a data de nascimento do aluno</label>
+            <input type="date" name="dataNasc" id="dataNasc" class="campo-texto" value="2000-01-01" required>
+        </div>
+        <div class="form-group">
+            <p>Informe seu sexo:</p>
+            <div class="radio-formulario">
+                <input type="radio" name="sexo" id="masculino" value="masculino" required>
+                <label for="masculino">Masculino</label>
+            </div>
+            <div class="radio-formulario">
+                <input type="radio" name="sexo" id="feminino" value="feminino" required>
+                <label for="feminino">Feminino</label>
+            </div>
+
+            <div class="radio-formulario">
+                <input type="radio" name="sexo" id="outro" value="outro" checked required>
+                <label for="outro">Prefiro não informar</label>
+            </div>
+        </div>
+
+        <div class="form-group">
+            <label for="ra">Informe o ra do aluno:</label>
+            <input type="number" name="ra" id="ra" class="campo-texto" placeholder="11111" value="11111" required>
+        </div>
+        <div class="form-group">
+            <label for="rm">Informe o rm do aluno:</label>
+            <input type="number" name="rm" id="rm" class="campo-texto" placeholder="11111" value="11111" required>
+        </div>
+
+        <div class="form-group">
+            <label for="serie">Informe a serie do aluno:</label>
+            <input type="number" name="serie" id="serie" class="campo-texto" placeholder="11111" value="3" required>
+        </div>
+
+        <div class="form-group">
+            <label for="turma">Informe a turma do aluno:</label>
+            <input type="text" name="turma" id="turma" class="campo-texto" placeholder="11111" value="B" required>
+        </div>
+
+
+        <div class="form-group">
+            <label for="cursos">Informe os cursos do projeto</label>
+            <?php foreach ($cursos as $id_curso => $curso): ?>
+                <div class="radio-formulario">
+                    <input type="radio" name="curso" id="<?php echo strtolower($curso) ?>" value="<?php echo $id_curso ?>" <?php if ($id_curso == 8)
+                              echo "checked" ?>>
+                        <label for="<?php echo strtolower($curso) ?>"><?php echo $curso ?></label>
+                </div>
+            <?php endforeach; ?>
+        </div>
+
+
+        <div class="checkbox-formulario">
+            <input type="checkbox" name="termos" id="termos" required>
+            <label for="termos">Aceito que o software utilize os dados coletados para fins acadêmicos</label>
+
+        </div>
+        <div class="botoes-formulario">
+            <button type="button" onclick="history.back()">Voltar</button>
+            <button>Continuar <i class="fa-solid fa-arrow-right"></i></button>
+        </div>
+    </form>
+
+
+    <script>
+        const fraseInput = document.querySelector("input[name='frase']");
+        const confirmacaoInput = document.querySelector("input[name='confirmacao']");
+        const formGroup = confirmacaoInput.parentNode;
+
+        function validarFrases() {
+            // Remove a mensagem de erro caso exista
+            let erroExistente = document.querySelector(".erro-frase");
+            if (erroExistente) {
+                erroExistente.remove();
+            }
+
+            // Valida se as frases de segurança coincidem
+            if (fraseInput.value !== confirmacaoInput.value) {
+                const erroData = document.createElement("p");
+                erroData.classList.add("erro-frase");
+                erroData.style.color = "red";
+                erroData.textContent = "As frases de segurança não coincidem!";
+
+                // Insere o erro logo após o input de confirmação
+                formGroup.appendChild(erroData);
+            }
+        }
+
+        // Adiciona ouvintes de eventos para ambos os inputs
+        fraseInput.addEventListener("input", validarFrases);
+        confirmacaoInput.addEventListener("input", validarFrases);
+
+        const form = document.querySelector("form");
+        form.addEventListener("submit", validarFrase);
+
+        function validarFrase(e) {
+            var frase = document.getElementsByName('frase')[0].value;
+            var confirmacaoFrase = document.getElementsByName('confirmacao')[0].value;
+
+            if (frase !== confirmacaoFrase) {
+                alert("As frases de segurança não coincidem!");
+                e.preventDefault(); // Impede o envio do formulário
+            }
+        }
+    </script>
+
 
 
 <?php endif; ?>
