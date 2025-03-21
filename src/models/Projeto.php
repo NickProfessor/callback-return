@@ -8,6 +8,7 @@ class Projeto
 {
     private $nome;
     private $local;
+    private $resumo;
     private $descricao;
     private $temas = [];
     private $cursos = [];
@@ -31,6 +32,7 @@ class Projeto
         $sql = "SELECT 
             p.id_projeto,
             p.nome AS projeto_nome,
+            p.resumo AS projeto_resumo,
             p.descricao AS projeto_descricao,
             s.numero AS sala_numero,
             GROUP_CONCAT(DISTINCT c.nome) AS cursos,

@@ -6,7 +6,7 @@
             echo "$tema. ";
         } ?>
     </p>
-    <p class="projeto-descricao">Descrição: <?php echo htmlspecialchars($projetoDescricao); ?></p>
+    <p class="projeto-descricao">Resumo: <?php echo htmlspecialchars($projetoResumo); ?></p>
     <div class="projeto-tags">
         <?php if ($popularJovens): ?>
             <img src="../assets/images/icone-jovem.svg" alt="" class="tag-jovem tag"

@@ -11,7 +11,7 @@ if (isset($_GET["local"]) && $_GET["local"] != "") {
     include "../views/header.php";
 
     $projetoController = new Projeto();
-    $listaDeProjetos = $projetoController->obterProjetosDaSala($sala);
+    $listaDeProjetos = $projetoController->carregaProjetos();
     ?>
     <header>
         <h1 class="titulo-header">CallbackReturn</h1>
