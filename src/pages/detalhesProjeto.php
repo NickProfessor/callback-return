@@ -18,7 +18,6 @@ if (isset($_GET["id"]) && $_GET["id"] != "") {
         $projeto = Projeto::obterDetalhesDoProjeto($projetoId);
 
         $projetoNome = $projeto['projeto_nome'];
-        $projetoSala = $projeto['sala_numero'];
         $projetoCursos = $projeto['cursos'];
         $projetoDescricao = $projeto['projeto_descricao'];
         $projetoAlunos = explode(',', $projeto['alunos']);
@@ -57,3 +56,14 @@ if (isset($_GET["id"]) && $_GET["id"] != "") {
 }
 
 include "../views/footer.php";
+?>
+
+<script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
+<script>
+    documentMarked = document.getElementById('projeto-descricao').textContent;
+    document.getElementById('projeto-descricao').innerHTML =
+        marked.parse(documentMarked);
+</script>
+</body>
+
+</html>

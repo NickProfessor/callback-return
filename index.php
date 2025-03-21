@@ -4,6 +4,9 @@ require_once "./src/controllers/UserController.php";
 require_once "./src/models/Projeto.php";
 
 $usuario = SessionManager::get('usuario');
+
+$projetoController = new Projeto();
+$listaDeProjetos = $projetoController->carregaProjetos();
 ?>
 
 <!DOCTYPE html>
@@ -15,6 +18,9 @@ $usuario = SessionManager::get('usuario');
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link rel="stylesheet" href="./src/assets/css/style.css">
     <link rel="stylesheet" href="./src/assets/css/pages/paginaPrincipal.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.6.0/css/all.min.css"
+        integrity="sha512-Kc323vGBEqzTmouAECnVceyQqyqdsSiqLQISBL29aUW4U/M7pSPA/gEUZQqv1cwx4OnYxTxve5UMg5GT6L4JJg=="
+        crossorigin="anonymous" referrerpolicy="no-referrer" />
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.6.0/css/all.min.css"
         integrity="sha512-Kc323vGBEqzTmouAECnVceyQqyqdsSiqLQISBL29aUW4U/M7pSPA/gEUZQqv1cwx4OnYxTxve5UMg5GT6L4JJg=="
         crossorigin="anonymous" referrerpolicy="no-referrer" />
@@ -53,44 +59,42 @@ $usuario = SessionManager::get('usuario');
                 <a href="<?php echo $linkURL; ?>"><?php echo $linkTexto; ?></a>
             <?php endif; ?>
 
-            <p>Salas</p>
         </header>
     <?php else: ?>
         <header>
             <h1 class="titulo-header">Bem-vindo</h1>
             <a href="./src/pages/login.php" class="link-header">Entre ou crie sua conta!</a>
-            <p>Salas</p>
         </header>
     <?php endif; ?>
 
     <main>
-
         <?php
-        $projeto = new Projeto();
-        $listaDeSalas = $projeto->obterSalasComProjetos();
 
-        if (empty($listaDeSalas)) {
-            echo "Nenhuma sala com projetos encontrados.";
+        if (empty($listaDeProjetos)) {
+            echo "Nenhum projeto encontrado para a exibir.";
+            echo "</main>";
         } else {
-            foreach ($listaDeSalas as $sala) {
-                if (!empty($sala['lista_projetos'])) {
-                    $salaNumero = $sala['sala_numero'];
-                    $listaProjetosString = $sala['lista_projetos'];
-                    $totalAvaliacoes = $sala['total_avaliacoes'];
-                    $mediaNotas = $sala['media_notas'];
 
+            foreach ($listaDeProjetos as $projeto) {
 
-                    $listaProjetosArray = explode(',', $listaProjetosString);
+                $projetoId = $projeto['id_projeto'];
+                $projetoNome = $projeto['projeto_nome'];
+                $projetoCursos = $projeto['cursos'];
+                $projetoResumo = $projeto['projeto_resumo'];
+                $projetoAlunos = $projeto['alunos'];
+                $projetoTemas = explode(',', $projeto['temas']);
+                $projetoAvaliacoes = $projeto['total_avaliacoes'];
+                $projetoMediaAvaliacoes = $projeto['media_notas'];
 
+                $popularAdultos = isset($projeto['popular_adultos']) && $projeto['popular_adultos'];
+                $popularJovens = isset($projeto['popular_jovens']) && $projeto['popular_jovens'];
+                $popularIdosos = isset($projeto['popular_idosos']) && $projeto['popular_idosos'];
+                $popularMulheres = isset($projeto['popular_mulheres']) && $projeto['popular_mulheres'];
+                $popularHomens = isset($projeto['popular_homens']) && $projeto['popular_homens'];
 
-
-                    include __DIR__ . "/src/views/cardSala.php";
-                }
+                include "src/views/cardProjeto.php";
             }
+            echo "</main>";
         }
-        ?>
-    </main>
-    <?php
 
-    include "./src/views/footer.php";
-    ?>
+        include "src/views/footer.php";

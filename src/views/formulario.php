@@ -442,16 +442,6 @@
             <label for="nome">Informe o nome do projeto:</label>
             <input type="text" name="nome" id="nome" class="campo-texto" placeholder="Projeto de marketing" required>
         </div>
-        <div class="form-group">
-            <label for="local">Informe a sala/local do projeto</label>
-            <select name="local" id="local" class="campo-texto" required>
-                <option value="">Selecione:</option>
-                <option value="outro" id="outro">Outro</option>
-                <?php foreach ($locais as $local): ?>
-                    <option value="<?php echo $local ?>"><?php echo $local ?></option>
-                <?php endforeach; ?>
-            </select>
-        </div>
 
         <div class="form-group">
             <label for="cursos">Informe os cursos do projeto</label>

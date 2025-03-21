@@ -37,7 +37,7 @@ CREATE TABLE `aluno` (
   PRIMARY KEY (`id_aluno`),
   KEY `fk_usuario` (`id_usuario`),
   CONSTRAINT `fk_usuario` FOREIGN KEY (`id_usuario`) REFERENCES `usuario` (`id_usuario`)
-) ENGINE=InnoDB AUTO_INCREMENT=2 DEFAULT CHARSET=utf8mb3;
+) ENGINE=InnoDB AUTO_INCREMENT=4 DEFAULT CHARSET=utf8mb3;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -46,7 +46,7 @@ CREATE TABLE `aluno` (
 
 LOCK TABLES `aluno` WRITE;
 /*!40000 ALTER TABLE `aluno` DISABLE KEYS */;
-INSERT INTO `aluno` VALUES (1,'Aluno Registrado','11111','22222','B','3','Marketing',1,2);
+INSERT INTO `aluno` VALUES (1,'Aluno Registrado','11111','22222','B','3','Marketing',1,2),(2,'Aluno05','11111','11111','B','3','8',1,16),(3,'Aluno08','11111','11111','B','3','8',1,19);
 /*!40000 ALTER TABLE `aluno` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -76,6 +76,7 @@ CREATE TABLE `aluno_has_projeto` (
 
 LOCK TABLES `aluno_has_projeto` WRITE;
 /*!40000 ALTER TABLE `aluno_has_projeto` DISABLE KEYS */;
+INSERT INTO `aluno_has_projeto` VALUES (1,10,'2025-03-20 15:37:55','2025-03-20 15:37:55'),(2,13,'2025-03-21 11:01:46','2025-03-21 11:01:46'),(2,14,'2025-03-21 11:46:42','2025-03-21 11:46:42'),(3,13,'2025-03-21 11:01:46','2025-03-21 11:01:46'),(3,14,'2025-03-21 11:46:42','2025-03-21 11:46:42');
 /*!40000 ALTER TABLE `aluno_has_projeto` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -160,6 +161,7 @@ CREATE TABLE `curso_has_projeto` (
 
 LOCK TABLES `curso_has_projeto` WRITE;
 /*!40000 ALTER TABLE `curso_has_projeto` DISABLE KEYS */;
+INSERT INTO `curso_has_projeto` VALUES (1,10),(1,13),(1,14);
 /*!40000 ALTER TABLE `curso_has_projeto` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -235,15 +237,12 @@ CREATE TABLE `projeto` (
   `id_projeto` int NOT NULL AUTO_INCREMENT,
   `nome` varchar(100) NOT NULL,
   `resumo` varchar(200) DEFAULT NULL,
-  `descricao` varchar(2000) NOT NULL,
-  `sala_id_sala` int NOT NULL,
+  `descricao` text,
   `material_apoio` varchar(255) DEFAULT NULL,
   `data_registro` datetime DEFAULT CURRENT_TIMESTAMP,
   `data_atualizacao` datetime DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
-  PRIMARY KEY (`id_projeto`),
-  KEY `fk_projeto_sala1_idx` (`sala_id_sala`),
-  CONSTRAINT `fk_projeto_sala1` FOREIGN KEY (`sala_id_sala`) REFERENCES `sala` (`id_sala`)
-) ENGINE=InnoDB AUTO_INCREMENT=8 DEFAULT CHARSET=utf8mb3;
+  PRIMARY KEY (`id_projeto`)
+) ENGINE=InnoDB AUTO_INCREMENT=15 DEFAULT CHARSET=utf8mb3;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -252,6 +251,7 @@ CREATE TABLE `projeto` (
 
 LOCK TABLES `projeto` WRITE;
 /*!40000 ALTER TABLE `projeto` DISABLE KEYS */;
+INSERT INTO `projeto` VALUES (10,'Projeto teste01','Resumos e tal, muito bom o projeto','Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nullam placerat lectus ut sem pretium consequat. In eu pellentesque urna, in blandit tortor. Praesent nisi ligula, porta ac hendrerit nec, vestibulum at risus. Pellentesque in tincidunt velit. Sed imperdiet ante quis magna pharetra eleifend. Integer quis arcu quis orci tincidunt scelerisque. Mauris gravida lectus vel justo hendrerit, ac scelerisque mauris tincidunt. Quisque aliquam, risus sodales lacinia finibus, eros diam posuere diam, commodo semper ipsum massa sed velit. Nam ligula tellus, vulputate in nisl vel, pharetra fringilla neque. Aenean sit amet urna quis sem viverra vehicula.\n\nFusce auctor felis non augue congue convallis. Sed tempor pretium orci at blandit. Donec vestibulum dui dui. Vestibulum nec mattis est. Ut ultricies nunc ac quam facilisis, eget facilisis libero auctor. Sed lacinia condimentum tellus vitae finibus. Nunc elementum mollis sem, non consectetur ante aliquam sed. Donec sit amet eros et quam iaculis iaculis et id diam. In venenatis luctus ex, id tempor eros iaculis vel. Vivamus iaculis ipsum a elementum mattis. Cras tincidunt nisl sodales iaculis ornare. Nulla facilisi. Fusce convallis nisl leo, eget consequat elit ultricies eget. Suspendisse potenti. In convallis eros sapien, bibendum tincidunt libero bibendum et. Nullam non iaculis ante.\n\nNunc sollicitudin, lectus id fermentum aliquet, libero lacus convallis libero, id imperdiet tortor metus eu justo. Cras blandit vehicula nunc, eu lobortis ipsum tincidunt vitae. Donec auctor volutpat cursus. Nullam dapibus magna in metus tristique tincidunt. Cras nec arcu eget sapien cursus placerat non vitae risus. Aliquam nec nisl quis nulla auctor porta. In hac habitasse platea dictumst. In lacinia interdum semper. In hac habitasse platea dictumst. Proin sed dictum tellus, eget lobortis dolor. Vestibulum venenatis facilisis leo, sit amet faucibus nunc sollicitudin id. Nunc viverra interdum felis id luctus. Morbi gravida mi eu velit faucibus, eget aliquet ex ultrices.\n\nNunc urna massa, iaculis vel scelerisque nec, rutrum non eros. Ut fermentum, magna eget gravida rutrum, massa felis congue tellus, eu egestas dolor sapien ut magna. Vivamus sit amet ornare tortor, sed finibus tellus. Nulla et tortor rutrum, interdum orci at, viverra augue. Duis scelerisque dui eu risus gravida, ut porttitor purus volutpat. Cras ornare lectus ut eros scelerisque efficitur non sit amet tellus. Ut purus nisl, accumsan a finibus eu, tempus in purus. Curabitur tincidunt nunc sit amet ornare eleifend. Integer eget viverra lacus. Nulla facilisi. Quisque id sollicitudin libero, ut tempor ligula. Fusce nec nisl nunc. Aenean quis feugiat quam. Ut convallis congue tempor.\n\nDonec id elit risus. Vivamus lobortis neque ultrices, faucibus mauris sit amet, bibendum dui. Praesent imperdiet turpis non ipsum luctus dictum. Maecenas porta mauris turpis, eget mollis neque luctus nec. Sed venenatis libero a imperdiet convallis. Nulla vehicula risus eget enim imperdiet lobortis. Aenean vitae lorem ac risus tristique dictum sed at orci. Vestibulum facilisis consequat metus sed congue.','/../uploads/teste.pdf','2025-03-20 15:34:31','2025-03-20 15:34:31'),(13,'Projeto teste02','Resumos e muito mais, incrível','Lorem ipsum dolor sit amet, consectetur adipiscing elit. Vivamus viverra purus sit amet placerat cursus. Aenean eu eros ex. Nunc auctor nunc sem, id commodo justo iaculis ut. Morbi ut eros eu dolor egestas fermentum. Cras velit erat, venenatis id pretium a, varius at massa. In hac habitasse platea dictumst. Aenean lacus sem, dignissim sit amet est consectetur, viverra porttitor metus. Donec quis ullamcorper erat.\n\nSed nec dignissim lacus. Nullam leo mi, elementum nec enim sed, fringilla dignissim dui. Cras pharetra, dui id tincidunt auctor, tellus sapien ultrices mauris, egestas porta turpis nisi sed nulla. Aenean eu risus consequat, malesuada magna id, vulputate erat. Nullam sed dolor accumsan, varius est ut, porttitor diam. Nullam venenatis urna sed sem mollis, at maximus leo accumsan. Pellentesque ex ante, ullamcorper vel eleifend hendrerit, rutrum in nisi. Ut luctus vel quam ut aliquam. Vivamus sed dui aliquam, pretium ex quis, sollicitudin lacus. Integer eu elit sagittis, sollicitudin massa vitae, dictum sem. Vivamus egestas libero elit, non mollis ipsum ornare nec. Sed turpis tortor, posuere sit amet ligula eget, fringilla lobortis elit. Donec tempus at quam sed gravida. Nam bibendum tortor a eros luctus, sit amet iaculis nisl tincidunt.\n\nIn hac habitasse platea dictumst. Morbi interdum, nisi non lobortis condimentum, enim sapien luctus arcu, et semper ex arcu non lacus. Curabitur porttitor urna ligula, dictum accumsan leo molestie nec. Etiam imperdiet luctus turpis, nec tristique lacus feugiat id. Vivamus porttitor blandit lectus id auctor. Donec eu vestibulum nulla, in lobortis nisi. Aliquam erat volutpat.\n\nFusce sodales, lectus quis congue hendrerit, tortor nisl pulvinar turpis, vitae sollicitudin nisl est nec justo. Suspendisse malesuada erat sit amet lacus fringilla elementum. Morbi feugiat dapibus enim eget rhoncus. Aenean non orci eget odio mollis suscipit quis non diam. Aliquam venenatis lectus sem, at eleifend nisl ultrices vel. Pellentesque nunc velit, euismod eget purus a, sagittis fermentum neque. Mauris velit metus, porta sed euismod vel, egestas placerat metus. Morbi venenatis sem ut velit lacinia euismod.\n\nInteger rhoncus mauris turpis, sit amet feugiat urna scelerisque ut. Aenean ac justo molestie purus interdum mollis sit amet at magna. Donec nec leo mauris. Curabitur posuere dui nibh, nec placerat enim porttitor ac. Phasellus egestas elit sit amet dui tincidunt molestie. Mauris nec est ante. Aenean ac mauris non dolor ornare dictum.','/../uploads/teste2.pdf','2025-03-21 11:00:46','2025-03-21 11:00:46'),(14,'Projeto teste03','Resumos e muito mais mais, incrível','# Título Principal\n\nEste é um parágrafo de **texto em negrito** e *texto em itálico*.\n\n## Subtítulo\n\n- Lista de itens:\n  - Item 1\n  - Item 2\n  - Item 3\n\n### Outro subtítulo\n\n1. Item ordenado 1\n2. Item ordenado 2\n3. Item ordenado 3\n\n**Links e imagens**:\n\n- [Link para o Google](https://www.google.com)\n- ![Imagem exemplo](https://via.placeholder.com/150)\n\n> **Citação**: \"Isso é uma citação em bloco.\"\n\nCódigo:\n\n```php\n<?php\n  echo \"Olá, Mundo!\";\n?>\n','/../uploads/teste3.pdf','2025-03-21 11:29:34','2025-03-21 11:29:34');
 /*!40000 ALTER TABLE `projeto` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -287,30 +287,6 @@ CREATE TABLE `resposta` (
 LOCK TABLES `resposta` WRITE;
 /*!40000 ALTER TABLE `resposta` DISABLE KEYS */;
 /*!40000 ALTER TABLE `resposta` ENABLE KEYS */;
-UNLOCK TABLES;
-
---
--- Table structure for table `sala`
---
-
-DROP TABLE IF EXISTS `sala`;
-/*!40101 SET @saved_cs_client     = @@character_set_client */;
-/*!50503 SET character_set_client = utf8mb4 */;
-CREATE TABLE `sala` (
-  `id_sala` int NOT NULL AUTO_INCREMENT,
-  `numero` varchar(10) NOT NULL,
-  PRIMARY KEY (`id_sala`)
-) ENGINE=InnoDB AUTO_INCREMENT=35 DEFAULT CHARSET=utf8mb3;
-/*!40101 SET character_set_client = @saved_cs_client */;
-
---
--- Dumping data for table `sala`
---
-
-LOCK TABLES `sala` WRITE;
-/*!40000 ALTER TABLE `sala` DISABLE KEYS */;
-INSERT INTO `sala` VALUES (1,'0'),(2,'1'),(3,'2'),(4,'3'),(5,'4'),(6,'5'),(7,'6'),(8,'7'),(9,'8'),(10,'9'),(11,'10'),(12,'11'),(13,'12'),(14,'13'),(15,'14'),(16,'15'),(17,'16'),(18,'17'),(19,'18'),(20,'19'),(21,'20'),(22,'21'),(23,'22'),(24,'23'),(25,'24'),(26,'25'),(27,'26'),(28,'27'),(29,'28'),(30,'29'),(31,'30'),(32,'outro'),(33,'Quadra'),(34,'RUA');
-/*!40000 ALTER TABLE `sala` ENABLE KEYS */;
 UNLOCK TABLES;
 
 --
@@ -365,6 +341,7 @@ CREATE TABLE `tema_has_projeto` (
 
 LOCK TABLES `tema_has_projeto` WRITE;
 /*!40000 ALTER TABLE `tema_has_projeto` DISABLE KEYS */;
+INSERT INTO `tema_has_projeto` VALUES (1,10,'2025-03-20 15:36:22','2025-03-20 15:36:22'),(1,13,'2025-03-21 11:01:20','2025-03-21 11:01:20'),(1,14,'2025-03-21 11:46:31','2025-03-21 11:46:31'),(2,10,'2025-03-20 15:36:22','2025-03-20 15:36:22'),(2,13,'2025-03-21 11:01:20','2025-03-21 11:01:20'),(2,14,'2025-03-21 11:46:31','2025-03-21 11:46:31');
 /*!40000 ALTER TABLE `tema_has_projeto` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -389,7 +366,7 @@ CREATE TABLE `usuario` (
   `data_atualizacao` datetime DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
   PRIMARY KEY (`id_usuario`),
   KEY `idx_sexo` (`sexo`)
-) ENGINE=InnoDB AUTO_INCREMENT=10 DEFAULT CHARSET=utf8mb3;
+) ENGINE=InnoDB AUTO_INCREMENT=20 DEFAULT CHARSET=utf8mb3;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -398,7 +375,7 @@ CREATE TABLE `usuario` (
 
 LOCK TABLES `usuario` WRITE;
 /*!40000 ALTER TABLE `usuario` DISABLE KEYS */;
-INSERT INTO `usuario` VALUES (1,'Administrador Geral','teste@teste','teste','masculino','2006-07-29',NULL,2,1,'2025-02-27 13:04:41','2025-02-27 13:04:41'),(2,'Aluno','aluno@aluno.com','aluno','masculino','2006-07-29',NULL,3,1,'2025-02-27 13:14:32','2025-02-27 13:19:02'),(3,'Usuário comum','user@user','user','masculino','2006-07-29',NULL,1,1,'2025-02-28 14:55:31','2025-02-28 14:55:31'),(4,'Professor','professor@professor','professor','masculino','2006-07-29',NULL,4,1,'2025-02-28 15:04:22','2025-02-28 15:04:22'),(5,'Yoshida','yoshida@yoshida.com','yoshida','masculino','2006-07-29',NULL,1,1,'2025-03-03 17:23:53','2025-03-03 17:23:53'),(6,'Teste','teste00@teste','teste','masculino','2006-07-29',NULL,1,1,'2025-03-05 19:03:43','2025-03-05 19:03:43'),(7,'Teste','teste00@teste','teste','masculino','2006-07-29',NULL,1,1,'2025-03-05 19:04:46','2025-03-05 19:04:46'),(8,'Teste01','teste01@teste','teste','masculino','2006-07-29',NULL,1,1,'2025-03-05 19:06:17','2025-03-05 19:06:17'),(9,'Teste02','teste02@teste','teste','masculino','2006-07-29',NULL,1,1,'2025-03-05 19:08:12','2025-03-05 19:08:12');
+INSERT INTO `usuario` VALUES (1,'Administrador Geral','teste@teste','teste','masculino','2006-07-29',NULL,2,1,'2025-02-27 13:04:41','2025-02-27 13:04:41'),(2,'Aluno','aluno@aluno.com','aluno','masculino','2006-07-29',NULL,3,1,'2025-02-27 13:14:32','2025-02-27 13:19:02'),(3,'Usuário comum','user@user','user','masculino','2006-07-29',NULL,1,1,'2025-02-28 14:55:31','2025-02-28 14:55:31'),(4,'Professor','professor@professor','professor','masculino','2006-07-29',NULL,4,1,'2025-02-28 15:04:22','2025-02-28 15:04:22'),(5,'Yoshida','yoshida@yoshida.com','yoshida','masculino','2006-07-29',NULL,1,1,'2025-03-03 17:23:53','2025-03-03 17:23:53'),(6,'Teste','teste00@teste','teste','masculino','2006-07-29',NULL,1,1,'2025-03-05 19:03:43','2025-03-05 19:03:43'),(7,'Teste','teste00@teste','teste','masculino','2006-07-29',NULL,1,1,'2025-03-05 19:04:46','2025-03-05 19:04:46'),(8,'Teste01','teste01@teste','teste','masculino','2006-07-29',NULL,1,1,'2025-03-05 19:06:17','2025-03-05 19:06:17'),(9,'Teste02','teste02@teste','teste','masculino','2006-07-29',NULL,1,1,'2025-03-05 19:08:12','2025-03-05 19:08:12'),(10,'Teste03','teste03@teste','teste','masculino','2006-07-29',NULL,1,1,'2025-03-06 13:49:00','2025-03-06 13:49:00'),(11,'Teste04','teste04@teste','teste','masculino','2006-07-29',NULL,1,1,'2025-03-15 22:33:11','2025-03-15 22:33:11'),(12,'Joan do Nordeste','joan@joan','joan','masculino','2005-07-15',NULL,1,1,'2025-03-17 01:45:36','2025-03-17 01:45:36'),(13,'Aluno02','aluno02@aluno','2000-01-01','outro','2000-01-01',NULL,1,1,'2025-03-18 14:32:30','2025-03-18 14:32:30'),(14,'Aluno03','aluno03@aluno','2000-01-01','outro','2000-01-01',NULL,1,1,'2025-03-18 14:34:33','2025-03-18 14:34:33'),(15,'Aluno04','aluno04@aluno','2000-01-01','outro','2000-01-01',NULL,1,1,'2025-03-18 14:39:58','2025-03-18 14:39:58'),(16,'Aluno05','aluno05@aluno','2000-01-01','outro','2000-01-01',NULL,1,1,'2025-03-18 14:40:54','2025-03-18 14:40:54'),(17,'Aluno06','aluno06@aluno','2000-01-01','outro','2000-01-01',NULL,3,1,'2025-03-18 14:50:40','2025-03-18 14:50:40'),(18,'Aluno07','aluno07@aluno','2000-01-01','outro','2000-01-01',NULL,3,1,'2025-03-18 14:53:05','2025-03-18 14:53:05'),(19,'Aluno08','aluno08@aluno','2000-01-01','outro','2000-01-01',NULL,3,1,'2025-03-18 15:02:55','2025-03-18 15:02:55');
 /*!40000 ALTER TABLE `usuario` ENABLE KEYS */;
 UNLOCK TABLES;
 /*!40103 SET TIME_ZONE=@OLD_TIME_ZONE */;
@@ -411,4 +388,4 @@ UNLOCK TABLES;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2025-03-05 20:00:43
+-- Dump completed on 2025-03-21 13:14:36

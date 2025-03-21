@@ -8,12 +8,12 @@ class Projeto
 {
     private $nome;
     private $local;
+    private $resumo;
     private $descricao;
     private $temas = [];
     private $cursos = [];
     private $alunos = [];
     private $listaDeProjetos = [];
-    private $listaDeSalas = [];
 
     public function __construct($nome = null, $local = null, $descricao = null, $temas = null, $cursos = null, $alunos = null)
     {
@@ -31,8 +31,8 @@ class Projeto
         $sql = "SELECT 
             p.id_projeto,
             p.nome AS projeto_nome,
+            p.resumo AS projeto_resumo,
             p.descricao AS projeto_descricao,
-            s.numero AS sala_numero,
             GROUP_CONCAT(DISTINCT c.nome) AS cursos,
             GROUP_CONCAT(DISTINCT i.nome) AS alunos,
             GROUP_CONCAT(DISTINCT t.nome) AS temas,
@@ -57,7 +57,6 @@ class Projeto
 
         FROM 
             projeto p
-            LEFT JOIN sala s ON p.sala_id_sala = s.id_sala
             LEFT JOIN curso_has_projeto chp ON p.id_projeto = chp.projeto_id_projeto
             LEFT JOIN curso c ON chp.curso_id_curso = c.id_curso
             LEFT JOIN aluno_has_projeto ihp ON p.id_projeto = ihp.id_projeto
@@ -92,7 +91,7 @@ class Projeto
             ) a ON p.id_projeto = a.id_projeto
 
         GROUP BY 
-            p.id_projeto, p.nome, p.descricao, s.numero;
+            p.id_projeto, p.nome, p.descricao;
         ";
         $result = $conn->query($sql);
 
@@ -119,62 +118,14 @@ class Projeto
         return $this->carregaProjetos();
     }
 
-    private function carregaSalasComProjetos()
-    {
-        global $conn;
-        $sql = "SELECT 
-            s.numero AS sala_numero,
-            GROUP_CONCAT(DISTINCT p.nome ORDER BY p.nome ASC) AS lista_projetos,
-            COUNT(p.id_projeto) AS total_projetos,
-            SUM(COALESCE(a.total_avaliacoes, 0)) AS total_avaliacoes,
-            AVG(COALESCE(a.media_notas, 0)) AS media_notas
-        FROM 
-            sala s
-            LEFT JOIN projeto p ON s.id_sala = p.sala_id_sala
-            LEFT JOIN (
-                SELECT 
-                    a.id_projeto,
-                    COUNT(a.id_avaliacao) AS total_avaliacoes,
-                    AVG(a.nota) AS media_notas
-                FROM 
-                    avaliacao a
-                GROUP BY a.id_projeto
-            ) a ON p.id_projeto = a.id_projeto
-        WHERE a.id_projeto IS NOT NULL  -- Garante que apenas projetos com avaliações são considerados
-        GROUP BY s.numero;";
-        $result = $conn->query($sql);
-
-        if ($result) {
-            $this->listaDeSalas = $result->fetch_all(MYSQLI_ASSOC);
-        } else {
-            die("Algo deu errado na consulta das salas com projetos");
-        }
-    }
 
 
 
 
-    public function obterSalasComProjetos()
-    {
-        if (empty($this->listaDeSalas)) {
-            $this->carregaSalasComProjetos();
-        }
 
-        return $this->listaDeSalas;
-    }
 
-    public function obterProjetosDaSala($sala)
-    {
-        $projetos = $this->carregaProjetos();
-        $projetosDaSala = [];
-        foreach ($projetos as $projeto) {
-            if ($projeto['sala_numero'] == $sala) {
-                $projetosDaSala[] = $projeto;
-            }
-        }
 
-        return $projetosDaSala;
-    }
+
 
     public static function obterProjetoPeloId($id)
     {
@@ -208,7 +159,6 @@ class Projeto
             p.id_projeto,
             p.nome AS projeto_nome,
             p.descricao AS projeto_descricao,
-            s.numero AS sala_numero,
             GROUP_CONCAT(DISTINCT c.nome) AS cursos,
             GROUP_CONCAT(DISTINCT i.nome) AS alunos,
             GROUP_CONCAT(DISTINCT t.nome) AS temas,
@@ -235,7 +185,6 @@ class Projeto
 
         FROM 
             projeto p
-            LEFT JOIN sala s ON p.sala_id_sala = s.id_sala
             LEFT JOIN curso_has_projeto chp ON p.id_projeto = chp.projeto_id_projeto
             LEFT JOIN curso c ON chp.curso_id_curso = c.id_curso
             LEFT JOIN aluno_has_projeto ihp ON p.id_projeto = ihp.id_projeto
@@ -275,7 +224,7 @@ class Projeto
             p.id_projeto = ? 
 
         GROUP BY 
-            p.id_projeto, p.nome, p.descricao, s.numero;
+            p.id_projeto, p.nome, p.descricao;
 
 
         ";
@@ -316,7 +265,6 @@ class Projeto
         try {
             if (!$this->projetoJaExiste()) {
 
-                $this->registraSalaDoProjeto(); // Certifique-se de que este método lance exceções
                 $projetoId = $this->criaProjeto();
 
                 if (!$projetoId) {
@@ -342,41 +290,6 @@ class Projeto
         }
     }
 
-
-
-
-    //insere os dados na tabela de relacionamentos aluno_has_projeto
-
-    private function verificarSala()
-    {
-        global $conn;
-        $query = "SELECT COUNT(*) FROM sala WHERE numero = ?";
-        $stmt = $conn->prepare($query);
-        $stmt->bind_param("s", $this->local);
-        $stmt->execute();
-        $stmt->bind_result($count);
-        $stmt->fetch();
-        $stmt->close();
-
-        // Verifica se a sala já existe
-        return $count > 0;
-    }
-
-    private function registraSalaDoProjeto()
-    {
-        global $conn;
-        if (!$this->verificarSala()) {
-            $query = "INSERT INTO sala (numero) VALUES (?)";
-            $stmt = $conn->prepare($query);
-            $stmt->bind_param("s", $this->local);
-
-            if (!$stmt->execute()) {
-                $stmt->close();
-                Logger::log("Erro ao criar a sala: " . $stmt->error, "ERROR");
-            }
-            $stmt->close();
-        }
-    }
 
     private function registraCursosDoProjeto($idProjeto)
     {
@@ -425,16 +338,15 @@ class Projeto
     {
         $nomeDoProjeto = $this->nome;
         $descricaoDoProjeto = $this->descricao;
-        $salaId = $this->pegaIDSala();
 
         global $conn;
 
-        $stmt = $conn->prepare("INSERT INTO projeto (nome, descricao, sala_id_sala) VALUES (?, ?, ?)");
+        $stmt = $conn->prepare("INSERT INTO projeto (nome, descricao) VALUES (?, ?)");
         if (!$stmt) {
             return false;
         }
 
-        $stmt->bind_param("ssi", $nomeDoProjeto, $descricaoDoProjeto, $salaId);
+        $stmt->bind_param("ss", $nomeDoProjeto, $descricaoDoProjeto);
 
         if ($stmt->execute()) {
             $insertId = $conn->insert_id; // Retorna o ID do projeto inserido
@@ -447,27 +359,7 @@ class Projeto
     }
 
 
-    private function pegaIDSala()
-    {
-        global $conn;
-        $stmt = $conn->prepare("SELECT id_sala FROM sala WHERE numero = ?");
-        if (!$stmt) {
-            die("Erro na preparação da consulta: " . $conn->error);
-        }
 
-        $stmt->bind_param("s", $this->local);
-        $stmt->execute();
-        $resultado = $stmt->get_result();
-
-        if ($resultado->num_rows > 0) {
-            $row = $resultado->fetch_assoc();
-            $stmt->close();
-            return $row['id_sala'];
-        } else {
-            $stmt->close();
-            return null; // Se a sala não for encontrada
-        }
-    }
 
 
     private function registraAlunosDoProjeto($id_projeto)
@@ -643,28 +535,6 @@ class Projeto
         }
     }
 
-    public static function buscaSalasDoBanco()
-    {
-        global $conn;
-        $sql = "SELECT numero FROM sala;";
-        $stmt = $conn->prepare($sql);
-        if (!$stmt) {
-            die("Algo de errado aconteceu na preparação da consulta de salas: " . $conn->error);
-        }
-
-        if ($stmt->execute()) {
-            $resultado = $stmt->get_result();
-            $listaDeSalas = []; // Array para armazenar os números das salas
-            while ($row = $resultado->fetch_assoc()) {
-                $listaDeSalas[] = $row['numero']; // Adiciona o número da sala ao array
-            }
-            $stmt->close();
-            return $listaDeSalas; // Retorna o array com os números das salas
-        } else {
-            $stmt->close();
-            die("Erro ao buscar as salas: " . $stmt->error);
-        }
-    }
 
 
 }
