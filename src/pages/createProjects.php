@@ -15,7 +15,6 @@ $page = "cadastroProjeto";
 $pageTitle = "Cadastra Projeto";
 include "../views/header.php";
 
-$locais = Projeto::buscaSalasDoBanco();
 $cursos = Projeto::buscaCursosDoBanco();
 $temas = Projeto::buscaTemasDoBanco();
 

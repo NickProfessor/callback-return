@@ -1,4 +1,4 @@
-## [2.0] - 2025-03-20
+## [2.0] - 2025-03-21
 
 ### Alterado
 
@@ -29,6 +29,10 @@
 
 - A tabela 'projeto_has_tema' teve o nome alterado para 'tema_has_projeto', para manter o padrão de nomes.
 
+- A contagem de auto_increment de todas as tabelas foi zerada
+
+### Adicionado
+
 - A tabela 'pergunta' foi criada para armazenar as perguntas que serão questionadas ao avaliador com relação ao projeto apresentado/exposto. A tabela conta com uma coluna específica 'ordem' para que o administrador possa definir a ordem das perguntas.
 
 - A tabela 'resposta' foi criada para armazenar as respostas informadas pelo avaliador para cada pergunta da tabela 'pergunta'. A tabela conta com as seguintes colunas: 'id_resposta', 'id_avaliacao', 'id_pergunta', 'versao_pergunta_texto', 'resposta', 'tipo_resposta'
@@ -49,10 +53,6 @@
   - A coluna 'data_envio' serve para registrar o momento em que a mensagem foi enviada
   - A coluna 'lida' serve para identificar se o aluno leu ou não a mensagem (0-Não, 1-sim)
 
-- A contagem de auto_increment de todas as tabelas foi zerada
-
-### Adicionado
-
 - Agora o usuário será identificado pelo email.
 - Ao logar, ou cadastrar, o usuário já define uma sessão.
 - Uma nova classe 'SessionManager' foi criada, isso para armazenar todas as funcionalidades necessárias sobre sessão
@@ -63,3 +63,4 @@
 ### Removido
 
 - O ID não é mais exibido para o usuário, e foram removidas as telas que exibiam o ID.
+- Tudo que envolve sala, ou qualquer local em que o projeto está sendo apresentado, foi removido do projeto.

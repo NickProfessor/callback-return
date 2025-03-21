@@ -18,7 +18,6 @@ $listaDeProjetos = $projetoController->carregaProjetos();
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link rel="stylesheet" href="./src/assets/css/style.css">
     <link rel="stylesheet" href="./src/assets/css/pages/paginaPrincipal.css">
-    <link rel="stylesheet" href="./src/assets/css/pages/sala.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.6.0/css/all.min.css"
         integrity="sha512-Kc323vGBEqzTmouAECnVceyQqyqdsSiqLQISBL29aUW4U/M7pSPA/gEUZQqv1cwx4OnYxTxve5UMg5GT6L4JJg=="
         crossorigin="anonymous" referrerpolicy="no-referrer" />
@@ -60,13 +59,11 @@ $listaDeProjetos = $projetoController->carregaProjetos();
                 <a href="<?php echo $linkURL; ?>"><?php echo $linkTexto; ?></a>
             <?php endif; ?>
 
-            <p>Salas</p>
         </header>
     <?php else: ?>
         <header>
             <h1 class="titulo-header">Bem-vindo</h1>
             <a href="./src/pages/login.php" class="link-header">Entre ou crie sua conta!</a>
-            <p>Salas</p>
         </header>
     <?php endif; ?>
 
@@ -74,7 +71,7 @@ $listaDeProjetos = $projetoController->carregaProjetos();
         <?php
 
         if (empty($listaDeProjetos)) {
-            echo "Nenhum projeto encontrado para a sala $sala.";
+            echo "Nenhum projeto encontrado para a exibir.";
             echo "</main>";
         } else {
 
@@ -82,7 +79,6 @@ $listaDeProjetos = $projetoController->carregaProjetos();
 
                 $projetoId = $projeto['id_projeto'];
                 $projetoNome = $projeto['projeto_nome'];
-                $projetoSala = $projeto['sala_numero'];
                 $projetoCursos = $projeto['cursos'];
                 $projetoResumo = $projeto['projeto_resumo'];
                 $projetoAlunos = $projeto['alunos'];
