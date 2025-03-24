@@ -5,8 +5,8 @@ require_once "./src/models/Projeto.php";
 
 $usuario = SessionManager::get('usuario');
 
-$projetoController = new Projeto();
-$listaDeProjetos = $projetoController->carregaProjetos();
+
+$listaDeProjetos = Projeto::carregaProjetos();
 ?>
 
 <!DOCTYPE html>
@@ -43,7 +43,7 @@ $listaDeProjetos = $projetoController->carregaProjetos();
                     break;
                 case '2':
                     $linkTexto = "Criar projeto";
-                    $linkURL = "./src/pages/createProjects.php";
+                    $linkURL = "./src/pages/criarProjetos.php";
                     break;
                 case '3':
                     $linkTexto = "Sou aluno";
@@ -91,7 +91,6 @@ $listaDeProjetos = $projetoController->carregaProjetos();
                 $popularIdosos = isset($projeto['popular_idosos']) && $projeto['popular_idosos'];
                 $popularMulheres = isset($projeto['popular_mulheres']) && $projeto['popular_mulheres'];
                 $popularHomens = isset($projeto['popular_homens']) && $projeto['popular_homens'];
-
                 include "src/views/cardProjeto.php";
             }
             echo "</main>";

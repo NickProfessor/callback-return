@@ -7,115 +7,113 @@ require_once __DIR__ . "/../helpers/Logger.php";
 class Projeto
 {
     private $nome;
-    private $local;
     private $resumo;
     private $descricao;
+    private $materialApoio;
+
     private $temas = [];
     private $cursos = [];
     private $alunos = [];
     private $listaDeProjetos = [];
 
-    public function __construct($nome = null, $local = null, $descricao = null, $temas = null, $cursos = null, $alunos = null)
+    public function __construct($nome, $descricao, $temas, $cursos, $alunos, $materialApoio)
     {
         $this->nome = $nome;
-        $this->local = $local;
         $this->descricao = $descricao;
         $this->temas = $temas;
         $this->cursos = $cursos;
         $this->alunos = $alunos;
+        $this->materialApoio = $materialApoio;
     }
 
-    public function carregaProjetos()
+    public static function carregaProjetos()
     {
         global $conn;
         $sql = "SELECT 
-            p.id_projeto,
-            p.nome AS projeto_nome,
-            p.resumo AS projeto_resumo,
-            p.descricao AS projeto_descricao,
-            GROUP_CONCAT(DISTINCT c.nome) AS cursos,
-            GROUP_CONCAT(DISTINCT i.nome) AS alunos,
-            GROUP_CONCAT(DISTINCT t.nome) AS temas,
-            
-            COALESCE(a.total_avaliacoes, 0) AS total_avaliacoes,
-            COALESCE(a.media_notas, 0) AS media_notas,
-            
-            COALESCE(a.total_avaliacoes_mulheres, 0) AS total_avaliacoes_mulheres,
-            COALESCE(a.media_notas_mulheres, 0) AS media_notas_mulheres,
-            
-            COALESCE(a.total_avaliacoes_homens, 0) AS total_avaliacoes_homens,
-            COALESCE(a.media_notas_homens, 0) AS media_notas_homens,
-            
-            COALESCE(a.total_avaliacoes_idosos, 0) AS total_avaliacoes_idosos,
-            COALESCE(a.media_notas_idosos, 0) AS media_notas_idosos,
-            
-            COALESCE(a.total_avaliacoes_jovens, 0) AS total_avaliacoes_jovens,
-            COALESCE(a.media_notas_jovens, 0) AS media_notas_jovens,
-            
-            COALESCE(a.total_avaliacoes_adultos, 0) AS total_avaliacoes_adultos,
-            COALESCE(a.media_notas_adultos, 0) AS media_notas_adultos
+        p.id_projeto,
+        p.nome AS projeto_nome,
+        p.resumo AS projeto_resumo,
+        p.descricao AS projeto_descricao,
+        
+        GROUP_CONCAT(DISTINCT c.nome) AS cursos,
+        GROUP_CONCAT(DISTINCT i.nome) AS alunos,
+        GROUP_CONCAT(DISTINCT t.nome) AS temas,
 
-        FROM 
-            projeto p
-            LEFT JOIN curso_has_projeto chp ON p.id_projeto = chp.projeto_id_projeto
-            LEFT JOIN curso c ON chp.curso_id_curso = c.id_curso
-            LEFT JOIN aluno_has_projeto ihp ON p.id_projeto = ihp.id_projeto
-            LEFT JOIN aluno i ON ihp.id_aluno = i.id_aluno
-            LEFT JOIN tema_has_projeto pht ON p.id_projeto = pht.projeto_id_projeto
-            LEFT JOIN tema t ON pht.tema_id_tema = t.id_tema
-            
-            LEFT JOIN (
-                SELECT 
-                    a.id_projeto,
-                    COUNT(a.id_avaliacao) AS total_avaliacoes,
-                    AVG(a.nota) AS media_notas,
-                    
-                    SUM(CASE WHEN u.sexo = 'Feminino' THEN 1 ELSE 0 END) AS total_avaliacoes_mulheres,
-                    AVG(CASE WHEN u.sexo = 'Feminino' THEN a.nota ELSE NULL END) AS media_notas_mulheres,
-                    
-                    SUM(CASE WHEN u.sexo = 'Masculino' THEN 1 ELSE 0 END) AS total_avaliacoes_homens,
-                    AVG(CASE WHEN u.sexo = 'Masculino' THEN a.nota ELSE NULL END) AS media_notas_homens,
-                    
-                    SUM(CASE WHEN TIMESTAMPDIFF(YEAR, u.data_nascimento, CURDATE()) >= 60 THEN 1 ELSE 0 END) AS total_avaliacoes_idosos,
-                    AVG(CASE WHEN TIMESTAMPDIFF(YEAR, u.data_nascimento, CURDATE()) >= 60 THEN a.nota ELSE NULL END) AS media_notas_idosos,
-                    
-                    SUM(CASE WHEN TIMESTAMPDIFF(YEAR, u.data_nascimento, CURDATE()) < 22 THEN 1 ELSE 0 END) AS total_avaliacoes_jovens,
-                    AVG(CASE WHEN TIMESTAMPDIFF(YEAR, u.data_nascimento, CURDATE()) < 22 THEN a.nota ELSE NULL END) AS media_notas_jovens,
-                    
-                    SUM(CASE WHEN TIMESTAMPDIFF(YEAR, u.data_nascimento, CURDATE()) BETWEEN 22 AND 59 THEN 1 ELSE 0 END) AS total_avaliacoes_adultos,
-                    AVG(CASE WHEN TIMESTAMPDIFF(YEAR, u.data_nascimento, CURDATE()) BETWEEN 22 AND 59 THEN a.nota ELSE NULL END) AS media_notas_adultos
-                FROM 
-                    avaliacao a
-                    LEFT JOIN usuario u ON a.id_usuario = u.id_usuario
-                GROUP BY a.id_projeto
-            ) a ON p.id_projeto = a.id_projeto
+        COALESCE(a.total_avaliacoes, 0) AS total_avaliacoes,
+        COALESCE(a.media_notas, 0) AS media_notas,
+        
+        COALESCE(a.total_avaliacoes_mulheres, 0) AS total_avaliacoes_mulheres,
+        COALESCE(a.media_notas_mulheres, 0) AS media_notas_mulheres,
+        
+        COALESCE(a.total_avaliacoes_homens, 0) AS total_avaliacoes_homens,
+        COALESCE(a.media_notas_homens, 0) AS media_notas_homens,
+        
+        COALESCE(a.total_avaliacoes_idosos, 0) AS total_avaliacoes_idosos,
+        COALESCE(a.media_notas_idosos, 0) AS media_notas_idosos,
+        
+        COALESCE(a.total_avaliacoes_jovens, 0) AS total_avaliacoes_jovens,
+        COALESCE(a.media_notas_jovens, 0) AS media_notas_jovens,
+        
+        COALESCE(a.total_avaliacoes_adultos, 0) AS total_avaliacoes_adultos,
+        COALESCE(a.media_notas_adultos, 0) AS media_notas_adultos
 
-        GROUP BY 
-            p.id_projeto, p.nome, p.descricao;
-        ";
+    FROM 
+        projeto p
+        LEFT JOIN curso_has_projeto chp ON p.id_projeto = chp.projeto_id_projeto
+        LEFT JOIN curso c ON chp.curso_id_curso = c.id_curso
+        LEFT JOIN aluno_has_projeto ihp ON p.id_projeto = ihp.id_projeto
+        LEFT JOIN aluno i ON ihp.id_aluno = i.id_aluno
+        LEFT JOIN tema_has_projeto pht ON p.id_projeto = pht.projeto_id_projeto
+        LEFT JOIN tema t ON pht.tema_id_tema = t.id_tema
+
+        LEFT JOIN (
+            SELECT 
+                a.id_projeto,
+                COUNT(a.id_avaliacao) AS total_avaliacoes,
+                AVG(a.nota) AS media_notas,
+                
+                SUM(CASE WHEN u.sexo = 'Feminino' THEN 1 ELSE 0 END) AS total_avaliacoes_mulheres,
+                AVG(CASE WHEN u.sexo = 'Feminino' THEN a.nota ELSE NULL END) AS media_notas_mulheres,
+                
+                SUM(CASE WHEN u.sexo = 'Masculino' THEN 1 ELSE 0 END) AS total_avaliacoes_homens,
+                AVG(CASE WHEN u.sexo = 'Masculino' THEN a.nota ELSE NULL END) AS media_notas_homens,
+                
+                SUM(CASE WHEN TIMESTAMPDIFF(YEAR, u.data_nascimento, CURDATE()) >= 60 THEN 1 ELSE 0 END) AS total_avaliacoes_idosos,
+                AVG(CASE WHEN TIMESTAMPDIFF(YEAR, u.data_nascimento, CURDATE()) >= 60 THEN a.nota ELSE NULL END) AS media_notas_idosos,
+                
+                SUM(CASE WHEN TIMESTAMPDIFF(YEAR, u.data_nascimento, CURDATE()) < 22 THEN 1 ELSE 0 END) AS total_avaliacoes_jovens,
+                AVG(CASE WHEN TIMESTAMPDIFF(YEAR, u.data_nascimento, CURDATE()) < 22 THEN a.nota ELSE NULL END) AS media_notas_jovens,
+                
+                SUM(CASE WHEN TIMESTAMPDIFF(YEAR, u.data_nascimento, CURDATE()) BETWEEN 22 AND 59 THEN 1 ELSE 0 END) AS total_avaliacoes_adultos,
+                AVG(CASE WHEN TIMESTAMPDIFF(YEAR, u.data_nascimento, CURDATE()) BETWEEN 22 AND 59 THEN a.nota ELSE NULL END) AS media_notas_adultos
+            FROM 
+                avaliacao a
+                LEFT JOIN usuario u ON a.id_usuario = u.id_usuario
+            GROUP BY a.id_projeto
+        ) a ON p.id_projeto = a.id_projeto
+
+    GROUP BY 
+        p.id_projeto, p.nome, p.resumo, p.descricao;
+    ";
+
         $result = $conn->query($sql);
 
         if ($result) {
             $projetos = $result->fetch_all(MYSQLI_ASSOC);
 
             foreach ($projetos as &$projeto) {
-                $projeto['popular_adultos'] = ($projeto['media_notas_adultos'] >= 8) ? true : false;
-                $projeto['popular_jovens'] = ($projeto['media_notas_jovens'] >= 8) ? true : false;
-                $projeto['popular_idosos'] = ($projeto['media_notas_idosos'] >= 8) ? true : false;
-                $projeto['popular_mulheres'] = ($projeto['media_notas_mulheres'] >= 8) ? true : false;
-                $projeto['popular_homens'] = ($projeto['media_notas_homens'] >= 8) ? true : false;
+                $projeto['popular_adultos'] = ($projeto['media_notas_adultos'] >= 8);
+                $projeto['popular_jovens'] = ($projeto['media_notas_jovens'] >= 8);
+                $projeto['popular_idosos'] = ($projeto['media_notas_idosos'] >= 8);
+                $projeto['popular_mulheres'] = ($projeto['media_notas_mulheres'] >= 8);
+                $projeto['popular_homens'] = ($projeto['media_notas_homens'] >= 8);
             }
 
-            $this->listaDeProjetos = $projetos;
-            return $this->listaDeProjetos;
+            $listaDeProjetos = $projetos;
+            return $listaDeProjetos;
         } else {
             die("Algo deu errado na consulta dos projetos");
         }
-    }
-
-    public function obterProjetos()
-    {
-        return $this->carregaProjetos();
     }
 
 
@@ -156,78 +154,77 @@ class Projeto
     {
         global $conn;
         $sql = "SELECT 
-            p.id_projeto,
-            p.nome AS projeto_nome,
-            p.descricao AS projeto_descricao,
-            GROUP_CONCAT(DISTINCT c.nome) AS cursos,
-            GROUP_CONCAT(DISTINCT i.nome) AS alunos,
-            GROUP_CONCAT(DISTINCT t.nome) AS temas,
-            
-            COALESCE(ag.total_avaliacoes, 0) AS total_avaliacoes,
-            COALESCE(ag.media_notas, 0) AS media_notas,
-            
-            COALESCE(ag.total_avaliacoes_mulheres, 0) AS total_avaliacoes_mulheres,
-            COALESCE(ag.media_notas_mulheres, 0) AS media_notas_mulheres,
-            
-            COALESCE(ag.total_avaliacoes_homens, 0) AS total_avaliacoes_homens,
-            COALESCE(ag.media_notas_homens, 0) AS media_notas_homens,
-            
-            COALESCE(ag.total_avaliacoes_idosos, 0) AS total_avaliacoes_idosos,
-            COALESCE(ag.media_notas_idosos, 0) AS media_notas_idosos,
-            
-            COALESCE(ag.total_avaliacoes_jovens, 0) AS total_avaliacoes_jovens,
-            COALESCE(ag.media_notas_jovens, 0) AS media_notas_jovens,
-            
-            COALESCE(ag.total_avaliacoes_adultos, 0) AS total_avaliacoes_adultos,
-            COALESCE(ag.media_notas_adultos, 0) AS media_notas_adultos,
+        p.id_projeto,
+        p.nome AS projeto_nome,
+        p.descricao AS projeto_descricao,
+        p.resumo AS projeto_resumo,
+        p.material_apoio AS projeto_material_apoio,
+        GROUP_CONCAT(DISTINCT c.nome) AS cursos,
+        GROUP_CONCAT(DISTINCT i.nome) AS alunos,
+        GROUP_CONCAT(DISTINCT t.nome) AS temas,
+        
+        COALESCE(ag.total_avaliacoes, 0) AS total_avaliacoes,
+        COALESCE(ag.media_notas, 0) AS media_notas,
+        
+        COALESCE(ag.total_avaliacoes_mulheres, 0) AS total_avaliacoes_mulheres,
+        COALESCE(ag.media_notas_mulheres, 0) AS media_notas_mulheres,
+        
+        COALESCE(ag.total_avaliacoes_homens, 0) AS total_avaliacoes_homens,
+        COALESCE(ag.media_notas_homens, 0) AS media_notas_homens,
+        
+        COALESCE(ag.total_avaliacoes_idosos, 0) AS total_avaliacoes_idosos,
+        COALESCE(ag.media_notas_idosos, 0) AS media_notas_idosos,
+        
+        COALESCE(ag.total_avaliacoes_jovens, 0) AS total_avaliacoes_jovens,
+        COALESCE(ag.media_notas_jovens, 0) AS media_notas_jovens,
+        
+        COALESCE(ag.total_avaliacoes_adultos, 0) AS total_avaliacoes_adultos,
+        COALESCE(ag.media_notas_adultos, 0) AS media_notas_adultos,
 
-            GROUP_CONCAT(DISTINCT a.comentario SEPARATOR ' | ') AS comentarios
+        GROUP_CONCAT(DISTINCT a.comentario SEPARATOR ' | ') AS comentarios
 
-        FROM 
-            projeto p
-            LEFT JOIN curso_has_projeto chp ON p.id_projeto = chp.projeto_id_projeto
-            LEFT JOIN curso c ON chp.curso_id_curso = c.id_curso
-            LEFT JOIN aluno_has_projeto ihp ON p.id_projeto = ihp.id_projeto
-            LEFT JOIN aluno i ON ihp.id_aluno = i.id_aluno
-            LEFT JOIN tema_has_projeto pht ON p.id_projeto = pht.projeto_id_projeto
-            LEFT JOIN tema t ON pht.tema_id_tema = t.id_tema
-            
-            LEFT JOIN (
-                SELECT 
-                    a.id_projeto,
-                    COUNT(a.id_avaliacao) AS total_avaliacoes,
-                    AVG(a.nota) AS media_notas,
-                    
-                    SUM(CASE WHEN u.sexo = 'Feminino' THEN 1 ELSE 0 END) AS total_avaliacoes_mulheres,
-                    AVG(CASE WHEN u.sexo = 'Feminino' THEN a.nota ELSE NULL END) AS media_notas_mulheres,
-                    
-                    SUM(CASE WHEN u.sexo = 'Masculino' THEN 1 ELSE 0 END) AS total_avaliacoes_homens,
-                    AVG(CASE WHEN u.sexo = 'Masculino' THEN a.nota ELSE NULL END) AS media_notas_homens,
-                    
-                    SUM(CASE WHEN TIMESTAMPDIFF(YEAR, u.data_nascimento, CURDATE()) >= 60 THEN 1 ELSE 0 END) AS total_avaliacoes_idosos,
-                    AVG(CASE WHEN TIMESTAMPDIFF(YEAR, u.data_nascimento, CURDATE()) >= 60 THEN a.nota ELSE NULL END) AS media_notas_idosos,
-                    
-                    SUM(CASE WHEN TIMESTAMPDIFF(YEAR, u.data_nascimento, CURDATE()) < 22 THEN 1 ELSE 0 END) AS total_avaliacoes_jovens,
-                    AVG(CASE WHEN TIMESTAMPDIFF(YEAR, u.data_nascimento, CURDATE()) < 22 THEN a.nota ELSE NULL END) AS media_notas_jovens,
-                    
-                    SUM(CASE WHEN TIMESTAMPDIFF(YEAR, u.data_nascimento, CURDATE()) BETWEEN 22 AND 59 THEN 1 ELSE 0 END) AS total_avaliacoes_adultos,
-                    AVG(CASE WHEN TIMESTAMPDIFF(YEAR, u.data_nascimento, CURDATE()) BETWEEN 22 AND 59 THEN a.nota ELSE NULL END) AS media_notas_adultos
-                FROM 
-                    avaliacao a
-                    LEFT JOIN usuario u ON a.id_usuario = u.id_usuario
-                GROUP BY a.id_projeto
-            ) ag ON p.id_projeto = ag.id_projeto
+    FROM 
+        projeto p
+        LEFT JOIN curso_has_projeto chp ON p.id_projeto = chp.projeto_id_projeto
+        LEFT JOIN curso c ON chp.curso_id_curso = c.id_curso
+        LEFT JOIN aluno_has_projeto ihp ON p.id_projeto = ihp.id_projeto
+        LEFT JOIN aluno i ON ihp.id_aluno = i.id_aluno
+        LEFT JOIN tema_has_projeto pht ON p.id_projeto = pht.projeto_id_projeto
+        LEFT JOIN tema t ON pht.tema_id_tema = t.id_tema
+        
+        LEFT JOIN (
+            SELECT 
+                a.id_projeto,
+                COUNT(a.id_avaliacao) AS total_avaliacoes,
+                AVG(a.nota) AS media_notas,
+                
+                SUM(CASE WHEN u.sexo = 'Feminino' THEN 1 ELSE 0 END) AS total_avaliacoes_mulheres,
+                AVG(CASE WHEN u.sexo = 'Feminino' THEN a.nota ELSE NULL END) AS media_notas_mulheres,
+                
+                SUM(CASE WHEN u.sexo = 'Masculino' THEN 1 ELSE 0 END) AS total_avaliacoes_homens,
+                AVG(CASE WHEN u.sexo = 'Masculino' THEN a.nota ELSE NULL END) AS media_notas_homens,
+                
+                SUM(CASE WHEN TIMESTAMPDIFF(YEAR, u.data_nascimento, CURDATE()) >= 60 THEN 1 ELSE 0 END) AS total_avaliacoes_idosos,
+                AVG(CASE WHEN TIMESTAMPDIFF(YEAR, u.data_nascimento, CURDATE()) >= 60 THEN a.nota ELSE NULL END) AS media_notas_idosos,
+                
+                SUM(CASE WHEN TIMESTAMPDIFF(YEAR, u.data_nascimento, CURDATE()) < 22 THEN 1 ELSE 0 END) AS total_avaliacoes_jovens,
+                AVG(CASE WHEN TIMESTAMPDIFF(YEAR, u.data_nascimento, CURDATE()) < 22 THEN a.nota ELSE NULL END) AS media_notas_jovens,
+                
+                SUM(CASE WHEN TIMESTAMPDIFF(YEAR, u.data_nascimento, CURDATE()) BETWEEN 22 AND 59 THEN 1 ELSE 0 END) AS total_avaliacoes_adultos,
+                AVG(CASE WHEN TIMESTAMPDIFF(YEAR, u.data_nascimento, CURDATE()) BETWEEN 22 AND 59 THEN a.nota ELSE NULL END) AS media_notas_adultos
+            FROM 
+                avaliacao a
+                LEFT JOIN usuario u ON a.id_usuario = u.id_usuario
+            GROUP BY a.id_projeto
+        ) ag ON p.id_projeto = ag.id_projeto
 
-            LEFT JOIN avaliacao a ON p.id_projeto = a.id_projeto
+        LEFT JOIN avaliacao a ON p.id_projeto = a.id_projeto
 
-        WHERE 
-            p.id_projeto = ? 
+    WHERE 
+        p.id_projeto = ? 
 
-        GROUP BY 
-            p.id_projeto, p.nome, p.descricao;
-
-
-        ";
+    GROUP BY 
+        p.id_projeto, p.nome, p.descricao, p.resumo, p.material_apoio;";
 
         $stmt = $conn->prepare($sql);
         if ($stmt) {
@@ -238,13 +235,11 @@ class Projeto
             if ($result) {
                 $projeto = $result->fetch_assoc();
 
-
-                $projeto['popular_adultos'] = ($projeto['media_notas_adultos'] >= 8) ? true : false;
-                $projeto['popular_jovens'] = ($projeto['media_notas_jovens'] >= 8) ? true : false;
-                $projeto['popular_idosos'] = ($projeto['media_notas_idosos'] >= 8) ? true : false;
-                $projeto['popular_mulheres'] = ($projeto['media_notas_mulheres'] >= 8) ? true : false;
-                $projeto['popular_homens'] = ($projeto['media_notas_homens'] >= 8) ? true : false;
-
+                $projeto['popular_adultos'] = ($projeto['media_notas_adultos'] >= 8);
+                $projeto['popular_jovens'] = ($projeto['media_notas_jovens'] >= 8);
+                $projeto['popular_idosos'] = ($projeto['media_notas_idosos'] >= 8);
+                $projeto['popular_mulheres'] = ($projeto['media_notas_mulheres'] >= 8);
+                $projeto['popular_homens'] = ($projeto['media_notas_homens'] >= 8);
 
                 return $projeto;
             } else {
@@ -280,13 +275,13 @@ class Projeto
                 $this->registrarNotaAutomatica($projetoId);
                 Logger::log("Projeto cadastrado com sucesso! ", "ADD");
             } else {
-                header("Location: ./createProjects.php?erro=projeto-ja-existe");
+                header("Location: ./criarProjetos.php?erro=projeto-ja-existe");
             }
         } catch (Exception $e) {
             // Se qualquer erro ocorrer, desfazemos a transação
             $conn->rollback();
-            header("Location: ./createProjects.php?erro=nao-foi-possivel-adicionar");
             Logger::log("Erro ao cadastrar projeto: " . $e->getMessage(), "ERROR");
+            header("Location: ./criarProjetos.php?erro=nao-foi-possivel-adicionar");
         }
     }
 
@@ -315,7 +310,7 @@ class Projeto
     private function registraTemasDoProjeto($idProjeto)
     {
         global $conn;
-        $sql = "INSERT INTO tema_has_projeto (projeto_id_projeto, tema_id_tema) VALUES (?, ?)";
+        $sql = "INSERT INTO tema_has_projeto (tema_id_tema, projeto_id_projeto) VALUES (?, ?)";
         $stmt = $conn->prepare($sql);
 
         if (!$stmt) {
@@ -324,7 +319,7 @@ class Projeto
 
         $temas = $this->temas;
         foreach ($temas as $idTema) {
-            $stmt->bind_param("ii", $idProjeto, $idTema);
+            $stmt->bind_param("ii", $idTema, $idProjeto);
             if (!$stmt->execute()) {
                 $stmt->close();
                 Logger::log("Erro ao registrar temas: " . $stmt->error, "ERROR");
@@ -337,16 +332,18 @@ class Projeto
     private function criaProjeto()
     {
         $nomeDoProjeto = $this->nome;
+        $resumoDoProjeto = $this->resumo;
         $descricaoDoProjeto = $this->descricao;
+        $materialApoio = $this->materialApoio;
 
         global $conn;
 
-        $stmt = $conn->prepare("INSERT INTO projeto (nome, descricao) VALUES (?, ?)");
+        $stmt = $conn->prepare("INSERT INTO projeto (nome, resumo, descricao, material_apoio) VALUES (?, ?, ?, ?)");
         if (!$stmt) {
             return false;
         }
 
-        $stmt->bind_param("ss", $nomeDoProjeto, $descricaoDoProjeto);
+        $stmt->bind_param("ssss", $nomeDoProjeto, $resumoDoProjeto, $descricaoDoProjeto, $materialApoio);
 
         if ($stmt->execute()) {
             $insertId = $conn->insert_id; // Retorna o ID do projeto inserido
@@ -367,53 +364,42 @@ class Projeto
         global $conn;
         $alunos = $this->alunos;
 
-        foreach ($alunos as $nomeAluno) {
-            if (!$this->verificaAluno($nomeAluno)) {
-                $query = "INSERT INTO aluno (nome) VALUES (?)";
-                $stmt = $conn->prepare($query);
-                if (!$stmt) {
-                    return "Erro na preparação da consulta: " . $conn->error;
-                }
-                $stmt->bind_param("s", $nomeAluno);
+        foreach ($alunos as $idAluno) {
 
-                if (!$stmt->execute()) {
-                    $stmt->close();
-                    return "Erro ao cadastrar aluno.";
-                }
-                $stmt->close();
-            }
-
-            $idAluno = $this->pegaIDAluno($nomeAluno);
             if ($idAluno) {
                 $query = "INSERT INTO aluno_has_projeto (id_aluno, id_projeto) VALUES (?, ?)";
                 $stmt = $conn->prepare($query);
                 if (!$stmt) {
-                    return "Erro na preparação da consulta: " . $conn->error;
+                    Logger::log("Erro na preparação da consulta (registraAlunosDoProjeto): " . $conn->error, "ERROR");
+                    return;
                 }
                 $stmt->bind_param("ii", $idAluno, $id_projeto);
 
                 if (!$stmt->execute()) {
                     $stmt->close();
-                    return "Erro ao registrar aluno na tabela de relacionamentos.";
+                    Logger::log("Erro ao registrar aluno na tabela de relacionamentos.", "ERROR");
+                    return;
                 }
                 $stmt->close();
             } else {
-                return "Algo deu errado ao encontrar aluno no banco.";
+                Logger::log("Algo deu errado ao encontrar aluno no banco.", "ERROR");
+                return;
             }
         }
     }
 
 
-    private function verificaAluno($nomeAluno)
+    private function verificaAluno($aluno)
     {
+        $id_aluno = $aluno['id_aluno'];
         global $conn;
-        $query = "SELECT COUNT(*) FROM aluno WHERE nome = ?";
+        $query = "SELECT COUNT(*) FROM aluno WHERE id_aluno = ?";
         $stmt = $conn->prepare($query);
         if (!$stmt) {
             die("Erro na preparação da consulta: " . $conn->error);
         }
 
-        $stmt->bind_param("s", $nomeAluno);
+        $stmt->bind_param("s", $id_aluno);
         $stmt->execute();
         $stmt->bind_result($count);
         $stmt->fetch();

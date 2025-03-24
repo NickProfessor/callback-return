@@ -422,7 +422,7 @@
     <a href="cadastroAluno.php">cadastrar aluno</a>
     <!-- REMOVER DEPOIS -->
     <h1 class="titulo-formulario">Registre um projeto</h1>
-    <form action="registraProjeto.php" method="POST" class="formulario-padrao">
+    <form action="registraProjeto.php" method="POST" class="formulario-padrao" enctype="multipart/form-data">
         <?php if (isset($erro)): ?>
             <p class="mensagem-erro">
 
@@ -444,6 +444,11 @@
         </div>
 
         <div class="form-group">
+            <label for="arquivo">Anexe um arquivo (PDF, PPT, DOC, etc.):</label>
+            <input type="file" name="arquivo" id="arquivo" class="campo-texto">
+        </div>
+
+        <div class="form-group">
             <label for="cursos">Informe os cursos do projeto</label>
             <div class="checkboxes">
                 <?php foreach ($cursos as $id_curso => $curso): ?>
@@ -455,6 +460,8 @@
                 <?php endforeach; ?>
             </div>
         </div>
+
+
 
         <div class="form-group">
             <label for="temas">Informe os temas do projeto</label>
@@ -470,9 +477,21 @@
         </div>
 
         <div class="form-group">
-            <label for="alunos">Informe o nome do aluno 1:</label>
-            <input type="text" name="alunos[]" id="aluno" class="campo-texto" placeholder="Ana Catarina" required>
+            <label for="alunos">Selecione os alunos:</label>
+            <div id="alunos-container">
+                <div class="aluno-select">
+                    <select name="alunos[]" class="aluno-dropdown" required>
+                        <option value="">Selecione um aluno</option>
+                        <?php foreach ($alunos as $aluno): ?>
+                            <option value="<?= $aluno['id_aluno'] ?>"><?= $aluno['nome'] ?></option>
+                        <?php endforeach; ?>
+                    </select>
+                    <button type="button" class="remove-aluno" style="display:none;">Remover</button>
+                </div>
+            </div>
+            <button type="button" id="add-aluno">Adicionar outro aluno</button>
         </div>
+
 
         <div class="form-group">
             <label for="descricao">Informe uma descrição do projeto:</label>
@@ -489,78 +508,54 @@
     </form>
 
     <script>
-        // Função para lidar com a seleção "outro" para salas
-        document.getElementById('local').addEventListener('change', function () {
-            const outroInputDiv = document.getElementById('outro-input');
+        document.getElementById("add-aluno").addEventListener("click", function () {
+            let container = document.getElementById("alunos-container");
 
-            // Mostrar campo de input para seleção "Outro"
-            if (this.value === 'outro') {
-                if (!outroInputDiv) {
-                    const inputDiv = document.createElement('div');
-                    inputDiv.id = 'outro-input';
-                    inputDiv.className = 'form-group';
-                    inputDiv.innerHTML = `
-                                                                                                            <label for="novoLocal">Informe o nome da novo local:</label>
-                                                                                                            <input type="text" name="novoLocal" id="novoLocal" class="campo-texto" placeholder="Nome do novo local" required>
-                                                                                                        `;
-                    this.parentNode.appendChild(inputDiv);
-                }
-            } else {
-                // Remover o campo de input "Outro" se outra seleção for feita
-                if (outroInputDiv) {
-                    outroInputDiv.remove();
-                }
-            }
+            // Criando novo select
+            let div = document.createElement("div");
+            div.classList.add("aluno-select");
+
+            let select = document.createElement("select");
+            select.name = "alunos[]";
+            select.classList.add("aluno-dropdown");
+
+            // Opção padrão
+            let defaultOption = document.createElement("option");
+            defaultOption.value = "";
+            defaultOption.textContent = "Selecione um aluno";
+            select.appendChild(defaultOption);
+
+            // Adicionando alunos
+            <?php foreach ($alunos as $aluno): ?>
+                let option<?= $aluno['id_aluno'] ?> = document.createElement("option");
+                option<?= $aluno['id_aluno'] ?>.value = "<?= $aluno['id_aluno'] ?>";
+                option<?= $aluno['id_aluno'] ?>.textContent = "<?= $aluno['nome'] ?>";
+                select.appendChild(option<?= $aluno['id_aluno'] ?>);
+            <?php endforeach; ?>
+
+            // Criando botão de remoção
+            let removeButton = document.createElement("button");
+            removeButton.type = "button";
+            removeButton.classList.add("remove-aluno");
+            removeButton.textContent = "Remover";
+
+            removeButton.addEventListener("click", function () {
+                div.remove();
+            });
+
+            div.appendChild(select);
+            div.appendChild(removeButton);
+            container.appendChild(div);
         });
-
-
-
-        // Função para adicionar mais alunos
-        let memberCount = 1;
-
-        document.getElementById('aluno').addEventListener('input', function () {
-            const addMemberButtonDiv = document.getElementById('adicionaMembroBtn');
-
-            // Adicionar botão para adicionar mais alunos
-            if (!addMemberButtonDiv) {
-                const buttonDiv = document.createElement('div');
-                buttonDiv.id = 'adicionaMembroBtn';
-                buttonDiv.className = 'form-group';
-                buttonDiv.innerHTML = `
-                                                                                                        <button type="button" id="adicionaMembroBtn">Adicionar mais um aluno</button>
-                                                                                                    `;
-                this.parentNode.appendChild(buttonDiv);
-
-                document.getElementById('adicionaMembroBtn').addEventListener('click', function () {
-                    const newMemberInput = document.createElement('div');
-                    newMemberInput.id = `inputMembro${++memberCount}`;
-                    newMemberInput.className = 'form-group';
-                    newMemberInput.innerHTML = `
-                                                                                                            <label for="aluno${memberCount}">Informe o nome do aluno ${memberCount}:</label>
-                                                                                                            <input type="text" name="alunos[]" id="aluno${memberCount}" class="campo-texto" placeholder="Nome do aluno" required>
-                                                                                                            <button type="button" onclick="removeMembro(${memberCount})">Remover</button>
-                                                                                                        `;
-                    buttonDiv.parentNode.appendChild(newMemberInput);
-                });
-            }
-        });
-
-        // Função para remover aluno
-        function removeMembro(memberId) {
-            const memberInput = document.getElementById(`inputMembro${memberId}`);
-            if (memberInput) {
-                memberInput.remove();
-            }
-        }
-
     </script>
+
 
 <?php elseif ($etapa == 8): ?>
     <h1 class="titulo-formulario">Projeto cadastrado com sucesso!</h1>
     <main>
         <p class="mensagem">Você cadastrou o projeto "<?php echo $nomeProjeto ?>"</p>
         <p class="mensagem">Agradecemos a colaboração</p>
-        <a href="./createProjects.php" class="botao-padrao">Voltar para cadastrar mais projetos</a>
+        <a href="./criarProjetos.php" class="botao-padrao">Voltar para cadastrar mais projetos</a>
     </main>
 
 <?php elseif ($etapa == 9): ?>

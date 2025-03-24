@@ -48,4 +48,9 @@ class AlunoController
     {
         return Aluno::existeNoBanco($this->conn, $ra);
     }
+
+    public function consultaAlunos()
+    {
+        return Aluno::consultaAlunosNoBanco($this->conn);
+    }
 }

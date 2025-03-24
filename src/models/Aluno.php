@@ -86,4 +86,29 @@ class Aluno
             return false;
         }
     }
+
+    public static function consultaAlunosNoBanco($conn)
+    {
+        try {
+            $stmt = $conn->prepare("SELECT id_aluno, nome FROM aluno");
+            if (!$stmt) {
+                Logger::log("Erro ao preparar a consulta de alunos: " . $conn->error);
+                return [];
+            }
+
+            $stmt->execute();
+            $result = $stmt->get_result();
+            $alunos = $result->fetch_all(MYSQLI_ASSOC);
+
+            $stmt->close();
+
+            return $alunos;
+
+        } catch (Exception $e) {
+            Logger::log("Erro ao consultar alunos: " . $e->getMessage(), "ERROR");
+            return [];
+        }
+    }
+
+
 }

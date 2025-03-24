@@ -20,6 +20,7 @@ if (isset($_GET["id"]) && $_GET["id"] != "") {
         $projetoNome = $projeto['projeto_nome'];
         $projetoCursos = $projeto['cursos'];
         $projetoDescricao = $projeto['projeto_descricao'];
+        $projetoMaterialApoio = $projeto['projeto_material_apoio'];
         $projetoAlunos = explode(',', $projeto['alunos']);
         $projetoTemas = explode(',', $projeto['temas']);
         $projetoAvaliacoes = $projeto['total_avaliacoes'];
