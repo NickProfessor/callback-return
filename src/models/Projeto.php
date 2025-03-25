@@ -273,7 +273,7 @@ class Projeto
                 // Se tudo deu certo, fazemos o commit da transação
                 $conn->commit();
                 $this->registrarNotaAutomatica($projetoId);
-                Logger::log("Projeto cadastrado com sucesso! ", "ADD");
+                Logger::log("Projeto $projetoId cadastrado com sucesso! ", "ADD");
             } else {
                 header("Location: ./criarProjetos.php?erro=projeto-ja-existe");
             }
