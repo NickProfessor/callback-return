@@ -8,7 +8,7 @@ $page = "cadastrado";
 
 
 
-if (SessionManager::isLoggedIn()) {
+if (isset($_SESSION['email'])) {
 
     $email = $_SESSION['email'];
     $nome = $_SESSION['nome'];

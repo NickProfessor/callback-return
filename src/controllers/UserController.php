@@ -24,8 +24,8 @@ class UserController
             $data['dataNasc'],
             $data['sexo'],
             $data['fraseSeguranca'],
-            $data['foto'],
-            $data['tipo_usuario']
+            $data['foto'] ?? null,
+            $data['tipo_usuario'] ?? 1
         );
 
 
