@@ -56,6 +56,6 @@ TERMOS DE USO - CALLBACK-RETURN
    O Callback-return pode alterar estes Termos a qualquer momento. As alterações entrarão em vigor a partir da data de publicação no site. Recomendamos que os usuários revisem este documento periodicamente.
 
 10. Contato
-    Para dúvidas ou solicitações relacionadas a estes Termos de Uso, entre em contato pelo e-mail: nickollas.silva@etec.gov.br.
+    Para dúvidas ou solicitações relacionadas a estes Termos de Uso, entre em contato pelo e-mail: nickollas.silva@etec.sp.gov.br.
 
 Data da última atualização: 28/03/2025
