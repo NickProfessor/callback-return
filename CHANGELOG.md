@@ -63,7 +63,7 @@
 - Agora o usuário do tipo administrador pode adicionar usuários do tipo aluno. Todo usuário do tipo aluno é registrado na tabela 'aluno'
 
 - Ao cadastrar projeto, pode-se adicionar resumo.
-- Ao cadastrar projeto, pode-se adicionar uma descrição personalizada utilizand
+- Ao cadastrar projeto, pode-se adicionar uma descrição personalizada utilizando um formatador de textos. Nele é incluído um preview de como vai ficar a descrição
 - Termos de uso adicionado
 
 ### Removido
