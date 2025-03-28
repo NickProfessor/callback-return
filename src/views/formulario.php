@@ -5,6 +5,7 @@
     <form action="confirmarCadastro.php" method="POST" class="formulario-padrao">
 
 
+        <a href="./login.php">Já tem cadastro?</a>
         <div class="form-group">
             <label for="nome">Informe seu nome:</label>
             <input type="nome" name="nome" id="nome" class="campo-texto" placeholder="Clóvis da Silva" required>
@@ -46,7 +47,6 @@
                 <label for="termos">Aceito que o software utilize os dados coletados para fins acadêmicos</label>
 
             </div>
-            <a href="./login.php">Já tem cadastro?</a>
             <div class="botoes-formulario">
                 <button type="button" onclick="history.back()">Voltar</button>
                 <button>Continuar <i class="fa-solid fa-arrow-right"></i></button>
@@ -104,9 +104,11 @@
     <h1 class="titulo-formulario">Entre na sua conta para avaliar projetos</h1>
     <form action="logado.php" method="POST" class="formulario-padrao">
 
+
         <?php if (isset($_GET['dados-incorretos'])): ?>
             <p class="mensagem-erro">Algo deu errado. Confirme os dados</p>
         <?php endif; ?>
+        <a href="./cadastroUsuario.php">Não possui cadastro? Crie uma conta</a>
         <div class="form-group">
             <label for="nome">Informe seu email:</label>
             <input type="email" name="email" id="email" class="campo-texto" placeholder="Clóvis da Silva" required>
@@ -117,7 +119,6 @@
             <input type="password" name="frase" id="frase" class="campo-texto" required>
         </div>
 
-        <a href="./cadastroUsuario.php">Não possui cadastro? Crie uma conta</a>
 
         <div class="botoes-formulario">
             <button type="button" onclick="window.location.href='../../index.php'">Voltar para a tela principal</button>
@@ -344,15 +345,7 @@
             <textarea name="comentario_projeto" id="comentario_projeto" cols="40" rows="6" class="campo-texto"></textarea>
         </div>
 
-        <div class="form-group">
-            <label for="id_usuario">Informe seu número de usuário (ID):</label>
-            <input type="number" name="id_usuario" id="id_usuario" class="campo-texto" required>
-        </div>
 
-        <div class="form-group">
-            <label for="frase">Informe sua frase de segurança</label>
-            <input type="password" name="frase" id="frase" class="campo-texto" required>
-        </div>
 
         <div class="checkbox-formulario">
             <input type="checkbox" name="termos" id="termos" required>
