@@ -37,10 +37,16 @@ main {
 
 .projeto-info-desc {
     background-color: #E9E9E9;
-    padding: 11px;
+    padding: 18px;
     border-radius: 8px;
     margin-top: 8px;
 }
+
+.projeto-info-desc ol {
+    padding-left: 18px;
+    /* Ajusta o recuo do marcador */
+}
+
 
 main .botao-padrao {
     text-align: center;

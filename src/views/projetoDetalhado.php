@@ -26,7 +26,9 @@
         </div>
         <div class="projeto-info">
             <p>Descrição:</p>
-            <p class="projeto-info-desc" id="projeto-descricao"><?php echo htmlspecialchars($projetoDescricao); ?></p>
+            <p class="projeto-info-desc" id="projeto-descricao" style="white-space: pre-wrap;">
+                <?php echo htmlspecialchars($projetoDescricao); ?>
+            </p>
         </div>
         <div class="projeto-info">
             <p>Alunos:</p>
@@ -105,12 +107,6 @@
 
     <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
     <script>
-        // Usando innerHTML para pegar o conteúdo com quebras de linha
-        let markdownContent = document.getElementById('projeto-descricao').innerHTML;
-
-        // Converte o conteúdo markdown para HTML
-        let htmlContent = marked.parse(markdownContent);
-
-        // Aplica o HTML convertido de volta à div
-        document.getElementById('projeto-descricao').innerHTML = htmlContent;
+        var descricao = <?php echo json_encode($projetoDescricao, JSON_HEX_TAG); ?>;
+        document.getElementById("projeto-descricao").innerHTML = marked.parse(descricao);
     </script>
