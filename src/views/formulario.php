@@ -468,9 +468,9 @@
             <div class="checkboxes">
                 <?php foreach ($temas as $id_tema => $tema): ?>
                     <div class="checkbox-formulario">
-                        <input type="checkbox" name="temas[]" id="<?php echo strtolower($tema) ?>"
+                        <input type="checkbox" name="temas[]" id="<?php echo strtolower($tema . $id_tema) ?>"
                             value="<?php echo $id_tema ?>">
-                        <label for="<?php echo strtolower($tema) ?>"><?php echo $tema ?></label>
+                        <label for="<?php echo strtolower($tema . $id_tema) ?>"><?php echo $tema ?></label>
                     </div>
                 <?php endforeach; ?>
             </div>
@@ -494,10 +494,41 @@
 
 
         <div class="form-group">
-            <label for="descricao">Informe uma descrição do projeto:</label>
+            <label for="resumo">Informe um resumo do projeto:</label>
+            <textarea type="text" name="resumo" id="resumo" class="campo-texto" cols="40" rows="3" required></textarea>
+        </div>
+
+        <div class="form-group">
+            <label for="descricao">Descreva com detalhes seu projeto:</label>
             <textarea type="text" name="descricao" id="descricao" class="campo-texto" cols="40" rows="8"
                 required></textarea>
         </div>
+
+        <!-- Botão para abrir o tutorial -->
+        <button type="button" id="tutorial-btn" class="tutorial-btn">?</button>
+
+        <!-- Modal do tutorial -->
+        <div id="tutorial-modal" class="tutorial-modal">
+            <div class="tutorial-modal-content">
+                <span id="close-btn" class="close-btn">&times;</span>
+                <h2><strong>Comandos Markdown possíveis:</strong></h2>
+                <ul>
+                    <li><strong>Negrito:</strong> **Texto** ou __Texto__</li>
+                    <li><strong>Itálico:</strong> *Texto* ou _Texto_</li>
+                    <li><strong>Código:</strong> `Texto`</li>
+                    <li><strong>Título:</strong> # Título</li>
+                    <li><strong>Lista não ordenada:</strong> - Item</li>
+                    <li><strong>Lista ordenada:</strong> 1. Item</li>
+                    <li><strong>Link:</strong> [Texto](http://link.com)</li>
+                </ul>
+            </div>
+        </div>
+
+        <div class="form-group">
+            <label for="descricao-preview">Pré-visualização:</label>
+            <p id="descricao-preview"></p>
+        </div>
+
 
 
         <div class="botoes-formulario">
@@ -546,6 +577,71 @@
             div.appendChild(select);
             div.appendChild(removeButton);
             container.appendChild(div);
+        });
+
+
+        function markdownToHtml(markdown) {
+            // Remover espaços extras ao redor das quebras de linha e garantir que as quebras de linha sejam bem definidas
+            markdown = markdown.trim();  // Remove espaços extras no começo e final do texto
+            markdown = markdown.replace(/\r\n|\r/g, '\n');  // Substituir quebras de linha do Windows por quebra de linha no formato UNIX
+
+            // Substituir **texto** ou __texto__ por <strong>texto</strong> (negrito)
+            markdown = markdown.replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>');
+            markdown = markdown.replace(/__(.*?)__/g, '<strong>$1</strong>');
+
+            // Substituir *texto* ou _texto_ por <em>texto</em> (itálico)
+            markdown = markdown.replace(/\*(.*?)\*/g, '<em>$1</em>');
+            markdown = markdown.replace(/_(.*?)_/g, '<em>$1</em>');
+
+            // Substituir `texto` por <code>texto</code> (código)
+            markdown = markdown.replace(/`(.*?)`/g, '<code>$1</code>');
+
+            // Substituir # Título por <h1>Título</h1> (título 1)
+            // Garantir que o título seja formatado apenas na linha com o #
+            markdown = markdown.replace(/^# (.*?)$/gm, '<h1>$1</h1>');
+
+            // Substituir - Item por <ul><li>Item</li></ul> (lista não ordenada)
+            markdown = markdown.replace(/^- (.*?)$/gm, '<ul><li>$1</li></ul>');
+
+            // Substituir 1. Item por <ol><li>Item</li></ol> (lista ordenada)
+            markdown = markdown.replace(/^\d+\.(.*?)$/gm, '<ol><li>$1</li></ol>');
+
+            // Substituir [texto](link) por <a href="link">texto</a> (links)
+            markdown = markdown.replace(/\[([^\]]+)\]\(([^)]+)\)/g, '<a href="$2" target="_blank">$1</a>');
+
+            // Quebra de linha: converte \n em <br>
+            markdown = markdown.replace(/\n/g, '<br>');
+
+            return markdown;
+        }
+
+
+
+
+
+        // Atualiza a pré-visualização ao digitar
+        document.getElementById('descricao').addEventListener('input', function () {
+            let inputText = this.value;
+            let preview = document.getElementById('descricao-preview');
+
+            preview.innerHTML = markdownToHtml(inputText);
+        });
+
+        // Exibir o modal quando o botão de tutorial for clicado
+        document.getElementById('tutorial-btn').addEventListener('click', function () {
+            document.getElementById('tutorial-modal').style.display = 'block';
+        });
+
+        // Fechar o modal quando o "X" for clicado
+        document.getElementById('close-btn').addEventListener('click', function () {
+            document.getElementById('tutorial-modal').style.display = 'none';
+        });
+
+        // Fechar o modal se o usuário clicar fora dele
+        window.addEventListener('click', function (event) {
+            if (event.target == document.getElementById('tutorial-modal')) {
+                document.getElementById('tutorial-modal').style.display = 'none';
+            }
         });
     </script>
 

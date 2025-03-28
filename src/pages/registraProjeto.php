@@ -11,8 +11,12 @@ if (!isset($_POST['nome'], $_POST['descricao'], $_POST['cursos'], $_POST['temas'
     exit;
 }
 
+
+
+
 $nomeProjeto = $_POST['nome'];
-$descricaoProjeto = $_POST['descricao'];
+$resumoProjeto = $_POST['resumo'];
+$descricaoProjeto = str_replace('<br>', "\n", $_POST['descricao']);
 $temasProjeto = $_POST['temas'];
 $cursosProjeto = $_POST['cursos'];
 
@@ -61,6 +65,7 @@ if (isset($_FILES['arquivo']) && $_FILES['arquivo']['error'] === UPLOAD_ERR_OK) 
 
 $projetoController = new Projeto(
     $nomeProjeto,
+    $resumoProjeto,
     $descricaoProjeto,
     $temasProjeto,
     $cursosProjeto,

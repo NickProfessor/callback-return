@@ -16,9 +16,10 @@ class Projeto
     private $alunos = [];
     private $listaDeProjetos = [];
 
-    public function __construct($nome, $descricao, $temas, $cursos, $alunos, $materialApoio)
+    public function __construct($nome, $resumo, $descricao, $temas, $cursos, $alunos, $materialApoio)
     {
         $this->nome = $nome;
+        $this->resumo = $resumo;
         $this->descricao = $descricao;
         $this->temas = $temas;
         $this->cursos = $cursos;
