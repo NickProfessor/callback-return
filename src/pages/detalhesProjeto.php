@@ -19,7 +19,8 @@ if (isset($_GET["id"]) && $_GET["id"] != "") {
 
         $projetoNome = $projeto['projeto_nome'];
         $projetoCursos = $projeto['cursos'];
-        $projetoDescricao = $projeto['projeto_descricao'];
+        $projetoDescricao = $projeto['projeto_descricao']; // Não usamos nl2br aqui
+        $projetoMaterialApoio = $projeto['projeto_material_apoio'];
         $projetoAlunos = explode(',', $projeto['alunos']);
         $projetoTemas = explode(',', $projeto['temas']);
         $projetoAvaliacoes = $projeto['total_avaliacoes'];
@@ -27,7 +28,7 @@ if (isset($_GET["id"]) && $_GET["id"] != "") {
 
         $comentariosBrutos = explode(' | ', $projeto['comentarios']);
 
-        // No seu arquivo PHP onde você processa os dados
+        // Filtra comentários válidos
         $projetoComentarios = array_filter($comentariosBrutos, function ($comentario) {
             // Remove espaços em branco antes e depois do comentário
             $comentario = trim($comentario);
@@ -57,13 +58,3 @@ if (isset($_GET["id"]) && $_GET["id"] != "") {
 
 include "../views/footer.php";
 ?>
-
-<script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
-<script>
-    documentMarked = document.getElementById('projeto-descricao').textContent;
-    document.getElementById('projeto-descricao').innerHTML =
-        marked.parse(documentMarked);
-</script>
-</body>
-
-</html>

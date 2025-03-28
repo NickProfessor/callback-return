@@ -26,7 +26,9 @@
         </div>
         <div class="projeto-info">
             <p>Descrição:</p>
-            <p class="projeto-info-desc" id="projeto-descricao"><?php echo htmlspecialchars($projetoDescricao); ?></p>
+            <p class="projeto-info-desc" id="projeto-descricao" style="white-space: pre-wrap;">
+                <?php echo htmlspecialchars($projetoDescricao); ?>
+            </p>
         </div>
         <div class="projeto-info">
             <p>Alunos:</p>
@@ -81,6 +83,9 @@
 
         <a href="./avaliaProjeto.php?id=<?php echo $projetoId ?>" class="botao-padrao">Clique aqui para avaliar o
             projeto</a>
+        <a href="./../<?php echo $projetoMaterialApoio ?>" class="botao-padrao" target="_blank">Clique aqui para acessar
+            o
+            material</a>
 
 
         <div class="projeto-comentarios">
@@ -99,3 +104,9 @@
 
 
     </main>
+
+    <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
+    <script>
+        var descricao = <?php echo json_encode($projetoDescricao, JSON_HEX_TAG); ?>;
+        document.getElementById("projeto-descricao").innerHTML = marked.parse(descricao);
+    </script>

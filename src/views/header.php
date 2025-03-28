@@ -40,6 +40,7 @@
         <?php elseif ($page == 'projetoAvaliado'): ?>
             <link rel="stylesheet" href="../assets/css/pages/projetoAvaliado.css">
         <?php elseif ($page == 'cadastroProjeto'): ?>
+            <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/easymde/dist/easymde.min.css">
             <link rel="stylesheet" href="../assets/css/pages/cadastroProjeto.css">
         <?php elseif ($page == 'registraProjeto'): ?>
             <link rel="stylesheet" href="../assets/css/pages/registraProjeto.css">

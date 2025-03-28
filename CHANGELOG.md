@@ -1,4 +1,4 @@
-## [2.0] - 2025-03-21
+## [2.0] - 2025-03-28
 
 ### Alterado
 
@@ -31,6 +31,8 @@
 
 - A contagem de auto_increment de todas as tabelas foi zerada
 
+- Ao cadastrar projeto, a forma de incluir alunos foi atualizada. Agora todos os alunos cadastrados no banco irão aparecer como opção para selecionar
+
 ### Adicionado
 
 - A tabela 'pergunta' foi criada para armazenar as perguntas que serão questionadas ao avaliador com relação ao projeto apresentado/exposto. A tabela conta com uma coluna específica 'ordem' para que o administrador possa definir a ordem das perguntas.
@@ -59,6 +61,10 @@
 - Como forma de teste, foram criados 3 páginas que só permitem determinado tipo de usuário
 - Foi adicionado um log que registra toda interação com o banco de dados através do sistema
 - Agora o usuário do tipo administrador pode adicionar usuários do tipo aluno. Todo usuário do tipo aluno é registrado na tabela 'aluno'
+
+- Ao cadastrar projeto, pode-se adicionar resumo.
+- Ao cadastrar projeto, pode-se adicionar uma descrição personalizada utilizando um formatador de textos. Nele é incluído um preview de como vai ficar a descrição
+- Termos de uso adicionado
 
 ### Removido
 
