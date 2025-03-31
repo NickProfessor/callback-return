@@ -19,6 +19,7 @@ if (isset($_GET["projeto"]) && $_GET["projeto"] != "") {
 
         $projetoNome = $projeto['nome'];
 
+        $perguntas = Projeto::buscaPerguntas();
         $etapa = 5;
         include "../views/formulario.php";
     } else {

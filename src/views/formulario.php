@@ -324,7 +324,7 @@
         <input type="hidden" name="id_projeto" value="<?php echo htmlspecialchars($projetoId); ?>">
         <input type="hidden" name="nome_projeto" value="<?php echo $projeto['nome'] ?>">
         <div class="form-group">
-            <label for="nota_projeto">Como você avalia esse projeto?</label>
+            <label for="nota_projeto">Como você avalia em geral esse projeto?</label>
             <div class="projeto-estrelas">
                 <i class="fa-solid fa-star" data-value="1"></i>
                 <i class="fa-solid fa-star" data-value="2"></i>
@@ -339,6 +339,32 @@
             </div>
             <input type="number" name="nota_projeto" id="nota_projeto" required style="display: none;">
         </div>
+
+        <?php foreach ($perguntas as $pergunta): ?>
+            <div class="form-group">
+                <label for="pergunta<?= $pergunta['id_pergunta'] ?>">
+                    <?= htmlspecialchars($pergunta['texto_pergunta']) ?>
+                </label>
+
+                <?php if ($pergunta['tipo_pergunta'] === "sim_nao"): ?>
+                    <div class="form-group">
+                        <div class="radio-formulario">
+                            <input type="radio" name="pergunta<?= $pergunta['id_pergunta'] ?>"
+                                id="resposta_sim_<?= $pergunta['id_pergunta'] ?>" value="sim" required>
+                            <label for="resposta_sim_<?= $pergunta['id_pergunta'] ?>">Sim</label>
+                        </div>
+                        <div class="radio-formulario">
+                            <input type="radio" name="pergunta<?= $pergunta['id_pergunta'] ?>"
+                                id="resposta_nao_<?= $pergunta['id_pergunta'] ?>" value="não" required>
+                            <label for="resposta_nao_<?= $pergunta['id_pergunta'] ?>">Não</label>
+                        </div>
+                    </div>
+                <?php elseif ($pergunta['tipo_pergunta'] === "texto"): ?>
+                    <textarea name="pergunta<?= $pergunta['id_pergunta'] ?>" id="pergunta<?= $pergunta['id_pergunta'] ?>" cols="40"
+                        rows="6" class="campo-texto"></textarea>
+                <?php endif; ?>
+            </div>
+        <?php endforeach; ?>
 
         <div class="form-group">
             <label for="comentario_projeto">Comente algo interessante (opcional)</label>
