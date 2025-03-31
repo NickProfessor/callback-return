@@ -353,7 +353,7 @@
 
         </div>
 
-        <a href="./login.php">Esqueci meu ID</a>
+
 
 
         <div class="botoes-formulario">
@@ -393,7 +393,7 @@
         <main>
             <p class="mensagem">Você avaliou o projeto "<?php echo $projetoNome ?>"</p>
             <p class="mensagem">Agradecemos a colaboração</p>
-            <a href="./detalhesProjeto.php?id=<?php echo $id_projeto ?>" class="botao-padrao">Voltar para detalhes do
+            <a href="./detalhesProjeto.php?projeto=<?php echo $id_projeto ?>" class="botao-padrao">Voltar para detalhes do
                 projeto</a>
         </main>
 
@@ -403,7 +403,7 @@
             <p class="mensagem">Algo não ocorreu como esperado. Certifique-se que é a primeira vez que está avaliando esse
                 projeto</p>
             <p class="mensagem">Agradecemos a colaboração</p>
-            <a href="./detalhesProjeto.php?id=<?php echo $id_projeto ?>" class="botao-padrao">Voltar para detalhes do
+            <a href="./detalhesProjeto.php?projeto=<?php echo $id_projeto ?>" class="botao-padrao">Voltar para detalhes do
                 projeto</a>
         </main>
 

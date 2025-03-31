@@ -28,5 +28,5 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
         header("Location: ./login.php?dados-incorretos");
     }
 } else {
-    header("Location: ../../index.php");
+    header("Location: ../../index.php?impossivel-acessar-pagina");
 }

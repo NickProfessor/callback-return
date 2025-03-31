@@ -522,6 +522,9 @@ class Projeto
         }
     }
 
+    public function buscaPerguntas()
+    {
 
+    }
 
 }

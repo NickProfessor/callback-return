@@ -2,9 +2,9 @@
 
 require_once "../models/Projeto.php";
 
-if (isset($_GET["id"]) && $_GET["id"] != "") {
+if (isset($_GET["projeto"]) && $_GET["projeto"] != "") {
 
-    $projetoId = $_GET["id"];
+    $projetoId = $_GET["projeto"];
 
     $projetoExiste = Projeto::obterProjetoPeloId($projetoId);
 

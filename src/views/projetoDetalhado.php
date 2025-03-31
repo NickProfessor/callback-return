@@ -81,7 +81,7 @@
             <?php endif; ?>
         </div>
 
-        <a href="./avaliaProjeto.php?id=<?php echo $projetoId ?>" class="botao-padrao">Clique aqui para avaliar o
+        <a href="./avaliaProjeto.php?projeto=<?php echo $projetoId ?>" class="botao-padrao">Clique aqui para avaliar o
             projeto</a>
         <a href="./../<?php echo $projetoMaterialApoio ?>" class="botao-padrao" target="_blank">Clique aqui para acessar
             o
