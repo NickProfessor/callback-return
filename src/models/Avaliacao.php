@@ -12,13 +12,12 @@ class Avaliacao
     private $id_usuario;
     private $fraseSeguranca;
 
-    public function __construct(int $nota, $id_projeto, $comentario, $id_usuario, $fraseSeguranca)
+    public function __construct(int $nota, $id_projeto, $comentario, $id_usuario)
     {
         $this->nota = $nota;
         $this->id_projeto = $id_projeto;
         $this->comentario = $comentario;
         $this->id_usuario = $id_usuario;
-        $this->fraseSeguranca = $fraseSeguranca;
     }
 
 
@@ -26,44 +25,41 @@ class Avaliacao
     public function avaliaProjeto()
     {
         $userController = new UserController();
-        $usuario = $userController->validaUsuario($this->id_usuario, $this->fraseSeguranca);
 
-        if ($usuario) {
-            if (trim($this->comentario) === "") {
-                $this->comentario = "sem comentario";
-            }
 
-            if ($this->usuarioJaAvaliou()) {
-                header("Location: ./avaliaProjeto.php?id=" . $this->id_projeto . "&erro=ja-avaliado");
-                exit();
-            } else {
-                global $conn;
+        if (trim($this->comentario) === "") {
+            $this->comentario = "sem comentario";
+        }
 
-                $sql = "INSERT INTO avaliacao (id_projeto, id_usuario, data_avaliacao, comentario, nota)
+        if ($this->usuarioJaAvaliou()) {
+            header("Location: ./avaliaProjeto.php?projeto=" . $this->id_projeto . "&erro=ja-avaliado");
+            exit();
+        } else {
+            global $conn;
+
+            $sql = "INSERT INTO avaliacao (id_projeto, id_usuario, data_avaliacao, comentario, nota)
                     VALUES (?, ?, NOW(), ?, ?);";
-                $stmt = $conn->prepare($sql);
+            $stmt = $conn->prepare($sql);
 
-                if ($stmt) {
-                    $stmt->bind_param("iisd", $this->id_projeto, $this->id_usuario, $this->comentario, $this->nota);
+            if ($stmt) {
+                $stmt->bind_param("iisd", $this->id_projeto, $this->id_usuario, $this->comentario, $this->nota);
 
-                    if ($stmt->execute()) {
-                        return [
-                            'status' => 'success',
-                            'message' => 'Avaliação inserida com sucesso.'
-                        ];
-                    } else {
-                        header("Location: ./avaliaProjeto.php?id={$this->id_projeto}&erro=falha-insercao");
-                        exit();
-                    }
+                if ($stmt->execute()) {
+                    return [
+                        'status' => 'success',
+                        'message' => 'Avaliação inserida com sucesso.'
+                    ];
                 } else {
-                    header("Location: ./avaliaProjeto.php?id={$this->id_projeto}&erro=preparacao-falha");
+                    Logger::log("Erro ao avaliar o projeto", "ERROR");
+                    header("Location: ./avaliaProjeto.php?projeto={$this->id_projeto}&erro=falha-insercao");
                     exit();
                 }
+            } else {
+                header("Location: ./avaliaProjeto.php?projeto={$this->id_projeto}&erro=preparacao-falha");
+                exit();
             }
-        } else {
-            header("Location: ./avaliaProjeto.php?id={$this->id_projeto}&erro=usuario-invalido");
-            exit();
         }
+
     }
 
 

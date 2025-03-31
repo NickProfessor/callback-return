@@ -10,7 +10,7 @@ $pageTitle = "Avaliando | CallBackReturn";
 include "../views/header.php";
 
 if (isset($_GET["projeto"]) && $_GET["projeto"] != "") {
-    if(SessionManager::isLoggedIn()) {
+    if (SessionManager::isLoggedIn()) {
         if (isset($_GET["erro"]) && $_GET["erro"] == "nota-invalida") {
             $notaInvalida = true;
         }
@@ -21,7 +21,7 @@ if (isset($_GET["projeto"]) && $_GET["projeto"] != "") {
 
         $etapa = 5;
         include "../views/formulario.php";
-    }else {
+    } else {
         $etapa = 1;
         include "../views/formulario.php";
     }
