@@ -1,4 +1,5 @@
 <?php
+require_once "../models/Avaliacao.php";
 require_once "../models/Projeto.php";
 require_once "../helpers/SessionManager.php";
 
@@ -19,7 +20,7 @@ if (isset($_GET["projeto"]) && $_GET["projeto"] != "") {
 
         $projetoNome = $projeto['nome'];
 
-        $perguntas = Projeto::buscaPerguntas();
+        $perguntas = Avaliacao::buscaPerguntas();
         $etapa = 5;
         include "../views/formulario.php";
     } else {

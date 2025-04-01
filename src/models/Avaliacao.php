@@ -2,6 +2,7 @@
 require_once __DIR__ . "/../../config/config.php";
 require_once __DIR__ . "/../../config/db_connect.php";
 require_once __DIR__ . "/../../src/controllers/UserController.php";
+require_once __DIR__ . "/../helpers/Logger.php";
 
 
 class Avaliacao
@@ -85,6 +86,36 @@ class Avaliacao
             }
         } else {
             die("Erro na preparação da consulta: " . $conn->error);
+        }
+    }
+
+    public static function buscaPerguntas()
+    {
+        global $conn;
+        try {
+            $sql = "SELECT id_pergunta, texto_pergunta, tipo_pergunta, ordem FROM pergunta WHERE ativo = 1";
+            $stmt = $conn->prepare($sql);
+
+            if (!$stmt) {
+                throw new Exception("Erro ao preparar a query: " . $conn->error);
+            }
+
+            if (!$stmt->execute()) {
+                throw new Exception("Erro ao executar a query: " . $stmt->error);
+            }
+
+            $resultado = $stmt->get_result();
+            $perguntas = [];
+
+            while ($row = $resultado->fetch_assoc()) {
+                $perguntas[] = $row;
+            }
+
+            return $perguntas;
+
+        } catch (Exception $e) {
+            error_log($e->getMessage()); // Registra o erro no log do servidor
+            return ['erro' => 'Não foi possível buscar as perguntas.']; // Retorna um erro amigável
         }
     }
 }
