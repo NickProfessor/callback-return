@@ -340,6 +340,7 @@
             <input type="number" name="nota_projeto" id="nota_projeto" required style="display: none;">
         </div>
 
+        <!-- PRECISA SER REFEITO!: -->
         <?php foreach ($perguntas as $pergunta): ?>
             <div class="form-group">
                 <label for="pergunta<?= $pergunta['id_pergunta'] ?>">
@@ -349,23 +350,23 @@
                 <?php if ($pergunta['tipo_pergunta'] === "sim_nao"): ?>
                     <div class="form-group">
                         <div class="radio-formulario">
-                            <input type="radio" name="pergunta<?= $pergunta['id_pergunta'] ?>"
+                            <input type="radio" name="pergunta[<?= $pergunta['id_pergunta'] ?>]"
                                 id="resposta_sim_<?= $pergunta['id_pergunta'] ?>" value="sim" required>
                             <label for="resposta_sim_<?= $pergunta['id_pergunta'] ?>">Sim</label>
                         </div>
                         <div class="radio-formulario">
-                            <input type="radio" name="pergunta<?= $pergunta['id_pergunta'] ?>"
+                            <input type="radio" name="pergunta[<?= $pergunta['id_pergunta'] ?>]"
                                 id="resposta_nao_<?= $pergunta['id_pergunta'] ?>" value="não" required>
                             <label for="resposta_nao_<?= $pergunta['id_pergunta'] ?>">Não</label>
                         </div>
                     </div>
                 <?php elseif ($pergunta['tipo_pergunta'] === "texto"): ?>
-                    <textarea name="pergunta<?= $pergunta['id_pergunta'] ?>" id="pergunta<?= $pergunta['id_pergunta'] ?>" cols="40"
-                        rows="6" class="campo-texto"></textarea>
+                    <textarea name="pergunta[<?= $pergunta['id_pergunta'] ?>]" id="pergunta<?= $pergunta['id_pergunta'] ?>"
+                        cols="40" rows="6" class="campo-texto"></textarea>
                 <?php endif; ?>
             </div>
         <?php endforeach; ?>
-
+        <!-- PRECISA SER REFEITO!; -->
         <div class="form-group">
             <label for="comentario_projeto">Comente algo interessante (opcional)</label>
             <textarea name="comentario_projeto" id="comentario_projeto" cols="40" rows="6" class="campo-texto"></textarea>

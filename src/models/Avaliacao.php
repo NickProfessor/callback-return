@@ -14,12 +14,13 @@ class Avaliacao
 
     private $respostas = [];
 
-    public function __construct(int $nota, $id_projeto, $comentario, $id_usuario)
+    public function __construct(int $nota, $id_projeto, $comentario, $id_usuario, $respostas)
     {
         $this->nota = $nota;
         $this->id_projeto = $id_projeto;
         $this->comentario = $comentario;
         $this->id_usuario = $id_usuario;
+        $this->respostas = $respostas;
     }
 
 
@@ -65,73 +66,74 @@ class Avaliacao
     // }
 
     public function avaliaProjeto()
-{
-    $userController = new UserController();
+    {
 
-    if (trim($this->comentario) === "") {
-        $this->comentario = "sem comentario";
-    }
+        if (trim($this->comentario) === "") {
+            $this->comentario = "sem comentario";
+        }
 
-    if ($this->usuarioJaAvaliou()) {
-        header("Location: ./avaliaProjeto.php?projeto=" . $this->id_projeto . "&erro=ja-avaliado");
-        exit();
-    }
+        if ($this->usuarioJaAvaliou()) {
+            header("Location: ./avaliaProjeto.php?projeto=" . $this->id_projeto . "&erro=ja-avaliado");
+            exit();
+        }
 
-    global $conn;
+        global $conn;
 
-    // Iniciar transação
-    $conn->begin_transaction();
+        // Iniciar transação
+        $conn->begin_transaction();
 
-    try {
-        // Inserir a avaliação
-        $sql = "INSERT INTO avaliacao (id_projeto, id_usuario, data_avaliacao, comentario, nota)
+        try {
+            // Inserir a avaliação
+            $sql = "INSERT INTO avaliacao (id_projeto, id_usuario, data_avaliacao, comentario, nota)
                 VALUES (?, ?, NOW(), ?, ?)";
-        $stmt = $conn->prepare($sql);
+            $stmt = $conn->prepare($sql);
 
-        if (!$stmt) {
-            throw new Exception("Erro ao preparar a inserção da avaliação: " . $conn->error);
-        }
-
-        $stmt->bind_param("iisd", $this->id_projeto, $this->id_usuario, $this->comentario, $this->nota);
-
-        if (!$stmt->execute()) {
-            throw new Exception("Erro ao inserir avaliação: " . $stmt->error);
-        }
-
-        $id_avaliacao = $conn->insert_id; // Obtém o ID da avaliação inserida
-        $stmt->close();
-
-        // Inserir as respostas na tabela 'respostas'
-        $sqlRespostas = "INSERT INTO respostas (id_avaliacao, id_pergunta, nota) VALUES (?, ?, ?)";
-        $stmtResposta = $conn->prepare($sqlRespostas);
-
-        if (!$stmtResposta) {
-            throw new Exception("Erro ao preparar inserção das respostas: " . $conn->error);
-        }
-
-        foreach ($this->respostas as $resposta) {
-            $stmtResposta->bind_param("iii", $id_avaliacao, $resposta['id_pergunta'], $resposta['nota']);
-
-            if (!$stmtResposta->execute()) {
-                throw new Exception("Erro ao inserir resposta: " . $stmtResposta->error);
+            if (!$stmt) {
+                throw new Exception("Erro ao preparar a inserção da avaliação: " . $conn->error);
             }
+
+            $stmt->bind_param("iisd", $this->id_projeto, $this->id_usuario, $this->comentario, $this->nota);
+
+            if (!$stmt->execute()) {
+                throw new Exception("Erro ao inserir avaliação: " . $stmt->error);
+            }
+
+            $id_avaliacao = $conn->insert_id; // Obtém o ID da avaliação inserida
+
+            // Inserir as respostas na tabela 'respostas'
+            // PRECISA SER REFEITO:
+            $sqlRespostas = "INSERT INTO resposta (id_avaliacao, id_pergunta, resposta_texto, versao_pergunta_texto) VALUES (?, ?, ?,?)";
+            $stmtResposta = $conn->prepare($sqlRespostas);
+
+            if (!$stmtResposta) {
+                throw new Exception("Erro ao preparar inserção das respostas: " . $conn->error);
+            }
+
+            $texto = "TEMPORÁRIO";
+            foreach ($this->respostas as $resposta) {
+                $stmtResposta->bind_param("iiss", $id_avaliacao, $resposta['id_pergunta'], $resposta['resposta_texto'], $texto);
+
+                if (!$stmtResposta->execute()) {
+                    throw new Exception("Erro ao inserir resposta: " . $stmtResposta->error);
+                }
+            }
+            // PRECISA SER REFEITO;
+
+            $stmtResposta->close();
+            $conn->commit(); // Confirmar a transação
+
+            return [
+                'status' => 'success',
+                'message' => 'Avaliação e respostas registradas com sucesso.'
+            ];
+        } catch (Exception $e) {
+            $conn->rollback(); // Desfaz inserções em caso de erro
+
+            Logger::log("Erro ao avaliar o projeto: " . $e->getMessage(), "ERROR");
+            header("Location: ./avaliaProjeto.php?projeto={$this->id_projeto}&erro=falha-insercao");
+            exit();
         }
-
-        $stmtResposta->close();
-        $conn->commit(); // Confirmar a transação
-
-        return [
-            'status' => 'success',
-            'message' => 'Avaliação e respostas registradas com sucesso.'
-        ];
-    } catch (Exception $e) {
-        $conn->rollback(); // Desfaz inserções em caso de erro
-
-        Logger::log("Erro ao avaliar o projeto: " . $e->getMessage(), "ERROR");
-        header("Location: ./avaliaProjeto.php?projeto={$this->id_projeto}&erro=falha-insercao");
-        exit();
     }
-}
 
 
 
@@ -190,21 +192,23 @@ class Avaliacao
         }
     }
 
-    public function adicionarResposta($id_pergunta, $resposta) {
+    public function adicionarResposta($id_pergunta, $resposta)
+    {
         $this->respostas[] = [
             'id_pergunta' => $id_pergunta,
             'resposta' => $resposta
         ];
     }
 
-    public function salvar() {
+    public function salvar()
+    {
         $pdo = new PDO("mysql:host=localhost;dbname=escola_nickollas", "root", "");
-    
+
         $stmt = $pdo->prepare("INSERT INTO avaliacoes (id_projeto, id_usuario, comentario) VALUES (?, ?, ?)");
         $stmt->execute([$this->id_projeto, $this->id_usuario, $this->comentario]);
-    
+
         $id_avaliacao = $pdo->lastInsertId();
-    
+
         $stmtResposta = $pdo->prepare("INSERT INTO respostas (id_avaliacao, id_pergunta, nota) VALUES (?, ?, ?)");
         foreach ($this->respostas as $resposta) {
             $stmtResposta->execute([$id_avaliacao, $resposta['id_pergunta'], $resposta['nota']]);

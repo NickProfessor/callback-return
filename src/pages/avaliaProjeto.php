@@ -21,10 +21,11 @@ if (isset($_GET["projeto"]) && $_GET["projeto"] != "") {
         $projetoNome = $projeto['nome'];
 
         $perguntas = Avaliacao::buscaPerguntas();
+
         $etapa = 5;
         include "../views/formulario.php";
     } else {
-        $etapa = 1;
+        $etapa = 2;
         include "../views/formulario.php";
     }
 } else {

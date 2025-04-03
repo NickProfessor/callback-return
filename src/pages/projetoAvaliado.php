@@ -17,6 +17,19 @@ if (isset($_POST['id_projeto'], $_POST['nome_projeto'], $_POST['nota_projeto'], 
     $nota_projeto = $_POST['nota_projeto'];
     $comentario_projeto = $_POST['comentario_projeto'];
     $id_usuario = $usuario['id_usuario'];
+    $perguntas = Avaliacao::buscaPerguntas();
+    $respostas = [];
+    // PRECISA SER REFEITO:
+    foreach ($_POST['pergunta'] as $id_pergunta => $resposta) {
+
+        $respostas[] = [
+            'id_pergunta' => $id_pergunta,
+            'resposta_texto' => $resposta
+        ];
+
+    }
+    // PRECISA SER REFEITO;
+
 
     if ($nota_projeto > 10 || $nota_projeto < 1) {
         header("Location: avaliaProjeto.php?projeto=$id_projeto&erro=nota-invalida");
@@ -27,6 +40,7 @@ if (isset($_POST['id_projeto'], $_POST['nome_projeto'], $_POST['nota_projeto'], 
             $id_projeto,
             $comentario_projeto,
             $id_usuario,
+            $respostas
         );
 
         try {
