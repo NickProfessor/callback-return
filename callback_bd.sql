@@ -101,7 +101,7 @@ CREATE TABLE `avaliacao` (
   KEY `fk_projeto_avaliacao_idx` (`id_projeto`),
   CONSTRAINT `fk_projeto_avaliacao` FOREIGN KEY (`id_projeto`) REFERENCES `projeto` (`id_projeto`) ON DELETE RESTRICT,
   CONSTRAINT `fk_usuario_avaliacao` FOREIGN KEY (`id_usuario`) REFERENCES `usuario` (`id_usuario`) ON DELETE RESTRICT
-) ENGINE=InnoDB AUTO_INCREMENT=14 DEFAULT CHARSET=utf8mb3;
+) ENGINE=InnoDB AUTO_INCREMENT=19 DEFAULT CHARSET=utf8mb3;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -110,7 +110,7 @@ CREATE TABLE `avaliacao` (
 
 LOCK TABLES `avaliacao` WRITE;
 /*!40000 ALTER TABLE `avaliacao` DISABLE KEYS */;
-INSERT INTO `avaliacao` VALUES (1,16,1,'2025-03-24','sem comentario',10,'2025-03-24 03:05:09','2025-03-24 03:05:09'),(2,17,1,'2025-03-25','sem comentario',10,'2025-03-25 18:01:02','2025-03-25 18:01:02'),(3,18,1,'2025-03-27','sem comentario',10,'2025-03-27 13:42:37','2025-03-27 13:42:37'),(4,19,1,'2025-03-27','sem comentario',10,'2025-03-27 14:41:01','2025-03-27 14:41:01'),(5,20,1,'2025-03-27','sem comentario',10,'2025-03-27 14:47:04','2025-03-27 14:47:04'),(6,21,1,'2025-03-27','sem comentario',10,'2025-03-27 14:49:45','2025-03-27 14:49:45'),(7,22,1,'2025-03-27','sem comentario',10,'2025-03-27 15:01:42','2025-03-27 15:01:42'),(8,23,1,'2025-03-27','sem comentario',10,'2025-03-27 15:07:49','2025-03-27 15:07:49'),(9,24,1,'2025-03-27','sem comentario',10,'2025-03-27 15:12:09','2025-03-27 15:12:09'),(10,25,1,'2025-03-28','sem comentario',10,'2025-03-28 02:58:28','2025-03-28 02:58:28'),(11,26,1,'2025-03-28','sem comentario',10,'2025-03-28 05:01:17','2025-03-28 05:01:17'),(12,10,1,'2025-03-31','aaa',9,'2025-03-31 03:36:40','2025-03-31 03:36:40'),(13,10,20,'2025-03-31','AAA',8,'2025-03-31 03:48:27','2025-03-31 03:48:27');
+INSERT INTO `avaliacao` VALUES (1,16,1,'2025-03-24','sem comentario',10,'2025-03-24 03:05:09','2025-03-24 03:05:09'),(2,17,1,'2025-03-25','sem comentario',10,'2025-03-25 18:01:02','2025-03-25 18:01:02'),(3,18,1,'2025-03-27','sem comentario',10,'2025-03-27 13:42:37','2025-03-27 13:42:37'),(4,19,1,'2025-03-27','sem comentario',10,'2025-03-27 14:41:01','2025-03-27 14:41:01'),(5,20,1,'2025-03-27','sem comentario',10,'2025-03-27 14:47:04','2025-03-27 14:47:04'),(6,21,1,'2025-03-27','sem comentario',10,'2025-03-27 14:49:45','2025-03-27 14:49:45'),(7,22,1,'2025-03-27','sem comentario',10,'2025-03-27 15:01:42','2025-03-27 15:01:42'),(8,23,1,'2025-03-27','sem comentario',10,'2025-03-27 15:07:49','2025-03-27 15:07:49'),(9,24,1,'2025-03-27','sem comentario',10,'2025-03-27 15:12:09','2025-03-27 15:12:09'),(10,25,1,'2025-03-28','sem comentario',10,'2025-03-28 02:58:28','2025-03-28 02:58:28'),(11,26,1,'2025-03-28','sem comentario',10,'2025-03-28 05:01:17','2025-03-28 05:01:17'),(12,10,1,'2025-03-31','aaa',9,'2025-03-31 03:36:40','2025-03-31 03:36:40'),(13,10,20,'2025-03-31','AAA',8,'2025-03-31 03:48:27','2025-03-31 03:48:27'),(18,13,1,'2025-04-03','sss',10,'2025-04-03 03:50:19','2025-04-03 03:50:19');
 /*!40000 ALTER TABLE `avaliacao` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -224,7 +224,7 @@ CREATE TABLE `pergunta` (
 
 LOCK TABLES `pergunta` WRITE;
 /*!40000 ALTER TABLE `pergunta` DISABLE KEYS */;
-INSERT INTO `pergunta` VALUES (1,'A apresentação foi clara e fácil de entender?','sim_nao',0,1,'2025-02-23 17:40:45','2025-04-01 16:56:56'),(2,'Como você avalia o conteúdo apresentado no projeto','sim_nao',0,0,'2025-02-23 17:40:45','2025-04-01 16:56:28'),(3,'O projeto foi bem organizado?','sim_nao',0,0,'2025-02-23 17:40:45','2025-04-01 16:56:28'),(4,'O projeto foi interessante?','sim_nao',0,1,'2025-02-23 17:40:45','2025-04-01 16:58:15'),(5,'Como você avalia a participação dos alunos durante a apresentação?','sim_nao',0,0,'2025-02-23 17:40:45','2025-04-01 16:56:28'),(6,'Houve alguma dificuldade técnica durante a apresentação?','sim_nao',0,0,'2025-02-23 17:40:45','2025-04-01 16:56:28'),(7,'Você recomendaria esse projeto a outros?','sim_nao',0,0,'2025-02-23 17:40:45','2025-04-01 16:56:28'),(8,'Quais pontos você acha que tem mais destaque no projeto?','texto',0,0,'2025-03-31 04:24:40','2025-04-01 16:56:28'),(9,'O que você aprendeu com esse projeto?','texto',0,1,'2025-03-31 04:25:07','2025-04-01 16:59:10'),(10,'Voce achou o tema do projeto relevante ao curso?','sim_nao',0,0,'2025-03-31 04:26:24','2025-04-01 16:56:28'),(11,'Teria alguma sugestão de melhoria para o projeto apresentado?','texto',0,0,'2025-03-31 04:27:16','2025-04-01 16:56:28');
+INSERT INTO `pergunta` VALUES (1,'A apresentação foi clara e fácil de entender?','sim_nao',0,0,'2025-02-23 17:40:45','2025-04-03 03:22:54'),(2,'Como você avalia o conteúdo apresentado no projeto','sim_nao',0,0,'2025-02-23 17:40:45','2025-04-01 16:56:28'),(3,'O projeto foi bem organizado?','sim_nao',0,0,'2025-02-23 17:40:45','2025-04-01 16:56:28'),(4,'O projeto foi interessante?','sim_nao',0,0,'2025-02-23 17:40:45','2025-04-03 03:23:03'),(5,'Como você avalia a participação dos alunos durante a apresentação?','sim_nao',0,0,'2025-02-23 17:40:45','2025-04-01 16:56:28'),(6,'Houve alguma dificuldade técnica durante a apresentação?','sim_nao',0,0,'2025-02-23 17:40:45','2025-04-01 16:56:28'),(7,'Você recomendaria esse projeto a outros?','sim_nao',0,0,'2025-02-23 17:40:45','2025-04-01 16:56:28'),(8,'Quais pontos você acha que tiveram mais destaque nessa apresentação?','texto',0,1,'2025-03-31 04:24:40','2025-04-03 03:28:01'),(9,'O que você aprendeu com essa apresentação?','texto',0,1,'2025-03-31 04:25:07','2025-04-03 03:24:22'),(10,'Voce achou o tema do projeto relevante ao curso?','sim_nao',0,0,'2025-03-31 04:26:24','2025-04-01 16:56:28'),(11,'Teria alguma sugestão de melhoria para o projeto apresentado?','texto',0,0,'2025-03-31 04:27:16','2025-04-01 16:56:28');
 /*!40000 ALTER TABLE `pergunta` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -279,7 +279,7 @@ CREATE TABLE `resposta` (
   KEY `id_pergunta` (`id_pergunta`),
   CONSTRAINT `resposta_ibfk_1` FOREIGN KEY (`id_avaliacao`) REFERENCES `avaliacao` (`id_avaliacao`),
   CONSTRAINT `resposta_ibfk_2` FOREIGN KEY (`id_pergunta`) REFERENCES `pergunta` (`id_pergunta`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb3;
+) ENGINE=InnoDB AUTO_INCREMENT=3 DEFAULT CHARSET=utf8mb3;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -288,6 +288,7 @@ CREATE TABLE `resposta` (
 
 LOCK TABLES `resposta` WRITE;
 /*!40000 ALTER TABLE `resposta` DISABLE KEYS */;
+INSERT INTO `resposta` VALUES (1,18,8,'TEMPORÁRIO',NULL,'AAA',1,'2025-04-03 03:50:19','2025-04-03 03:50:19'),(2,18,9,'TEMPORÁRIO',NULL,'ttt',1,'2025-04-03 03:50:19','2025-04-03 03:50:19');
 /*!40000 ALTER TABLE `resposta` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -390,4 +391,4 @@ UNLOCK TABLES;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2025-04-01 17:01:17
+-- Dump completed on 2025-04-03  4:13:07
