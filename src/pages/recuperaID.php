@@ -43,6 +43,6 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
     session_unset();
     session_destroy();
 } else {
-    header("Location: ../../index.php");
+    header("Location: ../../index.php?impossivel-acessar-pagina");
     exit();
 }

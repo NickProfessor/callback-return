@@ -1,10 +1,11 @@
 <?php
 
+require_once "../helpers/SessionManager.php";
 require_once "../models/Projeto.php";
 
-if (isset($_GET["id"]) && $_GET["id"] != "") {
+if (isset($_GET["projeto"]) && $_GET["projeto"] != "") {
 
-    $projetoId = $_GET["id"];
+    $projetoId = $_GET["projeto"];
 
     $projetoExiste = Projeto::obterProjetoPeloId($projetoId);
 
@@ -14,7 +15,7 @@ if (isset($_GET["id"]) && $_GET["id"] != "") {
         include "../views/header.php";
         echo "<h1>Projeto não encontrado</h1>";
     } else {
-
+        $usuario = SessionManager::get("usuario");
         $projeto = Projeto::obterDetalhesDoProjeto($projetoId);
 
         $projetoNome = $projeto['projeto_nome'];

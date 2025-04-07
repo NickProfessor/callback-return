@@ -5,6 +5,7 @@
     <form action="confirmarCadastro.php" method="POST" class="formulario-padrao">
 
 
+        <a href="./login.php">Já tem cadastro?</a>
         <div class="form-group">
             <label for="nome">Informe seu nome:</label>
             <input type="nome" name="nome" id="nome" class="campo-texto" placeholder="Clóvis da Silva" required>
@@ -46,7 +47,6 @@
                 <label for="termos">Aceito que o software utilize os dados coletados para fins acadêmicos</label>
 
             </div>
-            <a href="./login.php">Já tem cadastro?</a>
             <div class="botoes-formulario">
                 <button type="button" onclick="history.back()">Voltar</button>
                 <button>Continuar <i class="fa-solid fa-arrow-right"></i></button>
@@ -104,9 +104,11 @@
     <h1 class="titulo-formulario">Entre na sua conta para avaliar projetos</h1>
     <form action="logado.php" method="POST" class="formulario-padrao">
 
+
         <?php if (isset($_GET['dados-incorretos'])): ?>
             <p class="mensagem-erro">Algo deu errado. Confirme os dados</p>
         <?php endif; ?>
+        <a href="./cadastroUsuario.php">Não possui cadastro? Crie uma conta</a>
         <div class="form-group">
             <label for="nome">Informe seu email:</label>
             <input type="email" name="email" id="email" class="campo-texto" placeholder="Clóvis da Silva" required>
@@ -117,7 +119,6 @@
             <input type="password" name="frase" id="frase" class="campo-texto" required>
         </div>
 
-        <a href="./cadastroUsuario.php">Não possui cadastro? Crie uma conta</a>
 
         <div class="botoes-formulario">
             <button type="button" onclick="window.location.href='../../index.php'">Voltar para a tela principal</button>
@@ -323,7 +324,7 @@
         <input type="hidden" name="id_projeto" value="<?php echo htmlspecialchars($projetoId); ?>">
         <input type="hidden" name="nome_projeto" value="<?php echo $projeto['nome'] ?>">
         <div class="form-group">
-            <label for="nota_projeto">Como você avalia esse projeto?</label>
+            <label for="nota_projeto">Como você avalia em geral esse projeto?</label>
             <div class="projeto-estrelas">
                 <i class="fa-solid fa-star" data-value="1"></i>
                 <i class="fa-solid fa-star" data-value="2"></i>
@@ -339,20 +340,39 @@
             <input type="number" name="nota_projeto" id="nota_projeto" required style="display: none;">
         </div>
 
+        <!-- PRECISA SER REFEITO!: -->
+        <?php foreach ($perguntas as $pergunta): ?>
+            <div class="form-group">
+                <label for="pergunta<?= $pergunta['id_pergunta'] ?>">
+                    <?= htmlspecialchars($pergunta['texto_pergunta']) ?>
+                </label>
+
+                <?php if ($pergunta['tipo_pergunta'] === "sim_nao"): ?>
+                    <div class="form-group">
+                        <div class="radio-formulario">
+                            <input type="radio" name="pergunta[<?= $pergunta['id_pergunta'] ?>]"
+                                id="resposta_sim_<?= $pergunta['id_pergunta'] ?>" value="sim" required>
+                            <label for="resposta_sim_<?= $pergunta['id_pergunta'] ?>">Sim</label>
+                        </div>
+                        <div class="radio-formulario">
+                            <input type="radio" name="pergunta[<?= $pergunta['id_pergunta'] ?>]"
+                                id="resposta_nao_<?= $pergunta['id_pergunta'] ?>" value="não" required>
+                            <label for="resposta_nao_<?= $pergunta['id_pergunta'] ?>">Não</label>
+                        </div>
+                    </div>
+                <?php elseif ($pergunta['tipo_pergunta'] === "texto"): ?>
+                    <textarea name="pergunta[<?= $pergunta['id_pergunta'] ?>]" id="pergunta<?= $pergunta['id_pergunta'] ?>"
+                        cols="40" rows="6" class="campo-texto"></textarea>
+                <?php endif; ?>
+            </div>
+        <?php endforeach; ?>
+        <!-- PRECISA SER REFEITO!; -->
         <div class="form-group">
             <label for="comentario_projeto">Comente algo interessante (opcional)</label>
             <textarea name="comentario_projeto" id="comentario_projeto" cols="40" rows="6" class="campo-texto"></textarea>
         </div>
 
-        <div class="form-group">
-            <label for="id_usuario">Informe seu número de usuário (ID):</label>
-            <input type="number" name="id_usuario" id="id_usuario" class="campo-texto" required>
-        </div>
 
-        <div class="form-group">
-            <label for="frase">Informe sua frase de segurança</label>
-            <input type="password" name="frase" id="frase" class="campo-texto" required>
-        </div>
 
         <div class="checkbox-formulario">
             <input type="checkbox" name="termos" id="termos" required>
@@ -360,7 +380,7 @@
 
         </div>
 
-        <a href="./login.php">Esqueci meu ID</a>
+
 
 
         <div class="botoes-formulario">
@@ -400,7 +420,7 @@
         <main>
             <p class="mensagem">Você avaliou o projeto "<?php echo $projetoNome ?>"</p>
             <p class="mensagem">Agradecemos a colaboração</p>
-            <a href="./detalhesProjeto.php?id=<?php echo $id_projeto ?>" class="botao-padrao">Voltar para detalhes do
+            <a href="./detalhesProjeto.php?projeto=<?php echo $id_projeto ?>" class="botao-padrao">Voltar para detalhes do
                 projeto</a>
         </main>
 
@@ -410,7 +430,7 @@
             <p class="mensagem">Algo não ocorreu como esperado. Certifique-se que é a primeira vez que está avaliando esse
                 projeto</p>
             <p class="mensagem">Agradecemos a colaboração</p>
-            <a href="./detalhesProjeto.php?id=<?php echo $id_projeto ?>" class="botao-padrao">Voltar para detalhes do
+            <a href="./detalhesProjeto.php?projeto=<?php echo $id_projeto ?>" class="botao-padrao">Voltar para detalhes do
                 projeto</a>
         </main>
 

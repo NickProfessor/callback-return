@@ -7,11 +7,14 @@
     </header>
     <main>
         <h2 class="projeto-titulo"><?php echo htmlspecialchars($projetoNome); ?></h2>
-        <div class="projeto-avaliacoes">
-            <i class="fa-solid fa-star"></i>
-            <p><?php echo htmlspecialchars(number_format($projetoMediaAvaliacoes, 1)); ?></p>
-            <p>(<?php echo htmlspecialchars($projetoAvaliacoes); ?> avaliações)</p>
-        </div>
+
+        <?php if (isset($usuario) && ($usuario['tipo_usuario'] == 2 || $usuario['tipo_usuario'] == 4)): ?>
+            <div class="projeto-avaliacoes">
+                <i class="fa-solid fa-star"></i>
+                <p><?php echo htmlspecialchars(number_format($projetoMediaAvaliacoes, 1)); ?></p>
+                <p>(<?php echo htmlspecialchars($projetoAvaliacoes); ?> avaliações)</p>
+            </div>
+        <?php endif; ?>
         <div class="projeto-info">
             <p>Curso(s):</p>
             <p class="projeto-info-desc"><?php echo htmlspecialchars($projetoCursos); ?></p>
@@ -81,7 +84,7 @@
             <?php endif; ?>
         </div>
 
-        <a href="./avaliaProjeto.php?id=<?php echo $projetoId ?>" class="botao-padrao">Clique aqui para avaliar o
+        <a href="./avaliaProjeto.php?projeto=<?php echo $projetoId ?>" class="botao-padrao">Clique aqui para avaliar o
             projeto</a>
         <a href="./../<?php echo $projetoMaterialApoio ?>" class="botao-padrao" target="_blank">Clique aqui para acessar
             o
