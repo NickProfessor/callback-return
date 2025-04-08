@@ -36,7 +36,7 @@ main {
 }
 
 .projeto-info-desc {
-    background-color: #E9E9E9;
+    background-color: #d4d4d4;
     padding: 18px;
     border-radius: 8px;
     margin-top: 8px;
@@ -92,7 +92,7 @@ div.projeto-info-desc {
 .projeto-comentario {
     margin: 0 1em;
     padding: 0.9em 1.1em 0.8em;
-    background-color: #E9E9E9;
+    background-color: #d4d4d4;
     border-radius: 0 18px 18px 18px;
     word-wrap: break-word;
     word-break: break-word;

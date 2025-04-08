@@ -728,5 +728,11 @@
     </script>
 
 
-
+<?php elseif ($etapa == 10): ?>
+    <h1 class="titulo-formulario">Projeto <b>excluído</b> com sucesso!</h1>
+    <main>
+        <p class="mensagem">Você excluiu o projeto "<?php echo $nomeProjeto ?>"</p>
+        <p class="mensagem">Agradecemos a colaboração</p>
+        <a href="../../index.php" class="botao-padrao">Voltar para a página principal</a>
+    </main>
 <?php endif; ?>

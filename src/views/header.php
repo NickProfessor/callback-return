@@ -44,6 +44,8 @@
             <link rel="stylesheet" href="../assets/css/pages/cadastroProjeto.css">
         <?php elseif ($page == 'registraProjeto'): ?>
             <link rel="stylesheet" href="../assets/css/pages/registraProjeto.css">
+        <?php elseif ($page == 'excluiProjeto'): ?>
+            <link rel="stylesheet" href="../assets/css/pages/excluiProjeto.css">
         <?php elseif ($page == 'cadastroAluno'): ?>
             <link rel="stylesheet" href="../assets/css/pages/cadastroAluno.css">
         <?php endif; ?>
