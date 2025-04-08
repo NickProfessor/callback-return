@@ -18,6 +18,9 @@ if (isset($_GET["projeto"]) && $_GET["projeto"] != "") {
         $projetoId = $_GET["projeto"];
         $projeto = Projeto::obterProjetoPeloId($projetoId);
 
+        if (!isset($projeto)) {
+            header("Location: ../../index.php?algo-deu-errado");
+        }
         $projetoNome = $projeto['nome'];
 
         $perguntas = Avaliacao::buscaPerguntas();

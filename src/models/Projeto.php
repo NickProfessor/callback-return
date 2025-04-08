@@ -36,6 +36,7 @@ class Projeto
         p.resumo AS projeto_resumo,
         p.descricao AS projeto_descricao,
         
+        
         GROUP_CONCAT(DISTINCT c.nome) AS cursos,
         GROUP_CONCAT(DISTINCT i.nome) AS alunos,
         GROUP_CONCAT(DISTINCT t.nome) AS temas,
@@ -93,6 +94,8 @@ class Projeto
             GROUP BY a.id_projeto
         ) a ON p.id_projeto = a.id_projeto
 
+    WHERE p.ativo = 1
+
     GROUP BY 
         p.id_projeto, p.nome, p.resumo, p.descricao;
     ";
@@ -130,7 +133,7 @@ class Projeto
     {
         global $conn;
 
-        $sql = "SELECT * FROM projeto WHERE id_projeto = ?;";
+        $sql = "SELECT * FROM projeto WHERE id_projeto = ? AND ativo = 1;";
         $stmt = $conn->prepare($sql);
 
         if ($stmt) {
@@ -436,7 +439,7 @@ class Projeto
     private function projetoJaExiste()
     {
         global $conn;
-        $stmt = $conn->prepare("SELECT COUNT(*) FROM projeto WHERE nome = ?");
+        $stmt = $conn->prepare("SELECT COUNT(*) FROM projeto WHERE nome = ? AND ativo = 1");
         if (!$stmt) {
             die("Erro na preparação da consulta: " . $conn->error);
         }
@@ -522,6 +525,29 @@ class Projeto
         }
     }
 
+    public static function excluiProjeto($id_projeto)
+    {
+        global $conn;
+
+        $sql = "UPDATE projeto SET ativo = 0 WHERE id_projeto = ?";
+        $stmt = $conn->prepare($sql);
+        if (!$stmt) {
+            Logger::log("Erro na preparação da consulta: " . $conn->error, "ERROR");
+            die("Erro na preparação da consulta: " . $conn->error);
+        }
+
+
+        $stmt->bind_param("i", $id_projeto);
+
+        if ($stmt->execute()) {
+            Logger::log("Projeto $id_projeto foi excluído com sucesso", "DELETE");
+            $stmt->close();
+        } else {
+            $stmt->close();
+            Logger::log("Erro ao excluir projeto $id_projeto: " . $stmt->error, "ERROR");
+            die("Erro ao excluir projeto $id_projeto: " . $stmt->error);
+        }
+    }
 
 
 }

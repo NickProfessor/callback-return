@@ -1,14 +1,16 @@
 <body>
     <header>
         <h1 class="titulo-header">CallbackReturn</h1>
-        <a href="./cadastroUsuario.php" class="link-header">Cadastre se ou consulte o ID</a>
+        <?php if (!isset($usuario)): ?>
+            <a href="./cadastroUsuario.php" class="link-header">Cadastre se ou consulte o ID</a>
+        <?php endif; ?>
         <a href="../../index.php" class="botao-padrao"><i class="fa-solid fa-arrow-left"></i>
             Voltar</a>
     </header>
     <main>
         <h2 class="projeto-titulo"><?php echo htmlspecialchars($projetoNome); ?></h2>
 
-        <?php if (isset($usuario) && ($usuario['tipo_usuario'] == 2 || $usuario['tipo_usuario'] == 4)): ?>
+        <?php if (isset($usuarioAdm) || isset($usuarioProfessor)): ?>
             <div class="projeto-avaliacoes">
                 <i class="fa-solid fa-star"></i>
                 <p><?php echo htmlspecialchars(number_format($projetoMediaAvaliacoes, 1)); ?></p>
@@ -89,7 +91,11 @@
         <a href="./../<?php echo $projetoMaterialApoio ?>" class="botao-padrao" target="_blank">Clique aqui para acessar
             o
             material</a>
-
+        <?php if (isset($usuarioAdm)): ?>
+            <a href="./excluiProjeto.php?projeto=<?= $projetoId ?>" class="botao-padrao botao-excluir"
+                onclick="return confirm('Tem certeza que deseja excluir este projeto?')">Excluir esse
+                projeto</a>
+        <?php endif; ?>
 
         <div class="projeto-comentarios">
             <p>Comentários:</p>
