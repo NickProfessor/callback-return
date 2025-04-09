@@ -43,8 +43,8 @@
     border-radius: 8px;
     font-size: 14px;
     padding: 1em;
-    border: none;
-    box-shadow: inset 0px 1px 14px rgba(0, 0, 0, 0.25);
+    border: 1px solid #cccccc;
+    box-shadow: inset 0px 1px 14px rgba(0, 0, 0, 0.35);
 }
 
 .formulario-padrao input::placeholder {
@@ -105,6 +105,15 @@ formulario-padrao .botoes-formulario button:active,
     align-items: center;
     gap: 4px;
     font-size: 14px;
+}
+
+.formulario-padrao .checkbox-exibeSenha {
+    align-self: flex-end;
+}
+
+.formulario-padrao .checkbox-exibeSenha input[type='checkbox'] {
+    border-radius: 4px;
+
 }
 
 .formulario-padrao .mensagem-erro {

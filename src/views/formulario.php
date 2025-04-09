@@ -38,10 +38,19 @@
                 <label for="frase">Informe uma frase de segurança:</label>
                 <input type="password" name="frase" id="frase" class="campo-texto" required>
             </div>
+            <!-- Checkbox para mostrar/ocultar senha -->
+            <div class="checkbox-formulario checkbox-exibeSenha">
+                <input type="checkbox" id="mostrarSenha" onclick="toggleSenha()">
+                <label for="mostrarSenha">Exibir frase de segurança</label>
+            </div>
+            <br>
             <div class="form-group">
                 <label for="confirmacao">Repita a frase de segurança:</label>
                 <input type="password" name="confirmacao" id="confirmacao" class="campo-texto" required>
             </div>
+
+
+
             <div class="checkbox-formulario">
                 <input type="checkbox" name="termos" id="termos" required>
                 <label for="termos">Aceito que o software utilize os dados coletados para fins acadêmicos</label>
@@ -93,6 +102,14 @@
                 alert("As frases de segurança não coincidem!");
                 e.preventDefault(); // Impede o envio do formulário
             }
+        }
+
+        function toggleSenha() {
+            const frase = document.getElementById("frase");
+            const confirmacao = document.getElementById("confirmacao");
+            const tipo = frase.type === "password" ? "text" : "password";
+            frase.type = tipo;
+            confirmacao.type = tipo;
         }
     </script>
 
