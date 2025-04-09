@@ -135,7 +135,11 @@
             <label for="frase">Informe sua frase de segurança:</label>
             <input type="password" name="frase" id="frase" class="campo-texto" required>
         </div>
-
+        <!-- Checkbox para mostrar/ocultar senha -->
+        <div class="checkbox">
+            <input type="checkbox" id="mostrarSenha" onclick="toggleSenha()">
+            <label for="mostrarSenha">Exibir frase de segurança</label>
+        </div>
 
         <div class="botoes-formulario">
             <button type="button" onclick="window.location.href='../../index.php'">Voltar para a tela principal</button>
@@ -172,6 +176,14 @@
                 dataNascInput.parentNode.appendChild(erroData);
             }
         });
+
+        function toggleSenha() {
+            const frase = document.getElementById("frase");
+            const confirmacao = document.getElementById("confirmacao");
+            const tipo = frase.type === "password" ? "text" : "password";
+            frase.type = tipo;
+            confirmacao.type = tipo;
+        }
     </script>
 
 
