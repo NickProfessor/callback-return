@@ -88,9 +88,11 @@
 
         <a href="./avaliaProjeto.php?projeto=<?php echo $projetoId ?>" class="botao-padrao">Clique aqui para avaliar o
             projeto</a>
-        <a href="./../<?php echo $projetoMaterialApoio ?>" class="botao-padrao" target="_blank">Clique aqui para acessar
-            o
-            material</a>
+        <?php if ($projetoMaterialApoio): ?>
+            <a href="./../<?php echo $projetoMaterialApoio ?>" class="botao-padrao" target="_blank">Clique aqui para acessar
+                o
+                material</a>
+        <?php endif; ?>
         <?php if (isset($usuarioAdm)): ?>
             <a href="./excluiProjeto.php?projeto=<?= $projetoId ?>" class="botao-padrao botao-excluir"
                 onclick="return confirm('Tem certeza que deseja excluir este projeto?')">Excluir esse
