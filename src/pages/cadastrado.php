@@ -14,8 +14,10 @@ if (isset($_SESSION['email'])) {
     $nome = $_SESSION['nome'];
     $dataNasc = $_SESSION['dataNasc'];
     $sexo = $_SESSION['sexo'];
-    $fraseSeguranca = $_SESSION["frase"] ?? $dataNasc;
-    $fraseConfirmacao = $_SESSION["confirmacao"] ?? $dataNasc;
+    $fraseSeguranca = $_SESSION["frase"] ?? date('dmY', strtotime($dataNasc));
+
+    ;
+    $fraseConfirmacao = $_SESSION["confirmacao"] ?? date('dmY', strtotime($dataNasc));
 
     if (isset($_GET['cadastro-aluno']) && $_GET['cadastro-aluno'] == true) {
         $ra = $_SESSION['ra'];

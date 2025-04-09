@@ -469,6 +469,10 @@
 <?php elseif ($etapa == 7): ?>
     <!-- REMOVER DEPOIS -->
     <a href="cadastroAluno.php">cadastrar aluno</a>
+    <form method="POST" action="reviverProjetos.php">
+        <button type="submit" name="reviver">Reviver todos os projetos excluídos</button>
+    </form>
+
     <!-- REMOVER DEPOIS -->
     <h1 class="titulo-formulario">Registre um projeto</h1>
     <form action="registraProjeto.php" method="POST" class="formulario-padrao" enctype="multipart/form-data">
