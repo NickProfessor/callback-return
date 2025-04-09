@@ -1,0 +1,24 @@
+.tabela-padrao {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 100%;
+}
+
+.tabela-padrao td {
+    border: 1px solid #3d3d3d;
+    padding: 0.85em;
+    border-radius: 4px;
+}
+
+.tabela-padrao .celula-botao-excluir {
+    background-color: #3d3d3d;
+}
+
+.tabela-padrao .botao-excluir {
+    background-color: rgba(0, 0, 0, 0.0);
+    border: none;
+    color: rgb(180, 85, 85);
+    font-weight: bold;
+    cursor: pointer;
+}

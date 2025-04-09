@@ -61,6 +61,11 @@ main .botao-excluir {
     color: rgb(241, 108, 108);
 }
 
+main .botao-editar {
+    background-color: rgb(212, 188, 116);
+    color: rgb(43, 42, 42);
+}
+
 .projeto-info div {
     display: flex;
     align-items: center;

@@ -95,6 +95,8 @@
             <a href="./excluiProjeto.php?projeto=<?= $projetoId ?>" class="botao-padrao botao-excluir"
                 onclick="return confirm('Tem certeza que deseja excluir este projeto?')">Excluir esse
                 projeto</a>
+            <a href="./revisaComentarios.php?projeto=<?= $projetoId ?>" class="botao-padrao botao-editar">Revisar
+                comentários</a>
         <?php endif; ?>
 
         <div class="projeto-comentarios">

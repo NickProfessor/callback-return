@@ -549,5 +549,50 @@ class Projeto
         }
     }
 
+    public static function carregaComentarios($idProjeto)
+    {
+        global $conn;
 
+        $sql = "SELECT 
+                    a.id_avaliacao,
+                    u.nome AS nome_usuario,
+                    a.comentario,
+                    a.data_avaliacao
+                FROM avaliacao a
+                JOIN usuario u ON a.id_usuario = u.id_usuario
+                WHERE a.id_projeto = ?
+                  AND a.comentario IS NOT NULL
+                  AND a.comentario != 'sem comentário'
+                ORDER BY a.data_avaliacao DESC";
+
+        $stmt = $conn->prepare($sql);
+        $stmt->bind_param("i", $idProjeto);
+        $stmt->execute();
+        $result = $stmt->get_result();
+
+        $comentarios = [];
+
+        while ($row = $result->fetch_assoc()) {
+            $comentarios[] = $row;
+        }
+
+        return $comentarios;
+
+    }
+
+    public static function excluiComentario($id_avaliacao)
+    {
+        global $conn;
+
+        $stmt = $conn->prepare("UPDATE avaliacao SET comentario = 'sem comentario' WHERE id_avaliacao = ?
+");
+        $stmt->bind_param("i", $id_avaliacao);
+
+        if ($stmt->execute()) {
+            return ['success' => true, 'message' => 'Comentário excluído com sucesso.'];
+        } else {
+            Logger::log("Erro ao excluir comentário: " . $stmt->error, "ERROR");
+            die("Erro ao excluir comentário: " . $stmt->error);
+        }
+    }
 }

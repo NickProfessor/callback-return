@@ -48,6 +48,8 @@
             <link rel="stylesheet" href="../assets/css/pages/excluiProjeto.css">
         <?php elseif ($page == 'cadastroAluno'): ?>
             <link rel="stylesheet" href="../assets/css/pages/cadastroAluno.css">
+        <?php elseif ($page == 'revisaComentarios'): ?>
+            <link rel="stylesheet" href="../assets/css/pages/revisaComentarios.css">
         <?php endif; ?>
     <?php endif; ?>
 </head>

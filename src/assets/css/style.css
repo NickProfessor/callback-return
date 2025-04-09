@@ -25,7 +25,10 @@ input,
 a,
 button,
 li,
-textarea {
+textarea,
+tr,
+th,
+td {
     font-family: "Montserrat", system-ui;
 }
 
