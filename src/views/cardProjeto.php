@@ -47,8 +47,9 @@
             <div class="projeto-secao-acoes">
                 <a href="./src/pages/avaliaProjeto.php?projeto=<?php echo $projetoId ?>" class="projeto-avalia-btn">Avaliar
                     esse
-                    projeto <i class="fa-solid fa-arrow-right"></i></a>
-                <a href="./src/pages/detalhesProjeto.php?projeto=<?php echo $projetoId ?> " class="botao-padrao">Ver
+                    projeto <i class="fa-solid fa-star black-star"></i></a>
+                <a href="./src/pages/detalhesProjeto.php?projeto=<?php echo $projetoId ?> "
+                    class="botao-padrao ver-detalhes-btn">Ver
                     detalhes <i class="fa-solid fa-arrow-right"></i></a>
             </div>
         </div>
