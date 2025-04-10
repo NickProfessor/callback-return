@@ -113,8 +113,9 @@ class Projeto
                 $projeto['popular_homens'] = ($projeto['media_notas_homens'] >= 8);
             }
 
-            $listaDeProjetos = $projetos;
-            return $listaDeProjetos;
+            shuffle($projetos);
+            return $projetos;
+
         } else {
             die("Algo deu errado na consulta dos projetos");
         }
