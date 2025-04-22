@@ -50,6 +50,8 @@
             <link rel="stylesheet" href="../assets/css/pages/cadastroAluno.css">
         <?php elseif ($page == 'revisaComentarios'): ?>
             <link rel="stylesheet" href="../assets/css/pages/revisaComentarios.css">
+        <?php elseif ($page == 'editarProjeto'): ?>
+            <link rel="stylesheet" href="../assets/css/pages/editarProjeto.css">
         <?php endif; ?>
     <?php endif; ?>
 </head>

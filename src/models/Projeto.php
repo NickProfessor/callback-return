@@ -596,4 +596,9 @@ class Projeto
             die("Erro ao excluir comentário: " . $stmt->error);
         }
     }
+
+    public static function buscaCursosDoProjeto($id_projeto)
+    {
+
+    }
 }

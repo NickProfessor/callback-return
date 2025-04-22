@@ -20,6 +20,7 @@ if (isset($_GET["projeto"]) && $_GET["projeto"] != "") {
 
         $projetoNome = $projeto['projeto_nome'];
         $projetoCursos = $projeto['cursos'];
+        $projetoResumo = $projeto['projeto_resumo'];
         $projetoDescricao = $projeto['projeto_descricao']; // Não usamos nl2br aqui
         $projetoMaterialApoio = $projeto['projeto_material_apoio'] ?? null;
         $projetoAlunos = explode(',', $projeto['alunos']);

@@ -99,6 +99,7 @@
                 projeto</a>
             <a href="./revisaComentarios.php?projeto=<?= $projetoId ?>" class="botao-padrao botao-editar">Revisar
                 comentários</a>
+            <a href="./editarProjeto.php?projeto=<?= $projetoId ?>" class="botao-padrao botao-editar">Editar projeto</a>
         <?php endif; ?>
 
         <div class="projeto-comentarios">

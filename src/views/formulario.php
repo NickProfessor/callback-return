@@ -768,4 +768,181 @@
         <p class="mensagem">Agradecemos a colaboração</p>
         <a href="../../index.php" class="botao-padrao">Voltar para a página principal</a>
     </main>
+
+<?php elseif ($etapa == 11): ?>
+    <h1 class="titulo-formulario">Editando um projeto</h1>
+    <form action="registraProjeto.php" method="POST" class="formulario-padrao" enctype="multipart/form-data">
+        <?php if (isset($erro)): ?>
+            <p class="mensagem-erro">
+
+                <?php switch ($_GET['erro']) {
+                    case 'projeto-ja-existe':
+                        echo "Você já cadastrou esse projeto antes.";
+                        break;
+                    case 'dados-insuficientes':
+                        echo "Você informou dados insuficientes.";
+                        break;
+                    default:
+                        echo "Ocorreu um erro desconhecido.";
+                } ?>
+            </p>
+        <?php endif; ?>
+        <div class="form-group">
+            <label for="nome">Informe o nome do projeto:</label>
+            <input type="text" name="nome" id="nome" class="campo-texto" placeholder="Projeto de marketing"
+                value="<?= $projeto['projeto_nome'] ?>" required>
+        </div>
+
+        <div class="form-group">
+            <label for="arquivo">Anexe um arquivo (PDF, PPT, DOC, etc.):</label>
+            <input type="file" name="arquivo" id="arquivo" class="campo-texto">
+        </div>
+
+        <div class="form-group">
+            <label for="cursos">Informe os cursos do projeto</label>
+            <div class="checkboxes">
+                <?php foreach ($cursos as $id_curso => $curso): ?>
+                    <div class="checkbox-formulario">
+                        <?php foreach ($projetoCursos as $id_cursoProjeto => $cursoProjeto): ?>
+                            <?php if ($cursoProjeto == $curso): ?>
+                                <input type="checkbox" name="cursos[]" id="<?php echo strtolower($curso) ?>"
+                                    value="<?php echo $id_curso ?>" checked>
+                            <?php else: ?>
+                                <input type="checkbox" name="cursos[]" id="<?php echo strtolower($curso) ?>"
+                                    value="<?php echo $id_curso ?>">
+                            <?php endif; ?>
+                        <?php endforeach; ?>
+                        <label for="<?php echo strtolower($curso) ?>"><?php echo $curso ?></label>
+                    </div>
+                <?php endforeach; ?>
+            </div>
+        </div>
+
+
+
+        <div class="form-group">
+            <label for="temas">Informe os temas do projeto</label>
+            <div class="checkboxes">
+                <?php foreach ($temas as $id_tema => $tema): ?>
+                    <div class="checkbox-formulario">
+                        <?php foreach ($projetoTemas as $id_temaProjeto => $temaProjeto): ?>
+                            <?php if ($temaProjeto == $tema): ?>
+                                <input type="checkbox" name="temas[]" id="<?php echo strtolower($tema . $id_tema) ?>"
+                                    value="<?php echo $id_tema ?>" checked>
+                            <?php else: ?>
+                                <input type="checkbox" name="temas[]" id="<?php echo strtolower($tema . $id_tema) ?>"
+                                    value="<?php echo $id_tema ?>">
+                            <?php endif; ?>
+                        <?php endforeach; ?>
+                        <label for="<?php echo strtolower($tema . $id_tema) ?>"><?php echo $tema ?></label>
+                    </div>
+                <?php endforeach; ?>
+            </div>
+        </div>
+
+        <div class="form-group">
+            <label for="alunos">Selecione os alunos:</label>
+            <div id="alunos-container">
+                <div class="aluno-select">
+                    <select name="alunos[]" class="aluno-dropdown" required>
+                        <option value="">Selecione um aluno</option>
+                        <?php foreach ($alunos as $aluno): ?>
+                            <option value="<?= $aluno['id_aluno'] ?>"><?= $aluno['nome'] ?></option>
+                        <?php endforeach; ?>
+                    </select>
+                    <button type="button" class="remove-aluno" style="display:none;">Remover</button>
+                </div>
+            </div>
+            <button type="button" id="add-aluno">Adicionar outro aluno</button>
+        </div>
+
+
+        <div class="form-group">
+            <label for="resumo">Informe um resumo do projeto:</label>
+            <textarea type="text" name="resumo" id="resumo" class="campo-texto" cols="40" rows="3"
+                required><?= $projeto['projeto_resumo'] ?></textarea>
+        </div>
+
+        <div class="form-group">
+            <label for="descricao">Descreva com detalhes seu projeto:</label>
+            <textarea type="text" id="descricao" class="campo-texto" cols="40"
+                rows="8"><?= $projeto['projeto_descricao'] ?></textarea>
+            <input type="hidden" name="descricao" id="descricao-hidden" required>
+        </div>
+
+
+        <div class="botoes-formulario">
+            <button type="button"
+                onclick="window.location.href='./detalhesProjeto.php?projeto=<?= $projeto['id_projeto'] ?>'">Voltar para
+                detalhes</button>
+            <button type="submit">Continuar <i class="fa-solid fa-arrow-right"></i></button>
+        </div>
+
+    </form>
+    <script src="https://cdn.jsdelivr.net/npm/easymde/dist/easymde.min.js"></script>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/easymde/dist/easymde.min.css">
+    <script>
+        document.getElementById("add-aluno").addEventListener("click", function () {
+            let container = document.getElementById("alunos-container");
+
+            // Criando novo select
+            let div = document.createElement("div");
+            div.classList.add("aluno-select");
+
+            let select = document.createElement("select");
+            select.name = "alunos[]";
+            select.classList.add("aluno-dropdown");
+
+            // Opção padrão
+            let defaultOption = document.createElement("option");
+            defaultOption.value = "";
+            defaultOption.textContent = "Selecione um aluno";
+            select.appendChild(defaultOption);
+
+            // Adicionando alunos
+            <?php foreach ($alunos as $aluno): ?>
+                let option<?= $aluno['id_aluno'] ?> = document.createElement("option");
+                option<?= $aluno['id_aluno'] ?>.value = "<?= $aluno['id_aluno'] ?>";
+                option<?= $aluno['id_aluno'] ?>.textContent = "<?= $aluno['nome'] ?>";
+                select.appendChild(option<?= $aluno['id_aluno'] ?>);
+            <?php endforeach; ?>
+
+            // Criando botão de remoção
+            let removeButton = document.createElement("button");
+            removeButton.type = "button";
+            removeButton.classList.add("remove-aluno");
+            removeButton.textContent = "Remover";
+
+            removeButton.addEventListener("click", function () {
+                div.remove();
+            });
+
+            div.appendChild(select);
+            div.appendChild(removeButton);
+            container.appendChild(div);
+        });
+
+
+
+
+
+
+
+
+        // Atualiza a pré-visualização ao digitar
+        document.getElementById('descricao').addEventListener('input', function () {
+            let inputText = this.value;
+            let preview = document.getElementById('descricao-preview');
+
+            preview.innerHTML = markdownToHtml(inputText);
+        });
+
+
+
+        var easyMDE = new EasyMDE({ element: document.getElementById("descricao") });
+
+        document.querySelector("form").addEventListener("submit", function () {
+            document.getElementById("descricao-hidden").value = easyMDE.value();
+        });
+    </script>
 <?php endif; ?>
