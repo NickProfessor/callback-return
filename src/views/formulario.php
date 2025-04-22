@@ -825,33 +825,38 @@
             <div class="checkboxes">
                 <?php foreach ($temas as $id_tema => $tema): ?>
                     <div class="checkbox-formulario">
-                        <?php foreach ($projetoTemas as $id_temaProjeto => $temaProjeto): ?>
-                            <?php if ($temaProjeto == $tema): ?>
-                                <input type="checkbox" name="temas[]" id="<?php echo strtolower($tema . $id_tema) ?>"
-                                    value="<?php echo $id_tema ?>" checked>
-                            <?php else: ?>
-                                <input type="checkbox" name="temas[]" id="<?php echo strtolower($tema . $id_tema) ?>"
-                                    value="<?php echo $id_tema ?>">
-                            <?php endif; ?>
-                        <?php endforeach; ?>
+                        <?php
+                        $checked = in_array($tema, $projetoTemas) ? "checked" : "";
+                        ?>
+                        <input type="checkbox" name="temas[]" id="<?php echo strtolower($tema . $id_tema) ?>"
+                            value="<?php echo $id_tema ?>" <?php echo $checked ?>>
                         <label for="<?php echo strtolower($tema . $id_tema) ?>"><?php echo $tema ?></label>
                     </div>
                 <?php endforeach; ?>
             </div>
         </div>
 
+
+
+
+
+
         <div class="form-group">
             <label for="alunos">Selecione os alunos:</label>
             <div id="alunos-container">
-                <div class="aluno-select">
-                    <select name="alunos[]" class="aluno-dropdown" required>
-                        <option value="">Selecione um aluno</option>
-                        <?php foreach ($alunos as $aluno): ?>
-                            <option value="<?= $aluno['id_aluno'] ?>"><?= $aluno['nome'] ?></option>
-                        <?php endforeach; ?>
-                    </select>
-                    <button type="button" class="remove-aluno" style="display:none;">Remover</button>
-                </div>
+                <?php foreach ($alunosDoProjeto as $idSelecionado => $alunoDoProjeto): ?>
+                    <div class="aluno-select">
+                        <select name="alunos[]" class="aluno-dropdown" required>
+                            <option value="">Selecione um aluno</option>
+                            <?php foreach ($alunos as $aluno): ?>
+                                <option value="<?= $aluno['id_aluno'] ?>" <?= $aluno['id_aluno'] == $idSelecionado ? 'selected' : '' ?>>
+                                    <?= $aluno['nome'] ?>
+                                </option>
+                            <?php endforeach; ?>
+                        </select>
+                        <button type="button" class="remove-aluno">Remover</button>
+                    </div>
+                <?php endforeach; ?>
             </div>
             <button type="button" id="add-aluno">Adicionar outro aluno</button>
         </div>
@@ -917,6 +922,8 @@
                 div.remove();
             });
 
+            
+
             div.appendChild(select);
             div.appendChild(removeButton);
             container.appendChild(div);
@@ -925,6 +932,12 @@
 
 
 
+// Delegação de eventos para remover alunos (funciona com elementos existentes e adicionados dinamicamente)
+document.getElementById("alunos-container").addEventListener("click", function (event) {
+    if (event.target.classList.contains("remove-aluno")) {
+        event.target.parentElement.remove();
+    }
+});
 
 
 

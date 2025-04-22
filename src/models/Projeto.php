@@ -597,8 +597,23 @@ class Projeto
         }
     }
 
-    public static function buscaCursosDoProjeto($id_projeto)
+    public static function buscaAlunosDoProjeto($id_projeto)
     {
+        global $conn;
+        $alunosDoProjeto = []; // array associativo com id => nome
 
+        $stmt = $conn->prepare("SELECT aluno.id_aluno, aluno.nome 
+                        FROM aluno
+                        JOIN aluno_has_projeto ON aluno.id_aluno = aluno_has_projeto.id_aluno
+                        WHERE aluno_has_projeto.id_projeto = ?");
+        $stmt->bind_param("i", $id_projeto);
+        $stmt->execute();
+        $result = $stmt->get_result();
+
+        while ($row = $result->fetch_assoc()) {
+            $alunosDoProjeto[$row['id_aluno']] = $row['nome'];
+        }
+
+        return $alunosDoProjeto;
     }
 }

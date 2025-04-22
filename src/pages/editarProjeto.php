@@ -16,6 +16,7 @@ if (!isset($_GET['projeto']) || $_GET['projeto'] == '') {
     $projetoTemas = explode(',', $projeto['temas']); // Transforma em array
     $alunoController = new AlunoController();
     $alunos = $alunoController->consultaAlunos();
+    $alunosDoProjeto = Projeto::buscaAlunosDoProjeto($projeto['id_projeto']);
     $etapa = 11;
     $pageTitle = "Edição do projeto";
     $page = "editarProjeto";
