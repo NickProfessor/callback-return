@@ -771,7 +771,7 @@
 
 <?php elseif ($etapa == 11): ?>
     <h1 class="titulo-formulario">Editando um projeto</h1>
-    <form action="registraProjeto.php" method="POST" class="formulario-padrao" enctype="multipart/form-data">
+    <form action="finalizaEdicao.php" method="POST" class="formulario-padrao" enctype="multipart/form-data">
         <?php if (isset($erro)): ?>
             <p class="mensagem-erro">
 
@@ -787,16 +787,28 @@
                 } ?>
             </p>
         <?php endif; ?>
+        <input type="hidden" name="id_projeto" value="<?php echo $projeto['id_projeto']; ?>">
+
         <div class="form-group">
             <label for="nome">Informe o nome do projeto:</label>
             <input type="text" name="nome" id="nome" class="campo-texto" placeholder="Projeto de marketing"
                 value="<?= $projeto['projeto_nome'] ?>" required>
         </div>
 
+        <?php if($arquivoAtual):?>
+        <label for="arquivo">Arquivo atual:</label><br>
+    <a href="../<?php echo $arquivoAtual; ?>" target="_blank">Ver arquivo atual</a><br><br>
+
+    <label for="arquivo">Trocar arquivo (opcional):</label><br>
+    <input type="file" name="arquivo" id="arquivo"><br><br>
+
+    <input type="hidden" name="arquivoAntigo" value="<?php echo $arquivoAtual; ?>">
+    <?php else:?>
         <div class="form-group">
             <label for="arquivo">Anexe um arquivo (PDF, PPT, DOC, etc.):</label>
             <input type="file" name="arquivo" id="arquivo" class="campo-texto">
         </div>
+        <?php endif;?>
 
         <div class="form-group">
             <label for="cursos">Informe os cursos do projeto</label>

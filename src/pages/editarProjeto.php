@@ -17,6 +17,7 @@ if (!isset($_GET['projeto']) || $_GET['projeto'] == '') {
     $alunoController = new AlunoController();
     $alunos = $alunoController->consultaAlunos();
     $alunosDoProjeto = Projeto::buscaAlunosDoProjeto($projeto['id_projeto']);
+    $arquivoAtual = $projeto['projeto_material_apoio'] ?? null;
     $etapa = 11;
     $pageTitle = "Edição do projeto";
     $page = "editarProjeto";

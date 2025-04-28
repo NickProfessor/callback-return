@@ -15,8 +15,9 @@ class Projeto
     private $cursos = [];
     private $alunos = [];
     private $listaDeProjetos = [];
+    private $id_projeto;
 
-    public function __construct($nome, $resumo, $descricao, $temas, $cursos, $alunos, $materialApoio)
+    public function __construct($nome, $resumo, $descricao, $temas, $cursos, $alunos, $materialApoio, $id_projeto = null)
     {
         $this->nome = $nome;
         $this->resumo = $resumo;
@@ -25,6 +26,7 @@ class Projeto
         $this->cursos = $cursos;
         $this->alunos = $alunos;
         $this->materialApoio = $materialApoio;
+        $this->id_projeto = $id_projeto;
     }
 
     public static function carregaProjetos()
@@ -440,15 +442,27 @@ class Projeto
     private function projetoJaExiste()
     {
         global $conn;
-        $stmt = $conn->prepare("SELECT COUNT(*) FROM projeto WHERE nome = ? AND ativo = 1");
-        if (!$stmt) {
-            die("Erro na preparação da consulta: " . $conn->error);
-        }
+        if (!$this->id_projeto) {
+            $stmt = $conn->prepare("SELECT COUNT(*) FROM projeto WHERE nome = ? AND ativo = 1");
+            if (!$stmt) {
+                die("Erro na preparação da consulta: " . $conn->error);
+            }
 
-        $stmt->bind_param("s", $this->nome);
-        $stmt->execute();
-        $stmt->bind_result($count);
-        $stmt->fetch();
+            $stmt->bind_param("s", $this->nome);
+            $stmt->execute();
+            $stmt->bind_result($count);
+            $stmt->fetch();
+        } else {
+            $stmt = $conn->prepare("SELECT COUNT(*) FROM projeto WHERE id_projeto = ? AND ativo = 1");
+            if (!$stmt) {
+                die("Erro na preparação da consulta: " . $conn->error);
+            }
+
+            $stmt->bind_param("i", $this->id_projeto);
+            $stmt->execute();
+            $stmt->bind_result($count);
+            $stmt->fetch();
+        }
         $stmt->close();
 
         return $count > 0; // Verifica se o projeto já existe
@@ -616,4 +630,194 @@ class Projeto
 
         return $alunosDoProjeto;
     }
+
+    public function editaProjeto()
+    {
+        global $conn;
+
+        // Inicia uma transação
+        $conn->begin_transaction();
+
+        try {
+            if ($this->projetoJaExiste()) {
+
+                $this->atualizaProjeto();
+
+
+                $this->atualizaCursosDoProjeto();
+                $this->atualizaTemasDoProjeto();
+                $this->atualizaAlunosDoProjeto();
+
+                // Se tudo deu certo, fazemos o commit da transação
+                $conn->commit();
+                Logger::log("Projeto " . $this->id_projeto . " editado com sucesso! ", "ADD");
+            } else {
+                header("Location: ./editarProjeto.php?erro=projeto-nao-existe");
+            }
+        } catch (Exception $e) {
+            // Se qualquer erro ocorrer, desfazemos a transação
+            $conn->rollback();
+            Logger::log("Erro ao editar projeto" . $this->id_projeto . " : " . $e->getMessage(), "ERROR");
+            header("Location: ./editarProjetos.php?projeto=" . $this->id_projeto . "&&erro=nao-foi-possivel-adicionar");
+        }
+    }
+
+    private function atualizaProjeto()
+    {
+        $nomeDoProjeto = $this->nome;
+        $resumoDoProjeto = $this->resumo;
+        $descricaoDoProjeto = $this->descricao;
+        $materialApoio = $this->materialApoio;
+        $idProjeto = $this->id_projeto;
+
+        global $conn;
+
+        $stmt = $conn->prepare("UPDATE projeto SET nome = ?, resumo = ?, descricao = ?, material_apoio = ? WHERE id_projeto = ?");
+        if (!$stmt) {
+            return false;
+        }
+
+        $stmt->bind_param("ssssi", $nomeDoProjeto, $resumoDoProjeto, $descricaoDoProjeto, $materialApoio, $idProjeto);
+
+        $stmt->execute();
+        $stmt->close();
+
+    }
+
+    private function atualizaCursosDoProjeto()
+    {
+        global $conn;
+
+        $idProjeto = $this->id_projeto;
+        $cursos = $this->cursos;
+
+        // Primeiro, apaga todos os cursos atuais associados ao projeto
+        $sqlDelete = "DELETE FROM curso_has_projeto WHERE projeto_id_projeto = ?";
+        $stmtDelete = $conn->prepare($sqlDelete);
+
+        if (!$stmtDelete) {
+            Logger::log("Erro ao preparar DELETE na tabela curso_has_projeto: " . $conn->error, "ERROR");
+            return;
+        }
+
+        $stmtDelete->bind_param("i", $idProjeto);
+
+        if (!$stmtDelete->execute()) {
+            Logger::log("Erro ao executar DELETE na tabela curso_has_projeto: " . $stmtDelete->error, "ERROR");
+            return;
+        }
+
+        $stmtDelete->close();
+
+        // Depois, insere novamente os cursos atualizados
+        $sqlInsert = "INSERT INTO curso_has_projeto (curso_id_curso, projeto_id_projeto) VALUES (?, ?)";
+        $stmtInsert = $conn->prepare($sqlInsert);
+
+        if (!$stmtInsert) {
+            Logger::log("Erro ao preparar INSERT na curso_has_projeto: " . $conn->error, "ERROR");
+            return;
+        }
+
+        foreach ($cursos as $idcurso) {
+            $stmtInsert->bind_param("ii", $idcurso, $idProjeto);
+            if (!$stmtInsert->execute()) {
+                Logger::log("Erro ao inserir curso na tabela curso_has_projeto:" . $stmtInsert->error, "ERROR");
+            }
+        }
+
+        $stmtInsert->close();
+    }
+
+    private function atualizaTemasDoProjeto()
+    {
+        global $conn;
+        $idProjeto = $this->id_projeto;
+        $temas = $this->temas;
+
+        // Primeiro, apaga todos os temas atuais associados ao projeto
+        $sqlDelete = "DELETE FROM tema_has_projeto WHERE projeto_id_projeto = ?";
+        $stmtDelete = $conn->prepare($sqlDelete);
+
+        if (!$stmtDelete) {
+            Logger::log("Erro ao preparar DELETE na tabela tema_has_projeto: " . $conn->error, "ERROR");
+            return;
+        }
+
+        $stmtDelete->bind_param("i", $idProjeto);
+
+        if (!$stmtDelete->execute()) {
+            Logger::log("Erro ao executar DELETE na tabela tema_has_projeto: " . $stmtDelete->error, "ERROR");
+            return;
+        }
+
+        $stmtDelete->close();
+
+        // Depois, insere novamente os temas atualizados
+        $sqlInsert = "INSERT INTO tema_has_projeto (tema_id_tema, projeto_id_projeto) VALUES (?, ?)";
+        $stmtInsert = $conn->prepare($sqlInsert);
+
+        if (!$stmtInsert) {
+            Logger::log("Erro ao preparar INSERT na tema_has_projeto: " . $conn->error, "ERROR");
+            return;
+        }
+
+        foreach ($temas as $idTema) {
+            $stmtInsert->bind_param("ii", $idTema, $idProjeto);
+            if (!$stmtInsert->execute()) {
+                Logger::log("Erro ao inserir tema na tabela tema_has_projeto:" . $stmtInsert->error, "ERROR");
+            }
+        }
+
+        $stmtInsert->close();
+    }
+
+    private function atualizaAlunosDoProjeto()
+    {
+        global $conn;
+        $idProjeto = $this->id_projeto;
+        $alunos = $this->alunos;
+
+        // Primeiro, apaga todas as associações atuais de alunos com o projeto
+        $sqlDelete = "DELETE FROM aluno_has_projeto WHERE id_projeto = ?";
+        $stmtDelete = $conn->prepare($sqlDelete);
+
+        if (!$stmtDelete) {
+            Logger::log("Erro na preparação do DELETE (atualizaAlunosDoProjeto): " . $conn->error, "ERROR");
+            return;
+        }
+
+        $stmtDelete->bind_param("i", $idProjeto);
+
+        if (!$stmtDelete->execute()) {
+            Logger::log("Erro ao executar DELETE (atualizaAlunosDoProjeto): " . $stmtDelete->error, "ERROR");
+            $stmtDelete->close();
+            return;
+        }
+
+        $stmtDelete->close();
+
+        // Agora insere as novas associações
+        $sqlInsert = "INSERT INTO aluno_has_projeto (id_aluno, id_projeto) VALUES (?, ?)";
+        $stmtInsert = $conn->prepare($sqlInsert);
+
+        if (!$stmtInsert) {
+            Logger::log("Erro na preparação do INSERT (atualizaAlunosDoProjeto): " . $conn->error, "ERROR");
+            return;
+        }
+
+        foreach ($alunos as $idAluno) {
+            if ($idAluno) {
+                $stmtInsert->bind_param("ii", $idAluno, $idProjeto);
+
+                if (!$stmtInsert->execute()) {
+                    Logger::log("Erro ao inserir aluno na tabela de relacionamentos (atualizaAlunosDoProjeto): " . $stmtInsert->error, "ERROR");
+                }
+            } else {
+                Logger::log("ID de aluno inválido encontrado (atualizaAlunosDoProjeto).", "ERROR");
+            }
+        }
+
+        $stmtInsert->close();
+    }
+
 }
