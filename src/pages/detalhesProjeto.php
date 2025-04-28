@@ -20,8 +20,9 @@ if (isset($_GET["projeto"]) && $_GET["projeto"] != "") {
 
         $projetoNome = $projeto['projeto_nome'];
         $projetoCursos = $projeto['cursos'];
+        $projetoResumo = $projeto['projeto_resumo'];
         $projetoDescricao = $projeto['projeto_descricao']; // Não usamos nl2br aqui
-        $projetoMaterialApoio = $projeto['projeto_material_apoio'];
+        $projetoMaterialApoio = $projeto['projeto_material_apoio'] ?? null;
         $projetoAlunos = explode(',', $projeto['alunos']);
         $projetoTemas = explode(',', $projeto['temas']);
         $projetoAvaliacoes = $projeto['total_avaliacoes'];
@@ -37,8 +38,11 @@ if (isset($_GET["projeto"]) && $_GET["projeto"] != "") {
             return $comentario !== 'Sem comentario' && $comentario !== 'sem comentario' && !empty($comentario);
         });
 
-
-
+        if (isset($usuario) && ($usuario['tipo_usuario'] == 2)) {
+            $usuarioAdm = true;
+        } elseif (isset($usuario) && $usuario['tipo_usuario'] == 4) {
+            $usuarioProfessor = true;
+        }
 
         $popularAdultos = isset($projeto['popular_adultos']) && $projeto['popular_adultos'];
         $popularJovens = isset($projeto['popular_jovens']) && $projeto['popular_jovens'];

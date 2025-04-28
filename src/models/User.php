@@ -35,11 +35,14 @@ class User
                 Logger::log("Erro ao preparar a query: " . $this->conn->error);
             }
 
+            $senhaCriptografada = password_hash($this->fraseSeguranca, PASSWORD_DEFAULT);
+
+
             $stmt->bind_param(
                 "sssssss",
                 $this->nome,
                 $this->email,
-                $this->fraseSeguranca,
+                $senhaCriptografada,
                 $this->sexo,
                 $this->dataNasc,
                 $this->foto,
@@ -99,7 +102,7 @@ class User
             $result = $stmt->get_result();
 
             if ($result && $usuario = $result->fetch_assoc()) {
-                if ($usuario['frase_seguranca'] === $frase) {
+                if (password_verify($frase, $usuario['frase_seguranca'])) {
                     self::iniciarSessao($usuario); // 🔹 Inicia a sessão ao validar o login
                     return $usuario;
                 }

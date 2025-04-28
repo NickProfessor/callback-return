@@ -1,4 +1,4 @@
-## [2.0] - 2025-03-28
+## [2.0] - 2025-04-08
 
 ### Alterado
 
@@ -65,6 +65,11 @@
 - Ao cadastrar projeto, pode-se adicionar resumo.
 - Ao cadastrar projeto, pode-se adicionar uma descrição personalizada utilizando um formatador de textos. Nele é incluído um preview de como vai ficar a descrição
 - Termos de uso adicionado
+
+- Agora o administrador tem a opção de excluir projetos, somente ele
+- Os logs também estão informando quando um adm exclui um projeto (nova tag "DELETE" para informar ações de exclusão)
+
+- Agora o administrador tem a opção de revisar comentários, para excluir, caso seja necessário.
 
 ### Removido
 
