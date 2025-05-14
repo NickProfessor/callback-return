@@ -61,5 +61,6 @@ if (isset($_GET["projeto"]) && $_GET["projeto"] != "") {
     echo "Página não encontrada 404";
 }
 
+
 include "../views/footer.php";
 ?>

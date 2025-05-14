@@ -6,3 +6,4 @@ SessionManager::requireLogin(3);
 ?>
 
 <h1>Sou aluno</h1>
+<a href="./solicitarProjeto.php">Envie seu projeto!</a>

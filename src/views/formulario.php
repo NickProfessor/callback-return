@@ -467,7 +467,9 @@
     <?php endif; ?>
 
 <?php elseif ($etapa == 7): ?>
-    <!-- REMOVER DEPOIS -->
+    
+     <?php if($admin): ?>
+        <!-- REMOVER DEPOIS -->
     <a href="cadastroAluno.php">cadastrar aluno</a>
     <form method="POST" action="reviverProjetos.php">
         <button type="submit" name="reviver">Reviver todos os projetos excluídos</button>
@@ -476,6 +478,10 @@
     <!-- REMOVER DEPOIS -->
     <h1 class="titulo-formulario">Registre um projeto</h1>
     <form action="registraProjeto.php" method="POST" class="formulario-padrao" enctype="multipart/form-data">
+        <?php else:?>
+            <h1 class="titulo-formulario">Solicite a criação de um projeto</h1>
+    <form action="criaSolicitação.php" method="POST" class="formulario-padrao" enctype="multipart/form-data">
+    <?php endif;?>
         <?php if (isset($erro)): ?>
             <p class="mensagem-erro">
 

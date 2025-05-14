@@ -42,6 +42,9 @@
         <?php elseif ($page == 'cadastroProjeto'): ?>
             <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/easymde/dist/easymde.min.css">
             <link rel="stylesheet" href="../assets/css/pages/cadastroProjeto.css">
+        <?php elseif ($page == 'solicitarProjeto'): ?>
+            <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/easymde/dist/easymde.min.css">
+            <link rel="stylesheet" href="../assets/css/pages/cadastroProjeto.css">
         <?php elseif ($page == 'registraProjeto'): ?>
             <link rel="stylesheet" href="../assets/css/pages/registraProjeto.css">
         <?php elseif ($page == 'excluiProjeto'): ?>
