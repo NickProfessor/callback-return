@@ -480,7 +480,7 @@
     <form action="registraProjeto.php" method="POST" class="formulario-padrao" enctype="multipart/form-data">
         <?php else:?>
             <h1 class="titulo-formulario">Solicite a criação de um projeto</h1>
-    <form action="criaSolicitação.php" method="POST" class="formulario-padrao" enctype="multipart/form-data">
+    <form action="registraSolicitacao.php" method="POST" class="formulario-padrao" enctype="multipart/form-data">
     <?php endif;?>
         <?php if (isset($erro)): ?>
             <p class="mensagem-erro">
@@ -503,7 +503,7 @@
         </div>
 
         <div class="form-group">
-            <label for="arquivo">Anexe um arquivo (PDF, PPT, DOC, etc.):</label>
+            <label for="arquivo">Anexe um arquivo (pdf, ppt, pptx, doc, docx):</label>
             <input type="file" name="arquivo" id="arquivo" class="campo-texto">
         </div>
 
@@ -811,7 +811,7 @@
     <input type="hidden" name="arquivoAntigo" value="<?php echo $arquivoAtual; ?>">
     <?php else:?>
         <div class="form-group">
-            <label for="arquivo">Anexe um arquivo (PDF, PPT, DOC, etc.):</label>
+            <label for="arquivo">Anexe um arquivo (pdf, ppt, pptx, doc, docx):</label>
             <input type="file" name="arquivo" id="arquivo" class="campo-texto">
         </div>
         <?php endif;?>

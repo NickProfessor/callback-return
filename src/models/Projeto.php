@@ -127,11 +127,6 @@ class Projeto
 
 
 
-
-
-
-
-
     public static function obterProjetoPeloId($id)
     {
         global $conn;
@@ -819,6 +814,163 @@ class Projeto
 
         $stmtInsert->close();
     }
+
+    public function cadastraSolicitacaoProjeto($idUsuarioSolicitante)
+    {
+        global $conn;
+
+        // Inicia a transação
+        $conn->begin_transaction();
+
+        try {
+            if (!$this->solicitacaoJaExiste()) {
+                $solicitacaoId = $this->criaSolicitacao($idUsuarioSolicitante);
+
+                if (!$solicitacaoId) {
+                    Logger::log("Erro ao criar a solicitação.", "ERROR");
+                    throw new Exception("Erro ao criar solicitação");
+                }
+
+                // Se precisar registrar relacionamentos, chamar métodos semelhantes aqui
+                $this->registraCursosDaSolicitacao($solicitacaoId);
+                $this->registraTemasDaSolicitacao($solicitacaoId);
+                $this->registraAlunoDaSolicitacao($solicitacaoId);
+
+                $conn->commit();
+                Logger::log("Solicitação $solicitacaoId cadastrada com sucesso!", "ADD");
+                return $solicitacaoId;
+            } else {
+                Logger::log("Solicitação já existe.", "WARN");
+                return false;
+            }
+        } catch (Exception $e) {
+            $conn->rollback();
+            Logger::log("Erro ao cadastrar solicitação: " . $e->getMessage(), "ERROR");
+            return false;
+        }
+    }
+
+    // Método para verificar se a solicitação já existe (exemplo)
+    private function solicitacaoJaExiste()
+    {
+        global $conn;
+
+        $sql = "SELECT id_solicitacao FROM solicitacao_projeto WHERE nome_projeto = ?";
+        $stmt = $conn->prepare($sql);
+        if (!$stmt) {
+            Logger::log("Erro ao preparar consulta solicitacaoJaExiste: " . $conn->error, "ERROR");
+            return true; // assume que existe para evitar duplicidade
+        }
+
+        $stmt->bind_param("s", $this->nome);
+        $stmt->execute();
+        $stmt->store_result();
+
+        $existe = $stmt->num_rows > 0;
+        $stmt->close();
+
+        return $existe;
+    }
+
+    // Cria a solicitação no banco e retorna o ID inserido
+    private function criaSolicitacao($idUsuarioSolicitante)
+    {
+        global $conn;
+
+        $dataSolicitacao = date('Y-m-d H:i:s');
+        $status = 'pendente'; // exemplo de status inicial
+
+        $sql = "INSERT INTO solicitacao_projeto (nome_projeto, resumo, descricao, material_apoio,  solicitado_por, data_solicitacao, status) VALUES (?, ?, ?, ?, ?, ?, ?)";
+        $stmt = $conn->prepare($sql);
+
+        if (!$stmt) {
+            Logger::log("Erro ao preparar consulta criaSolicitacao: " . $conn->error, "ERROR");
+            return false;
+        }
+
+        $stmt->bind_param("sssssss", $this->nome, $this->resumo, $this->descricao, $this->materialApoio, $idUsuarioSolicitante, $dataSolicitacao, $status);
+
+        if ($stmt->execute()) {
+            $insertId = $conn->insert_id;
+            $stmt->close();
+            return $insertId;
+        } else {
+            Logger::log("Erro ao executar consulta criaSolicitacao: " . $stmt->error, "ERROR");
+            $stmt->close();
+            return false;
+        }
+    }
+
+
+    private function registraCursosDaSolicitacao($idSolicitacao)
+    {
+        if (empty($this->cursos))
+            return;
+
+        global $conn;
+        $sql = "INSERT INTO curso_has_solicitacao (curso_id_curso, solicitacao_id_solicitacao) VALUES (?, ?)";
+        $stmt = $conn->prepare($sql);
+        if (!$stmt) {
+            Logger::log("Erro ao preparar consulta registraCursosDaSolicitacao: " . $conn->error, "ERROR");
+            return;
+        }
+
+        foreach ($this->cursos as $idCurso) {
+            $stmt->bind_param("ii", $idCurso, $idSolicitacao);
+            if (!$stmt->execute()) {
+                Logger::log("Erro ao registrar curso da solicitação: " . $stmt->error, "ERROR");
+            }
+        }
+
+        $stmt->close();
+    }
+
+    private function registraTemasDaSolicitacao($idSolicitacao)
+    {
+        if (empty($this->temas))
+            return;
+
+        global $conn;
+        $sql = "INSERT INTO tema_has_solicitacao (tema_id_tema, solicitacao_id_solicitacao) VALUES (?, ?)";
+        $stmt = $conn->prepare($sql);
+        if (!$stmt) {
+            Logger::log("Erro ao preparar consulta registraTemasDaSolicitacao: " . $conn->error, "ERROR");
+            return;
+        }
+
+        foreach ($this->temas as $idTema) {
+            $stmt->bind_param("ii", $idTema, $idSolicitacao);
+            if (!$stmt->execute()) {
+                Logger::log("Erro ao registrar tema da solicitação: " . $stmt->error, "ERROR");
+            }
+        }
+
+        $stmt->close();
+    }
+
+    private function registraAlunoDaSolicitacao($idSolicitacao)
+    {
+        if (empty($this->alunos))
+            return;
+
+        global $conn;
+        $sql = "INSERT INTO aluno_has_solicitacao (aluno_id_aluno, solicitacao_id_solicitacao) VALUES (?, ?)";
+        $stmt = $conn->prepare($sql);
+        if (!$stmt) {
+            Logger::log("Erro ao preparar consulta registraAlunoDaSolicitacao: " . $conn->error, "ERROR");
+            return;
+        }
+
+        foreach ($this->alunos as $idAluno) {
+            $stmt->bind_param("ii", $idAluno, $idSolicitacao);
+            if (!$stmt->execute()) {
+                Logger::log("Erro ao registrar usuário da solicitação: " . $stmt->error, "ERROR");
+            }
+        }
+
+        $stmt->close();
+    }
+
 
 
 

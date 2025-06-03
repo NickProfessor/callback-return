@@ -1,7 +1,10 @@
 <?php
-require_once "./src/helpers/SessionManager.php";
-require_once "./src/controllers/UserController.php";
-require_once "./src/models/Projeto.php";
+
+require_once "../helpers/SessionManager.php";
+require_once "../controllers/UserController.php";
+require_once "../models/Projeto.php";
+
+SessionManager::requireLogin(4);
 
 $usuario = SessionManager::get('usuario');
 
@@ -16,8 +19,8 @@ $listaDeProjetos = Projeto::carregaProjetos();
     <meta charset="UTF-8">
     <title>CallbackReturn</title>
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <link rel="stylesheet" href="./src/assets/css/style.css">
-    <link rel="stylesheet" href="./src/assets/css/pages/paginaPrincipal.css">
+    <link rel="stylesheet" href="../assets/css/style.css">
+    <link rel="stylesheet" href="../assets/css/pages/paginaPrincipal.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.6.0/css/all.min.css"
         integrity="sha512-Kc323vGBEqzTmouAECnVceyQqyqdsSiqLQISBL29aUW4U/M7pSPA/gEUZQqv1cwx4OnYxTxve5UMg5GT6L4JJg=="
         crossorigin="anonymous" referrerpolicy="no-referrer" />
@@ -27,47 +30,16 @@ $listaDeProjetos = Projeto::carregaProjetos();
 </head>
 
 <body>
-    <?php if ($usuario): ?>
-        <header>
-            <h1 class="titulo-header">Bem-vindo, <?php echo $usuario['nome']; ?></h1>
-            <a href="./src/pages/logout.php" class="link-header">Logout</a>
 
-            <?php
-            $linkTexto = "";
-            $linkURL = "#";
-
-            switch ($usuario['tipo_usuario']) {
-                case '1':
-                    $linkTexto = "Sou usuário";
-                    $linkURL = "./src/pages/perfilUsuario.php";
-                    break;
-                case '2':
-                    $linkTexto = "Criar projeto";
-                    $linkURL = "./src/pages/criarProjetos.php";
-                    break;
-                case '3':
-                    $linkTexto = "Sou aluno";
-                    $linkURL = "./src/pages/perfilAluno.php";
-                    break;
-                case '4':
-                    $linkTexto = "Solicitações de projetos";
-                    $linkURL = "./src/pages/solicitacoes.php";
-                    break;
-            }
-
-            if ($linkTexto): ?>
-                <a href="<?php echo $linkURL; ?>"><?php echo $linkTexto; ?></a>
-            <?php endif; ?>
-
-        </header>
-    <?php else: ?>
-        <header>
-            <h1 class="titulo-header">Bem-vindo</h1>
-            <a href="./src/pages/login.php" class="link-header">Entre ou crie sua conta!</a>
-        </header>
-    <?php endif; ?>
-
+    <header>
+        <br>
+        <h1 class="titulo-header">Aprove ou desaprove as solicitações dos alunos</h1>
+        <br>
+        <a href="../../index.php" class="link-header">Voltar para tela inicial!</a>
+        <br>
+    </header>
     <main>
+
         <?php
 
         if (empty($listaDeProjetos)) {
@@ -91,9 +63,9 @@ $listaDeProjetos = Projeto::carregaProjetos();
                 $popularIdosos = isset($projeto['popular_idosos']) && $projeto['popular_idosos'];
                 $popularMulheres = isset($projeto['popular_mulheres']) && $projeto['popular_mulheres'];
                 $popularHomens = isset($projeto['popular_homens']) && $projeto['popular_homens'];
-                include "src/views/cardProjeto.php";
+                include "../views/cardProjeto.php";
             }
             echo "</main>";
         }
 
-        include "src/views/footer.php";
+        include "../views/footer.php";

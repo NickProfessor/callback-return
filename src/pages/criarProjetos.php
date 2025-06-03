@@ -22,4 +22,5 @@ $temas = Projeto::buscaTemasDoBanco();
 $alunos = $alunoController->consultaAlunos();
 
 $etapa = 7;
+$admin = True;
 include "../views/formulario.php";
