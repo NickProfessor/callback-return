@@ -81,6 +81,33 @@ INSERT INTO `aluno_has_projeto` VALUES (1,10,'2025-03-20 15:37:55','2025-03-20 1
 UNLOCK TABLES;
 
 --
+-- Table structure for table `aluno_has_solicitacao`
+--
+
+DROP TABLE IF EXISTS `aluno_has_solicitacao`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!50503 SET character_set_client = utf8mb4 */;
+CREATE TABLE `aluno_has_solicitacao` (
+  `aluno_id_aluno` int DEFAULT NULL,
+  `solicitacao_id_solicitacao` int DEFAULT NULL,
+  KEY `solicitacao_id_solicitacao` (`solicitacao_id_solicitacao`),
+  KEY `aluno_id_aluno` (`aluno_id_aluno`),
+  CONSTRAINT `aluno_has_solicitacao_ibfk_1` FOREIGN KEY (`solicitacao_id_solicitacao`) REFERENCES `solicitacao_projeto` (`id_solicitacao`),
+  CONSTRAINT `aluno_has_solicitacao_ibfk_2` FOREIGN KEY (`aluno_id_aluno`) REFERENCES `aluno` (`id_aluno`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb3;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Dumping data for table `aluno_has_solicitacao`
+--
+
+LOCK TABLES `aluno_has_solicitacao` WRITE;
+/*!40000 ALTER TABLE `aluno_has_solicitacao` DISABLE KEYS */;
+INSERT INTO `aluno_has_solicitacao` VALUES (1,4),(3,4);
+/*!40000 ALTER TABLE `aluno_has_solicitacao` ENABLE KEYS */;
+UNLOCK TABLES;
+
+--
 -- Table structure for table `avaliacao`
 --
 
@@ -164,6 +191,33 @@ LOCK TABLES `curso_has_projeto` WRITE;
 /*!40000 ALTER TABLE `curso_has_projeto` DISABLE KEYS */;
 INSERT INTO `curso_has_projeto` VALUES (1,10),(1,13),(2,14),(3,14),(1,16),(2,17),(1,18),(4,18),(1,19),(1,20),(1,21),(1,22),(1,23),(1,24),(1,25),(2,25),(1,26),(6,27),(8,27);
 /*!40000 ALTER TABLE `curso_has_projeto` ENABLE KEYS */;
+UNLOCK TABLES;
+
+--
+-- Table structure for table `curso_has_solicitacao`
+--
+
+DROP TABLE IF EXISTS `curso_has_solicitacao`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!50503 SET character_set_client = utf8mb4 */;
+CREATE TABLE `curso_has_solicitacao` (
+  `curso_id_curso` int DEFAULT NULL,
+  `solicitacao_id_solicitacao` int DEFAULT NULL,
+  KEY `solicitacao_id_solicitacao` (`solicitacao_id_solicitacao`),
+  KEY `curso_has_curso` (`curso_id_curso`),
+  CONSTRAINT `curso_has_solicitacao_ibfk_1` FOREIGN KEY (`solicitacao_id_solicitacao`) REFERENCES `solicitacao_projeto` (`id_solicitacao`),
+  CONSTRAINT `curso_has_solicitacao_ibfk_2` FOREIGN KEY (`curso_id_curso`) REFERENCES `curso` (`id_curso`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb3;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Dumping data for table `curso_has_solicitacao`
+--
+
+LOCK TABLES `curso_has_solicitacao` WRITE;
+/*!40000 ALTER TABLE `curso_has_solicitacao` DISABLE KEYS */;
+INSERT INTO `curso_has_solicitacao` VALUES (1,3),(2,3),(1,4),(2,4);
+/*!40000 ALTER TABLE `curso_has_solicitacao` ENABLE KEYS */;
 UNLOCK TABLES;
 
 --
@@ -294,6 +348,39 @@ INSERT INTO `resposta` VALUES (1,18,8,'TEMPORÁRIO',NULL,'AAA',1,'2025-04-03 03:
 UNLOCK TABLES;
 
 --
+-- Table structure for table `solicitacao_projeto`
+--
+
+DROP TABLE IF EXISTS `solicitacao_projeto`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!50503 SET character_set_client = utf8mb4 */;
+CREATE TABLE `solicitacao_projeto` (
+  `id_solicitacao` int NOT NULL AUTO_INCREMENT,
+  `nome_projeto` varchar(255) DEFAULT NULL,
+  `resumo` varchar(200) DEFAULT NULL,
+  `descricao` text,
+  `material_apoio` varchar(255) DEFAULT NULL,
+  `solicitado_por` int DEFAULT NULL,
+  `data_solicitacao` datetime DEFAULT CURRENT_TIMESTAMP,
+  `data_atualizacao` datetime DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+  `status` enum('pendente','aprovado','rejeitado') DEFAULT 'pendente',
+  PRIMARY KEY (`id_solicitacao`),
+  KEY `solicitado_por` (`solicitado_por`),
+  CONSTRAINT `solicitacao_projeto_ibfk_1` FOREIGN KEY (`solicitado_por`) REFERENCES `aluno` (`id_aluno`)
+) ENGINE=InnoDB AUTO_INCREMENT=5 DEFAULT CHARSET=utf8mb3;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Dumping data for table `solicitacao_projeto`
+--
+
+LOCK TABLES `solicitacao_projeto` WRITE;
+/*!40000 ALTER TABLE `solicitacao_projeto` DISABLE KEYS */;
+INSERT INTO `solicitacao_projeto` VALUES (1,'Projeto Teste SOLICITACAO','Resumo de SOLICITACAO','DESCRICAO DE SOLICITACAO',NULL,2,'2025-06-03 00:32:25','2025-06-02 19:32:25','pendente'),(3,'AAAAAAAAAAAAAAAAAAAAAAAAAAAA','AAAAAAAAA','aaa','uploads/683e9c4e39648.pdf',2,'2025-06-03 08:55:10','2025-06-03 03:55:10','pendente'),(4,'BBBBBBBBBBBBBBBBB','AAAAAAAA','AAAAAAAAAAAVBB','uploads/683e9d10d64bb.pdf',2,'2025-06-03 08:58:24','2025-06-03 03:58:24','pendente');
+/*!40000 ALTER TABLE `solicitacao_projeto` ENABLE KEYS */;
+UNLOCK TABLES;
+
+--
 -- Table structure for table `tema`
 --
 
@@ -350,6 +437,33 @@ INSERT INTO `tema_has_projeto` VALUES (1,10,'2025-03-20 15:36:22','2025-03-20 15
 UNLOCK TABLES;
 
 --
+-- Table structure for table `tema_has_solicitacao`
+--
+
+DROP TABLE IF EXISTS `tema_has_solicitacao`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!50503 SET character_set_client = utf8mb4 */;
+CREATE TABLE `tema_has_solicitacao` (
+  `tema_id_tema` int NOT NULL,
+  `solicitacao_id_solicitacao` int DEFAULT NULL,
+  KEY `solicitacao_id_solicitacao` (`solicitacao_id_solicitacao`),
+  KEY `tema_id_tema` (`tema_id_tema`),
+  CONSTRAINT `tema_has_solicitacao_ibfk_1` FOREIGN KEY (`solicitacao_id_solicitacao`) REFERENCES `solicitacao_projeto` (`id_solicitacao`),
+  CONSTRAINT `tema_has_solicitacao_ibfk_2` FOREIGN KEY (`tema_id_tema`) REFERENCES `tema` (`id_tema`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb3;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Dumping data for table `tema_has_solicitacao`
+--
+
+LOCK TABLES `tema_has_solicitacao` WRITE;
+/*!40000 ALTER TABLE `tema_has_solicitacao` DISABLE KEYS */;
+INSERT INTO `tema_has_solicitacao` VALUES (1,3),(2,3),(1,4),(2,4);
+/*!40000 ALTER TABLE `tema_has_solicitacao` ENABLE KEYS */;
+UNLOCK TABLES;
+
+--
 -- Table structure for table `usuario`
 --
 
@@ -392,4 +506,4 @@ UNLOCK TABLES;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2025-04-30 18:25:02
+-- Dump completed on 2025-06-03 17:38:12
