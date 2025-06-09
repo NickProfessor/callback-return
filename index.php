@@ -85,12 +85,6 @@ $listaDeProjetos = Projeto::carregaProjetos();
                 $projetoTemas = explode(',', $projeto['temas']);
                 $projetoAvaliacoes = $projeto['total_avaliacoes'];
                 $projetoMediaAvaliacoes = $projeto['media_notas'];
-
-                $popularAdultos = isset($projeto['popular_adultos']) && $projeto['popular_adultos'];
-                $popularJovens = isset($projeto['popular_jovens']) && $projeto['popular_jovens'];
-                $popularIdosos = isset($projeto['popular_idosos']) && $projeto['popular_idosos'];
-                $popularMulheres = isset($projeto['popular_mulheres']) && $projeto['popular_mulheres'];
-                $popularHomens = isset($projeto['popular_homens']) && $projeto['popular_homens'];
                 include "src/views/cardProjeto.php";
             }
             echo "</main>";

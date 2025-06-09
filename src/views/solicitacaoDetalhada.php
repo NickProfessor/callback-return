@@ -4,19 +4,16 @@
         <?php if (!isset($usuario)): ?>
             <a href="./cadastroUsuario.php" class="link-header">Cadastre se ou consulte o ID</a>
         <?php endif; ?>
-        <a href="../../index.php" class="botao-padrao"><i class="fa-solid fa-arrow-left"></i>
+        <a href="./solicitacoes.php" class="botao-padrao"><i class="fa-solid fa-arrow-left"></i>
             Voltar</a>
     </header>
-    <main>
+    <main class="solicitacao">
+        <p>O projeto será apresentado dessa forma na tela de DETALHES:</p>
+        <br>
+        <p>Nome do Projeto:</p>
         <h2 class="projeto-titulo"><?php echo htmlspecialchars($projetoNome); ?></h2>
 
-        <?php if (isset($usuarioAdm) || isset($usuarioProfessor)): ?>
-            <div class="projeto-avaliacoes">
-                <i class="fa-solid fa-star"></i>
-                <p><?php echo htmlspecialchars(number_format($projetoMediaAvaliacoes, 1)); ?></p>
-                <p>(<?php echo htmlspecialchars($projetoAvaliacoes); ?> avaliações)</p>
-            </div>
-        <?php endif; ?>
+
         <div class="projeto-info">
             <p>Curso(s):</p>
             <p class="projeto-info-desc"><?php echo htmlspecialchars($projetoCursos); ?></p>
@@ -45,8 +42,6 @@
         </div>
 
 
-        <a href="./avaliaProjeto.php?projeto=<?php echo $projetoId ?>" class="botao-padrao">Clique aqui para avaliar o
-            projeto</a>
         <?php if ($projetoMaterialApoio): ?>
             <a href="./../<?php echo $projetoMaterialApoio ?>" class="botao-padrao" target="_blank">Clique aqui para acessar
                 o
@@ -61,22 +56,45 @@
             <a href="./editarProjeto.php?projeto=<?= $projetoId ?>" class="botao-padrao botao-editar">Editar projeto</a>
         <?php endif; ?>
 
-        <div class="projeto-comentarios">
-            <p>Comentários:</p>
-            <?php if (!empty($projetoComentarios)): ?>
-
-                <?php foreach ($projetoComentarios as $comentario): ?>
-                    <p class="projeto-comentario"><?php echo htmlspecialchars($comentario); ?></p>
-                <?php endforeach; ?>
-            <?php else: ?>
-                <p>Sem comentários.</p>
-            <?php endif; ?>
-        </div>
 
 
 
 
     </main>
+    <section class="revisao-section">
+        <form method="POST" action="processaRevisao.php" class="form-revisao">
+            <?php
+            $campos = [
+                'titulo' => 'Título do Projeto: ',
+                'cursos' => 'Cursos do Projeto',
+                'temas' => 'Temas do Projeto',
+                'resumo' => "Resumo do Projeto (na tela inicial): '$projetoResumo'",
+                'descricao' => 'Descrição do Projeto',
+                'alunos' => 'Alunos do Projeto',
+                'material' => 'Material de Apoio'
+            ];
+
+            foreach ($campos as $campo => $label):
+                ?>
+                <div class="bloco-revisao">
+                    <h3>Sobre o <?php echo $label; ?></h3>
+                    <label>
+                        <input type="radio" name="status_<?php echo $campo; ?>" value="aprovado" required>
+                        Aprovar
+                    </label>
+                    <label>
+                        <input type="radio" name="status_<?php echo $campo; ?>" value="reprovado">
+                        Reprovar
+                    </label>
+                    <textarea name="comentario_<?php echo $campo; ?>" placeholder="Comentário (se reprovado)"></textarea>
+                </div>
+            <?php endforeach; ?>
+
+            <input type="hidden" name="id_projeto" value="<?php echo htmlspecialchars($projetoId); ?>">
+            <button type="submit" class="botao-padrao">Enviar Revisão</button>
+        </form>
+
+    </section>
 
     <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
     <script>
