@@ -1,5 +1,12 @@
 <?php
+require_once "./src/helpers/SessionManager.php";
+require_once "./src/controllers/UserController.php";
 require_once "./src/models/Projeto.php";
+
+$usuario = SessionManager::get('usuario');
+
+
+$listaDeProjetos = Projeto::carregaProjetos();
 ?>
 
 <!DOCTYPE html>
@@ -14,42 +21,73 @@ require_once "./src/models/Projeto.php";
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.6.0/css/all.min.css"
         integrity="sha512-Kc323vGBEqzTmouAECnVceyQqyqdsSiqLQISBL29aUW4U/M7pSPA/gEUZQqv1cwx4OnYxTxve5UMg5GT6L4JJg=="
         crossorigin="anonymous" referrerpolicy="no-referrer" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.6.0/css/all.min.css"
+        integrity="sha512-Kc323vGBEqzTmouAECnVceyQqyqdsSiqLQISBL29aUW4U/M7pSPA/gEUZQqv1cwx4OnYxTxve5UMg5GT6L4JJg=="
+        crossorigin="anonymous" referrerpolicy="no-referrer" />
 </head>
 
 <body>
-    <header>
-        <h1 class="titulo-header">CallbackReturn</h1>
-        <a href="./src/pages/cadastroUsuario.php" class="link-header">Cadastre se ou consulte o ID</a>
-        <p>Salas</p>
-    </header>
-    <main>
+    <?php if ($usuario): ?>
+        <header>
+            <h1 class="titulo-header">Bem-vindo, <?php echo $usuario['nome']; ?></h1>
+            <a href="./src/pages/logout.php" class="link-header">Logout</a>
 
-        <?php
-        $projeto = new Projeto();
-        $listaDeSalas = $projeto->obterSalasComProjetos();
+            <?php
+            $linkTexto = "";
+            $linkURL = "#";
 
-        if (empty($listaDeSalas)) {
-            echo "Nenhuma sala com projetos encontrados.";
-        } else {
-            foreach ($listaDeSalas as $sala) {
-                if (!empty($sala['lista_projetos'])) {
-                    $salaNumero = $sala['sala_numero'];
-                    $listaProjetosString = $sala['lista_projetos'];
-                    $totalAvaliacoes = $sala['total_avaliacoes'];
-                    $mediaNotas = $sala['media_notas'];
-
-
-                    $listaProjetosArray = explode(',', $listaProjetosString);
-
-
-
-                    include __DIR__ . "/src/views/cardSala.php";
-                }
+            switch ($usuario['tipo_usuario']) {
+                case '1':
+                    $linkTexto = "Sou usuário";
+                    $linkURL = "./src/pages/perfilUsuario.php";
+                    break;
+                case '2':
+                    $linkTexto = "Criar projeto";
+                    $linkURL = "./src/pages/criarProjetos.php";
+                    break;
+                case '3':
+                    $linkTexto = "Sou aluno";
+                    $linkURL = "./src/pages/perfilAluno.php";
+                    break;
+                case '4':
+                    $linkTexto = "Solicitações de projetos";
+                    $linkURL = "./src/pages/solicitacoes.php";
+                    break;
             }
-        }
-        ?>
-    </main>
-    <?php
 
-    include "./src/views/footer.php";
-    ?>
+            if ($linkTexto): ?>
+                <a href="<?php echo $linkURL; ?>"><?php echo $linkTexto; ?></a>
+            <?php endif; ?>
+
+        </header>
+    <?php else: ?>
+        <header>
+            <h1 class="titulo-header">Bem-vindo</h1>
+            <a href="./src/pages/login.php" class="link-header">Entre ou crie sua conta!</a>
+        </header>
+    <?php endif; ?>
+
+    <main>
+        <?php
+
+        if (empty($listaDeProjetos)) {
+            echo "Nenhum projeto encontrado para a exibir.";
+            echo "</main>";
+        } else {
+
+            foreach ($listaDeProjetos as $projeto) {
+
+                $projetoId = $projeto['id_projeto'];
+                $projetoNome = $projeto['projeto_nome'];
+                $projetoCursos = $projeto['cursos'];
+                $projetoResumo = $projeto['projeto_resumo'];
+                $projetoAlunos = $projeto['alunos'];
+                $projetoTemas = explode(',', $projeto['temas']);
+                $projetoAvaliacoes = $projeto['total_avaliacoes'];
+                $projetoMediaAvaliacoes = $projeto['media_notas'];
+                include "src/views/cardProjeto.php";
+            }
+            echo "</main>";
+        }
+
+        include "src/views/footer.php";

@@ -1,0 +1,7 @@
+@import url("../components/formularioPadrao.css");
+@import url("../components/tabela-padrao.css");
+
+
+main {
+    max-width: 1200px;
+}

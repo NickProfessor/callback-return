@@ -34,7 +34,7 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
         $recuperado = true;
         include "../views/formulario.php";
     } else {
-        header("Location: ../pages/esqueceuOID.php?erro=usuario-nao-existe");
+        header("Location: ../pages/login.php?erro=usuario-nao-existe");
     }
 
     include "../views/footer.php"
@@ -43,6 +43,6 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
     session_unset();
     session_destroy();
 } else {
-    header("Location: ../../index.php");
+    header("Location: ../../index.php?impossivel-acessar-pagina");
     exit();
 }

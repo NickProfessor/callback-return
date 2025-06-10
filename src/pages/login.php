@@ -1,8 +1,8 @@
 <?php
-$page = "esqueceuOID";
-$pageTitle = "Esqueci meu ID";
+$page = "login";
+$pageTitle = "Login";
 include "../views/header.php";
-$etapa = 4;
+$etapa = 2;
 if (isset($_GET['erro'])) {
     $erro = true;
 }

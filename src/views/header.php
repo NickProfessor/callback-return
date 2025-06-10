@@ -22,13 +22,8 @@
             <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.6.0/css/all.min.css"
                 integrity="sha512-Kc323vGBEqzTmouAECnVceyQqyqdsSiqLQISBL29aUW4U/M7pSPA/gEUZQqv1cwx4OnYxTxve5UMg5GT6L4JJg=="
                 crossorigin="anonymous" referrerpolicy="no-referrer" />
-        <?php elseif ($page === 'esqueceuOID'): ?>
+        <?php elseif ($page === 'login'): ?>
             <link rel="stylesheet" href="../assets/css/pages/esqueceuOID.css">
-            <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.6.0/css/all.min.css"
-                integrity="sha512-Kc323vGBEqzTmouAECnVceyQqyqdsSiqLQISBL29aUW4U/M7pSPA/gEUZQqv1cwx4OnYxTxve5UMg5GT6L4JJg=="
-                crossorigin="anonymous" referrerpolicy="no-referrer" />
-        <?php elseif ($page === 'sala'): ?>
-            <link rel="stylesheet" href="../assets/css/pages/sala.css">
             <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.6.0/css/all.min.css"
                 integrity="sha512-Kc323vGBEqzTmouAECnVceyQqyqdsSiqLQISBL29aUW4U/M7pSPA/gEUZQqv1cwx4OnYxTxve5UMg5GT6L4JJg=="
                 crossorigin="anonymous" referrerpolicy="no-referrer" />
@@ -45,9 +40,21 @@
         <?php elseif ($page == 'projetoAvaliado'): ?>
             <link rel="stylesheet" href="../assets/css/pages/projetoAvaliado.css">
         <?php elseif ($page == 'cadastroProjeto'): ?>
+            <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/easymde/dist/easymde.min.css">
+            <link rel="stylesheet" href="../assets/css/pages/cadastroProjeto.css">
+        <?php elseif ($page == 'solicitarProjeto'): ?>
+            <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/easymde/dist/easymde.min.css">
             <link rel="stylesheet" href="../assets/css/pages/cadastroProjeto.css">
         <?php elseif ($page == 'registraProjeto'): ?>
             <link rel="stylesheet" href="../assets/css/pages/registraProjeto.css">
+        <?php elseif ($page == 'excluiProjeto'): ?>
+            <link rel="stylesheet" href="../assets/css/pages/excluiProjeto.css">
+        <?php elseif ($page == 'cadastroAluno'): ?>
+            <link rel="stylesheet" href="../assets/css/pages/cadastroAluno.css">
+        <?php elseif ($page == 'revisaComentarios'): ?>
+            <link rel="stylesheet" href="../assets/css/pages/revisaComentarios.css">
+        <?php elseif ($page == 'editarProjeto'): ?>
+            <link rel="stylesheet" href="../assets/css/pages/editarProjeto.css">
         <?php endif; ?>
     <?php endif; ?>
 </head>

@@ -3,40 +3,45 @@
 require_once "../helpers/SessionManager.php";
 require_once "../models/Projeto.php";
 
+
+
 if (isset($_GET["projeto"]) && $_GET["projeto"] != "") {
 
     $projetoId = $_GET["projeto"];
 
-    $projetoExiste = Projeto::obterProjetoPeloId($projetoId);
+    $projetoExiste = Projeto::obterSolicitacaoPeloId($projetoId);
 
     if (!$projetoExiste) {
         $page = "detalhesProjeto";
-        $pageTitle = "Projeto não encontrado | CallbackReturn";
+        $pageTitle = "Solicitacão não encontrado | CallbackReturn";
         include "../views/header.php";
         echo "<h1>Projeto não encontrado</h1>";
     } else {
         $usuario = SessionManager::get("usuario");
-        $projeto = Projeto::obterDetalhesDoProjeto($projetoId);
+        $projeto = Projeto::obterDetalhesDaSolicitacaoComOsIDS($projetoId);
 
         $projetoNome = $projeto['projeto_nome'];
         $projetoCursos = $projeto['cursos'];
         $projetoResumo = $projeto['projeto_resumo'];
         $projetoDescricao = $projeto['projeto_descricao']; // Não usamos nl2br aqui
         $projetoMaterialApoio = $projeto['projeto_material_apoio'] ?? null;
-        $projetoAlunos = explode(',', $projeto['alunos']);
-        $projetoTemas = explode(',', $projeto['temas']);
-        $projetoAvaliacoes = $projeto['total_avaliacoes'];
-        $projetoMediaAvaliacoes = $projeto['media_notas'];
+        $projetoAlunos = $projeto['alunos'];
+        $projetoTemas = $projeto['temas'];
 
-        $comentariosBrutos = explode(' | ', $projeto['comentarios']);
 
-        // Filtra comentários válidos
-        $projetoComentarios = array_filter($comentariosBrutos, function ($comentario) {
-            // Remove espaços em branco antes e depois do comentário
-            $comentario = trim($comentario);
-            // Verifica se o comentário é exatamente "Sem comentario" ou "sem comentario"
-            return $comentario !== 'Sem comentario' && $comentario !== 'sem comentario' && !empty($comentario);
-        });
+
+        $dados = [
+            "nome" => $projetoNome,
+            "cursos" => $projetoCursos,
+            "resumo" => $projetoResumo,
+            "descricao" => $projetoDescricao,
+            "material_apoio" => $projetoMaterialApoio,
+            "alunos" => $projetoAlunos,
+            "temas" => $projetoTemas
+        ];
+        SessionManager::set('projeto_temp', $dados);
+
+
 
         if (isset($usuario) && ($usuario['tipo_usuario'] == 2)) {
             $usuarioAdm = true;
@@ -47,7 +52,7 @@ if (isset($_GET["projeto"]) && $_GET["projeto"] != "") {
         $page = "detalhesProjeto";
         $pageTitle = "$projetoNome | CallbackReturn";
         include "../views/header.php";
-        include "../views/projetoDetalhado.php";
+        include "../views/solicitacaoDetalhada.php";
     }
 } else {
     $pageTitle = "Não encontrado | CallbackReturn";

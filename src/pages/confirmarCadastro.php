@@ -1,51 +1,49 @@
 <?php
 
 $page = "confirmarCadastro";
-$pageTitle = 'Cadastro de Usuário';
 require_once "../controllers/UserController.php";
 
 
-if (session_status() === PHP_SESSION_NONE) {
-    session_start();
-}
-
+$email = $_POST['email'];
 $nome = $_POST['nome'];
 $dataNasc = $_POST['dataNasc'];
 $sexo = $_POST['sexo'];
 
+$fraseSeguranca = $_POST["frase"] ?? null;
+$fraseConfirmacao = $_POST['confirmacao'] ?? null;
+
 if ($_SERVER["REQUEST_METHOD"] === "POST") {
-    if (strtotime($dataNasc) > time()) {
-        header("Location: ./cadastroUsuario.php?erro=data");
-    }
 
     $userController = new UserController();
     if (
         $id = $userController->usuarioExiste(
-            $nome,
-            $dataNasc,
-            $sexo
+            $email,
         )
+
     ) {
         $jaCadastrado = true;
-        $page = "cadastrado";
-        $etapa = 3;
-        include "../views/header.php";
-        include "../views/formulario.php";
-        include "../views/footer.php";
-        session_unset();
-        session_destroy();
-        exit();
+
+        header("Location: ./login.php?ja-possui-cadastro");
+
+
     } else {
-        $etapa = 2;
         $_SESSION['nome'] = $nome;
-        $_SESSION['data_nasc'] = $dataNasc;
+        $_SESSION['email'] = $email;
+        $_SESSION['dataNasc'] = $dataNasc;
         $_SESSION['sexo'] = $sexo;
-        include "../views/header.php";
-        include "../views/formulario.php";
+        if ($fraseSeguranca === null) {
+            $_SESSION['ra'] = $_POST['ra'];
+            $_SESSION['rm'] = $_POST['rm'];
+            $_SESSION['serie'] = $_POST['serie'];
+            $_SESSION['turma'] = $_POST['turma'] ?? null;
+            $_SESSION['curso'] = $_POST['curso'];
+            header("Location: cadastrado.php?cadastro-aluno=true");
+        } else {
+            $_SESSION['frase'] = $fraseSeguranca;
+            $_SESSION['confirmacao'] = $fraseConfirmacao;
+            header("Location: cadastrado.php");
+        }
     }
 } else {
-    header("Location: ../../index.php");
+    header("Location: ../../index.php?impossivel-acessar-pagina");
 }
-
-
-include "../views/footer.php";

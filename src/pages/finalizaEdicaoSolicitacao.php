@@ -1,19 +1,19 @@
 <?php
 require_once "../models/Projeto.php";
 
+$idProjeto = $_POST['id_projeto'];
 if ($_SERVER["REQUEST_METHOD"] !== "POST") {
     header("Location: ../../index.php?impossivel-acessar-pagina");
     exit;
 }
 
 if (!isset($_POST['nome'], $_POST['descricao'], $_POST['cursos'], $_POST['temas'], $_POST['alunos'])) {
-    header("Location: ./criarProjetos.php?erro=dados-insuficientes");
+    header("Location: ./editarSolicitacao.php?projeto=$idProjeto&&erro=dados-insuficientes");
     exit;
 }
 
 
-
-
+$edicaoSolicitacao = True;
 $nomeProjeto = $_POST['nome'];
 $resumoProjeto = $_POST['resumo'];
 $descricaoProjeto = str_replace('<br>', "\n", $_POST['descricao']);
@@ -23,7 +23,7 @@ $cursosProjeto = $_POST['cursos'];
 if (isset($_POST['alunos']) && is_array($_POST['alunos'])) {
     $alunosProjeto = $_POST['alunos']; // Array com IDs dos alunos selecionados
 } else {
-    $alunosProjeto = []; // Nenhum aluno foi selecionado
+    header("Location: ./editarSolicitacao.php?projeto=$idProjeto&&erro=nao-contem-alunos");
 }
 
 
@@ -37,7 +37,9 @@ if (!is_dir($diretorioDestino)) {
 
 $caminhoRelativo = null; // Caso não haja upload, o valor será NULL
 
-// Verifica se um arquivo foi enviado
+$projeto = Projeto::obterDetalhesDaSolicitacao($idProjeto);
+$arquivoAntigo = $projeto['projeto_material_apoio']; // exemplo
+
 if (isset($_FILES['arquivo']) && $_FILES['arquivo']['error'] === UPLOAD_ERR_OK) {
     $arquivo = $_FILES['arquivo'];
 
@@ -46,7 +48,7 @@ if (isset($_FILES['arquivo']) && $_FILES['arquivo']['error'] === UPLOAD_ERR_OK) 
     $extensao = strtolower(pathinfo($arquivo['name'], PATHINFO_EXTENSION));
 
     if (!in_array($extensao, $extensoesPermitidas)) {
-        header("Location: ./criarProjetos.php?erro=arquivo-invalido");
+        header("Location: ./editarSolicitacao.php?projeto=$idProjeto&&erro=arquivo-invalido");
         exit;
     }
 
@@ -54,14 +56,22 @@ if (isset($_FILES['arquivo']) && $_FILES['arquivo']['error'] === UPLOAD_ERR_OK) 
     $novoNome = uniqid() . "." . $extensao;
     $caminhoFinal = $diretorioDestino . $novoNome;
 
-    // Move o arquivo para o diretório
     if (move_uploaded_file($arquivo['tmp_name'], $caminhoFinal)) {
         $caminhoRelativo = "uploads/" . $novoNome;
+
+        // Excluir o arquivo antigo, se existir
+        if (!empty($arquivoAntigo) && file_exists($arquivoAntigo)) {
+            unlink($arquivoAntigo);
+        }
     } else {
-        header("Location: ./criarProjetos.php?erro=upload-falhou");
+        header("Location: ./editarSolicitacao.php?projeto=$idProjeto&&erro=upload-falhou");
         exit;
     }
+} else {
+    // Nenhum novo arquivo enviado, mantém o arquivo antigo
+    $caminhoRelativo = $arquivoAntigo;
 }
+
 
 $projetoController = new Projeto(
     $nomeProjeto,
@@ -70,10 +80,11 @@ $projetoController = new Projeto(
     $temasProjeto,
     $cursosProjeto,
     $alunosProjeto,
-    $caminhoRelativo // Adicionamos o caminho do arquivo ao objeto do projeto
+    $caminhoRelativo, // Adicionamos o caminho do arquivo ao objeto do projeto
+    $idProjeto
 );
 
-$projetoController->cadastraProjeto();
+$projetoController->editaSolicitacao();
 
 // Página de confirmação
 $page = "registraProjeto";

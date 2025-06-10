@@ -1,5 +1,11 @@
+<!-- TODO: IMPLEMENTAR MÉTODOS NA CLASSE PARA CRIAR OS DEVIDOS REGISTROS DA SOLICITAÇÃO -->
+
 <?php
+require_once "../helpers/SessionManager.php";
 require_once "../models/Projeto.php";
+
+SessionManager::start();
+$usuario = SessionManager::get('usuario');
 
 if ($_SERVER["REQUEST_METHOD"] !== "POST") {
     header("Location: ../../index.php?impossivel-acessar-pagina");
@@ -7,7 +13,7 @@ if ($_SERVER["REQUEST_METHOD"] !== "POST") {
 }
 
 if (!isset($_POST['nome'], $_POST['descricao'], $_POST['cursos'], $_POST['temas'], $_POST['alunos'])) {
-    header("Location: ./criarProjetos.php?erro=dados-insuficientes");
+    header("Location: ./solicitarProjeto.php?erro=dados-insuficientes");
     exit;
 }
 
@@ -46,7 +52,7 @@ if (isset($_FILES['arquivo']) && $_FILES['arquivo']['error'] === UPLOAD_ERR_OK) 
     $extensao = strtolower(pathinfo($arquivo['name'], PATHINFO_EXTENSION));
 
     if (!in_array($extensao, $extensoesPermitidas)) {
-        header("Location: ./criarProjetos.php?erro=arquivo-invalido");
+        header("Location: ./solicitarProjeto.php?erro=arquivo-invalido");
         exit;
     }
 
@@ -58,7 +64,7 @@ if (isset($_FILES['arquivo']) && $_FILES['arquivo']['error'] === UPLOAD_ERR_OK) 
     if (move_uploaded_file($arquivo['tmp_name'], $caminhoFinal)) {
         $caminhoRelativo = "uploads/" . $novoNome;
     } else {
-        header("Location: ./criarProjetos.php?erro=upload-falhou");
+        header("Location: ./solicitarProjeto.php?erro=upload-falhou");
         exit;
     }
 }
@@ -73,7 +79,7 @@ $projetoController = new Projeto(
     $caminhoRelativo // Adicionamos o caminho do arquivo ao objeto do projeto
 );
 
-$projetoController->cadastraProjeto();
+$projetoController->cadastraSolicitacaoProjeto($usuario['id_usuario']);
 
 // Página de confirmação
 $page = "registraProjeto";
