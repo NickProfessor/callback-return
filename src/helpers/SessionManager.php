@@ -56,4 +56,12 @@ class SessionManager
             exit();
         }
     }
+
+    public static function forget($key)
+    {
+        self::start();
+        if (isset($_SESSION[$key])) {
+            unset($_SESSION[$key]);
+        }
+    }
 }

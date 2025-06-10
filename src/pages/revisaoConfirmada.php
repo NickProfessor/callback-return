@@ -5,10 +5,10 @@ include "../views/header.php";
 ?>
 
 <?php
-$status = $_GET['status']
+$status = $_GET['status'] ?? null
     ?>
 
-<?php if ($status == 'reprovado'): ?>
+<?php if (isset($status) && $status == 'reprovado'): ?>
     <h1 class="titulo-formulario">Solicitação reprovada com sucesso!</h1>
     <main>
         <p class="mensagem">Você reprovou a solicitação de projeto. Agora o aluno precisa revisar suas observações para

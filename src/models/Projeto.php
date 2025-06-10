@@ -3,6 +3,7 @@
 require_once __DIR__ . "/../../config/config.php";
 require_once __DIR__ . "/../../config/db_connect.php";
 require_once __DIR__ . "/../helpers/Logger.php";
+require_once __DIR__ . "/../controllers/AlunoController.php";
 
 class Projeto
 {
@@ -74,7 +75,7 @@ class Projeto
 
         if ($result) {
             $projetos = $result->fetch_all(MYSQLI_ASSOC);
-            shuffle($projetos);
+            $projetos = array_reverse($projetos);
             return $projetos;
         } else {
             die("Algo deu errado na consulta dos projetos");
@@ -579,6 +580,28 @@ class Projeto
         }
     }
 
+    private function atualizaSolicitacao()
+    {
+        $nomeDoProjeto = $this->nome;
+        $resumoDoProjeto = $this->resumo;
+        $descricaoDoProjeto = $this->descricao;
+        $materialApoio = $this->materialApoio;
+        $idProjeto = $this->id_projeto;
+        $status = 1;
+
+        global $conn;
+
+        $stmt = $conn->prepare("UPDATE solicitacao_projeto SET nome_projeto = ?, resumo = ?, descricao = ?, material_apoio = ?, status = ? WHERE id_solicitacao = ?");
+        if (!$stmt) {
+            return false;
+        }
+
+        $stmt->bind_param("ssssii", $nomeDoProjeto, $resumoDoProjeto, $descricaoDoProjeto, $materialApoio, $status, $idProjeto);
+
+        $stmt->execute();
+        $stmt->close();
+
+    }
     private function atualizaProjeto()
     {
         $nomeDoProjeto = $this->nome;
@@ -741,19 +764,32 @@ class Projeto
     {
         global $conn;
 
-        // Inicia a transação
+        // Pega o id_aluno correspondente ao id_usuario
+        $alunoId = Aluno::existeNoBanco($conn, $idUsuarioSolicitante);
+        if (!$alunoId) {
+            Logger::log("Erro: usuário solicitante não é um aluno válido", "ERROR");
+            header("Location: ./solicitarProjeto.php?erro=solicitante-nao-existe");
+            return false;
+        }
+
+        // Verifica se ele está incluído nos participantes
+        if (!in_array($alunoId, $this->alunos)) {
+            Logger::log("Solicitação rejeitada: aluno solicitante não está entre os participantes.", "WARN");
+            header("Location: ./solicitarProjeto.php?erro=solicitante-nao-incluido");
+            return false;
+        }
+
         $conn->begin_transaction();
 
         try {
             if (!$this->solicitacaoJaExiste()) {
-                $solicitacaoId = $this->criaSolicitacao($idUsuarioSolicitante);
+                $solicitacaoId = $this->criaSolicitacao($alunoId);
 
                 if (!$solicitacaoId) {
                     Logger::log("Erro ao criar a solicitação.", "ERROR");
                     throw new Exception("Erro ao criar solicitação");
                 }
 
-                // Se precisar registrar relacionamentos, chamar métodos semelhantes aqui
                 $this->registraCursosDaSolicitacao($solicitacaoId);
                 $this->registraTemasDaSolicitacao($solicitacaoId);
                 $this->registraAlunoDaSolicitacao($solicitacaoId);
@@ -771,6 +807,7 @@ class Projeto
             return false;
         }
     }
+
 
     // Método para verificar se a solicitação já existe (exemplo)
     private function solicitacaoJaExiste()
@@ -893,50 +930,65 @@ class Projeto
         $stmt->close();
     }
 
-    public static function carregaSolicitacoes()
+    public static function carregaSolicitacoes(int $status = 1, int $idUsuarioSolicitante = null)
     {
         global $conn;
-        $sql = "SELECT 
-    p.id_solicitacao,
-    p.nome_projeto AS projeto_nome,
-    p.resumo AS projeto_resumo,
-    p.descricao AS projeto_descricao,
-    
-    GROUP_CONCAT(DISTINCT c.nome) AS cursos,
-    GROUP_CONCAT(DISTINCT i.nome) AS alunos,
-    GROUP_CONCAT(DISTINCT t.nome) AS temas
+        $sql = "
+    SELECT 
+        p.id_solicitacao,
+        p.nome_projeto AS projeto_nome,
+        p.resumo AS projeto_resumo,
+        p.descricao AS projeto_descricao,
+        GROUP_CONCAT(DISTINCT c.nome) AS cursos,
+        GROUP_CONCAT(DISTINCT i.nome) AS alunos,
+        GROUP_CONCAT(DISTINCT t.nome) AS temas
+    FROM 
+        solicitacao_projeto p
+        LEFT JOIN curso_has_solicitacao chp ON p.id_solicitacao = chp.solicitacao_id_solicitacao
+        LEFT JOIN curso c ON chp.curso_id_curso = c.id_curso
+        LEFT JOIN aluno_has_solicitacao ihp ON p.id_solicitacao = ihp.solicitacao_id_solicitacao
+        LEFT JOIN aluno i ON ihp.aluno_id_aluno = i.id_aluno
+        LEFT JOIN tema_has_solicitacao pht ON p.id_solicitacao = pht.solicitacao_id_solicitacao
+        LEFT JOIN tema t ON pht.tema_id_tema = t.id_tema
+    WHERE p.status = ?
+    ";
 
-FROM 
-    solicitacao_projeto p
-    LEFT JOIN curso_has_solicitacao chp ON p.id_solicitacao = chp.solicitacao_id_solicitacao
-    LEFT JOIN curso c ON chp.curso_id_curso = c.id_curso
-    LEFT JOIN aluno_has_solicitacao ihp ON p.id_solicitacao = ihp.solicitacao_id_solicitacao
-    LEFT JOIN aluno i ON ihp.aluno_id_aluno = i.id_aluno
-    LEFT JOIN tema_has_solicitacao pht ON p.id_solicitacao = pht.solicitacao_id_solicitacao
-    LEFT JOIN tema t ON pht.tema_id_tema = t.id_tema
+        // Armazena os tipos e valores para bind_param
+        $types = "i";
+        $params = [$status];
 
-WHERE p.status = 1
-
-GROUP BY 
-    p.id_solicitacao, p.nome_projeto, p.resumo, p.descricao;
-";
-
-        $result = $conn->query($sql);
-
-        if ($result) {
-            $projetos = $result->fetch_all(MYSQLI_ASSOC);
-            shuffle($projetos);
-            return $projetos;
-        } else {
-            die("Algo deu errado na consulta das solicitações");
+        // Filtra por usuário solicitante, se fornecido
+        if ($idUsuarioSolicitante !== null) {
+            $sql .= " AND p.solicitado_por = ?";
+            $types .= "i";
+            $params[] = $idUsuarioSolicitante;
         }
+
+        $sql .= " GROUP BY p.id_solicitacao, p.nome_projeto, p.resumo, p.descricao";
+
+        $stmt = $conn->prepare($sql);
+        if (!$stmt) {
+            Logger::log("Erro ao preparar consulta das solicitações: " . $conn->error, "ERROR");
+            return [];
+        }
+
+        $stmt->bind_param($types, ...$params);
+        $stmt->execute();
+        $result = $stmt->get_result();
+
+        $projetos = $result->fetch_all(MYSQLI_ASSOC);
+        $stmt->close();
+
+        $projetos = array_reverse($projetos);
+        return $projetos;
     }
+
 
     public static function obterSolicitacaoPeloId($id)
     {
         global $conn;
 
-        $sql = "SELECT * FROM solicitacao_projeto WHERE id_solicitacao = ? AND status = 1;";
+        $sql = "SELECT * FROM solicitacao_projeto WHERE id_solicitacao = ?;";
         $stmt = $conn->prepare($sql);
 
         if ($stmt) {
@@ -1066,4 +1118,312 @@ GROUP BY
         // Aqui você pode transferir os dados para a tabela `projeto` definitiva se quiser
     }
 
+    public static function obterDetalhesDaSolicitacaoComComentarios($idSolicitacao)
+    {
+        global $conn;
+
+        $sql = "SELECT 
+        p.id_solicitacao,
+        p.nome_projeto AS projeto_nome,
+        p.resumo AS projeto_resumo,
+        p.descricao AS projeto_descricao,
+        p.material_apoio AS projeto_material_apoio,
+        GROUP_CONCAT(DISTINCT c.nome) AS cursos,
+        GROUP_CONCAT(DISTINCT a.nome) AS alunos,
+        GROUP_CONCAT(DISTINCT t.nome) AS temas
+    FROM solicitacao_projeto p
+    LEFT JOIN curso_has_solicitacao chs ON p.id_solicitacao = chs.solicitacao_id_solicitacao
+    LEFT JOIN curso c ON chs.curso_id_curso = c.id_curso
+    LEFT JOIN aluno_has_solicitacao ahs ON p.id_solicitacao = ahs.solicitacao_id_solicitacao
+    LEFT JOIN aluno a ON ahs.aluno_id_aluno = a.id_aluno
+    LEFT JOIN tema_has_solicitacao ths ON p.id_solicitacao = ths.solicitacao_id_solicitacao
+    LEFT JOIN tema t ON ths.tema_id_tema = t.id_tema
+    WHERE p.id_solicitacao = ?
+    GROUP BY p.id_solicitacao";
+
+        $stmt = $conn->prepare($sql);
+        $stmt->bind_param("i", $idSolicitacao);
+        $stmt->execute();
+        $result = $stmt->get_result();
+        $dadosProjeto = $result->fetch_assoc();
+
+        if (!$dadosProjeto)
+            return null;
+
+        // Agora buscamos os comentários da tabela observacao_revisao
+        $sqlComentarios = "SELECT campo, comentario FROM observacao_revisao WHERE solicitacao_id = ?";
+        $stmtComentarios = $conn->prepare($sqlComentarios);
+        $stmtComentarios->bind_param("i", $idSolicitacao);
+        $stmtComentarios->execute();
+        $resultComentarios = $stmtComentarios->get_result();
+
+        $comentarios = [];
+        while ($linha = $resultComentarios->fetch_assoc()) {
+            $comentarios[$linha['campo']] = $linha['comentario'];
+        }
+
+        // Anexamos os comentários ao retorno principal
+        $dadosProjeto['comentarios'] = $comentarios;
+
+        return $dadosProjeto;
+    }
+
+    public function editaSolicitacao()
+    {
+        global $conn;
+
+        // Inicia uma transação
+        $conn->begin_transaction();
+
+        try {
+
+
+            $this->atualizaSolicitacao();
+
+
+            $this->atualizaCursosDaSolicitacao();
+            $this->atualizaTemasDaSolicitacao();
+            $this->atualizaAlunosDaSolicitacao();
+
+            // Se tudo deu certo, fazemos o commit da transação
+            $conn->commit();
+            Logger::log("Solicitacao " . $this->id_projeto . " editado com sucesso! ", "ADD");
+
+        } catch (Exception $e) {
+            // Se qualquer erro ocorrer, desfazemos a transação
+            $conn->rollback();
+            Logger::log("Erro ao editar solicitacao" . $this->id_projeto . " : " . $e->getMessage(), "ERROR");
+            header("Location: ./editarSolicitacao.php?projeto=" . $this->id_projeto . "&&erro=nao-foi-possivel-adicionar");
+        }
+    }
+
+    private function atualizaCursosDaSolicitacao()
+    {
+        global $conn;
+
+        $idProjeto = $this->id_projeto;
+        $cursos = $this->cursos;
+
+        // Primeiro, apaga todos os cursos atuais associados ao projeto
+        $sqlDelete = "DELETE FROM curso_has_solicitacao WHERE solicitacao_id_solicitacao = ?";
+        $stmtDelete = $conn->prepare($sqlDelete);
+
+        if (!$stmtDelete) {
+            Logger::log("Erro ao preparar DELETE na tabela curso_has_solicitacao: " . $conn->error, "ERROR");
+            return;
+        }
+
+        $stmtDelete->bind_param("i", $idProjeto);
+
+        if (!$stmtDelete->execute()) {
+            Logger::log("Erro ao executar DELETE na tabela curso_has_solicitacao: " . $stmtDelete->error, "ERROR");
+            return;
+        }
+
+        $stmtDelete->close();
+
+        // Depois, insere novamente os cursos atualizados
+        $sqlInsert = "INSERT INTO curso_has_solicitacao (curso_id_curso, solicitacao_id_solicitacao) VALUES (?, ?)";
+        $stmtInsert = $conn->prepare($sqlInsert);
+
+        if (!$stmtInsert) {
+            Logger::log("Erro ao preparar INSERT na curso_has_solicitacao: " . $conn->error, "ERROR");
+            return;
+        }
+
+        foreach ($cursos as $idcurso) {
+            $stmtInsert->bind_param("ii", $idcurso, $idProjeto);
+            if (!$stmtInsert->execute()) {
+                Logger::log("Erro ao inserir curso na tabela curso_has_solicitacao:" . $stmtInsert->error, "ERROR");
+            }
+        }
+
+        $stmtInsert->close();
+    }
+
+    private function atualizaTemasDaSolicitacao()
+    {
+        global $conn;
+        $idProjeto = $this->id_projeto;
+        $temas = $this->temas;
+
+        // Primeiro, apaga todos os temas atuais associados ao projeto
+        $sqlDelete = "DELETE FROM tema_has_solicitacao WHERE solicitacao_id_solicitacao = ?";
+        $stmtDelete = $conn->prepare($sqlDelete);
+
+        if (!$stmtDelete) {
+            Logger::log("Erro ao preparar DELETE na tabela tema_has_solicitacao: " . $conn->error, "ERROR");
+            return;
+        }
+
+        $stmtDelete->bind_param("i", $idProjeto);
+
+        if (!$stmtDelete->execute()) {
+            Logger::log("Erro ao executar DELETE na tabela tema_has_solicitacao: " . $stmtDelete->error, "ERROR");
+            return;
+        }
+
+        $stmtDelete->close();
+
+        // Depois, insere novamente os temas atualizados
+        $sqlInsert = "INSERT INTO tema_has_solicitacao (tema_id_tema, solicitacao_id_solicitacao) VALUES (?, ?)";
+        $stmtInsert = $conn->prepare($sqlInsert);
+
+        if (!$stmtInsert) {
+            Logger::log("Erro ao preparar INSERT na tema_has_solicitacao: " . $conn->error, "ERROR");
+            return;
+        }
+
+        foreach ($temas as $idTema) {
+            $stmtInsert->bind_param("ii", $idTema, $idProjeto);
+            if (!$stmtInsert->execute()) {
+                Logger::log("Erro ao inserir tema na tabela tema_has_solicitacao:" . $stmtInsert->error, "ERROR");
+            }
+        }
+
+        $stmtInsert->close();
+    }
+
+    private function atualizaAlunosDaSolicitacao()
+    {
+        global $conn;
+        $idProjeto = $this->id_projeto;
+        $alunos = $this->alunos;
+
+        // Primeiro, apaga todas as associações atuais de alunos com o projeto
+        $sqlDelete = "DELETE FROM aluno_has_solicitacao WHERE solicitacao_id_solicitacao = ?";
+        $stmtDelete = $conn->prepare($sqlDelete);
+
+        if (!$stmtDelete) {
+            Logger::log("Erro na preparação do DELETE (atualizaAlunosDosolicitacao): " . $conn->error, "ERROR");
+            return;
+        }
+
+        $stmtDelete->bind_param("i", $idProjeto);
+
+        if (!$stmtDelete->execute()) {
+            Logger::log("Erro ao executar DELETE (atualizaAlunosDosolicitacao): " . $stmtDelete->error, "ERROR");
+            $stmtDelete->close();
+            return;
+        }
+
+        $stmtDelete->close();
+
+        // Agora insere as novas associações
+        $sqlInsert = "INSERT INTO aluno_has_solicitacao (aluno_id_aluno, solicitacao_id_solicitacao) VALUES (?, ?)";
+        $stmtInsert = $conn->prepare($sqlInsert);
+
+        if (!$stmtInsert) {
+            Logger::log("Erro na preparação do INSERT (atualizaAlunosDosolicitacao): " . $conn->error, "ERROR");
+            return;
+        }
+
+        foreach ($alunos as $idAluno) {
+            if ($idAluno) {
+                $stmtInsert->bind_param("ii", $idAluno, $idProjeto);
+
+                if (!$stmtInsert->execute()) {
+                    Logger::log("Erro ao inserir aluno na tabela de relacionamentos (atualizaAlunosDosolicitacao): " . $stmtInsert->error, "ERROR");
+                }
+            } else {
+                Logger::log("ID de aluno inválido encontrado (atualizaAlunosDosolicitacao).", "ERROR");
+            }
+        }
+
+        $stmtInsert->close();
+    }
+
+    public static function obterDetalhesDaSolicitacaoComOsIDS($id)
+    {
+        global $conn;
+        $sql = "SELECT 
+        p.id_solicitacao,
+        p.nome_projeto AS projeto_nome,
+        p.descricao AS projeto_descricao,
+        p.resumo AS projeto_resumo,
+        p.material_apoio AS projeto_material_apoio,
+        GROUP_CONCAT(DISTINCT CONCAT(c.id_curso, ':', c.nome)) AS cursos,
+        GROUP_CONCAT(DISTINCT CONCAT(i.id_aluno, ':', i.nome)) AS alunos,
+        GROUP_CONCAT(DISTINCT CONCAT(t.id_tema, ':', t.nome)) AS temas
+    FROM 
+        solicitacao_projeto p
+        LEFT JOIN curso_has_solicitacao chp ON p.id_solicitacao = chp.solicitacao_id_solicitacao
+        LEFT JOIN curso c ON chp.curso_id_curso = c.id_curso
+        LEFT JOIN aluno_has_solicitacao ihp ON p.id_solicitacao = ihp.solicitacao_id_solicitacao
+        LEFT JOIN aluno i ON ihp.aluno_id_aluno = i.id_aluno
+        LEFT JOIN tema_has_solicitacao pht ON p.id_solicitacao = pht.solicitacao_id_solicitacao
+        LEFT JOIN tema t ON pht.tema_id_tema = t.id_tema
+    WHERE 
+        p.id_solicitacao = ? 
+    GROUP BY 
+        p.id_solicitacao, p.nome_projeto, p.descricao, p.resumo, p.material_apoio;";
+
+        $stmt = $conn->prepare($sql);
+        if ($stmt) {
+            $stmt->bind_param("i", $id);
+            $stmt->execute();
+            $result = $stmt->get_result();
+
+            if ($result) {
+                $projeto = $result->fetch_assoc();
+
+                // Convertendo os campos concatenados em arrays associativos
+                $projeto['cursos'] = array_map(function ($item) {
+                    [$id, $nome] = explode(':', $item);
+                    return ['id' => (int) $id, 'nome' => $nome];
+                }, $projeto['cursos'] ? explode(',', $projeto['cursos']) : []);
+
+                $projeto['alunos'] = array_map(function ($item) {
+                    [$id, $nome] = explode(':', $item);
+                    return ['id' => (int) $id, 'nome' => $nome];
+                }, $projeto['alunos'] ? explode(',', $projeto['alunos']) : []);
+
+                $projeto['temas'] = array_map(function ($item) {
+                    [$id, $nome] = explode(':', $item);
+                    return ['id' => (int) $id, 'nome' => $nome];
+                }, $projeto['temas'] ? explode(',', $projeto['temas']) : []);
+
+                return $projeto;
+            } else {
+                die("Algo deu errado na consulta do projeto");
+            }
+        } else {
+            die("Algo deu errado na preparação da consulta do projeto");
+        }
+    }
+
+    public function aprovaSolicitacao($projetoId)
+    {
+        global $conn;
+
+        // Verifica a conexão
+        if ($conn->connect_error) {
+            echo "Falha na conexão: " . $conn->connect_error;
+            return false;
+        }
+
+        // Prepara a query
+        $stmt = $conn->prepare("UPDATE solicitacao_projeto SET status = 2 WHERE id_solicitacao = ?");
+        if (!$stmt) {
+            echo "Erro ao preparar a query: " . $conn->error;
+            $conn->close();
+            return false;
+        }
+
+        // Faz o bind do parâmetro
+        $stmt->bind_param("i", $projetoId);
+
+        // Executa a query
+        if ($stmt->execute()) {
+            echo "Projeto aprovado com sucesso.";
+        } else {
+            echo "Erro ao aprovar projeto: " . $stmt->error;
+        }
+
+        // Fecha as conexões
+        $stmt->close();
+        $conn->close();
+
+        return true;
+    }
 }

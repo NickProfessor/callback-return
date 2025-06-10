@@ -137,6 +137,45 @@ div.projeto-info-desc {
     resize: vertical;
 }
 
+.comentarios-professor {
+    background-color: #f9f9f9;
+    border: 1px solid #dedede;
+    border-radius: 8px;
+    padding: 20px;
+    margin-top: 30px;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.05);
+}
+
+.comentarios-professor h3 {
+    margin-top: 0;
+    font-size: 20px;
+    color: #be3b3b;
+    border-bottom: 2px solid #ccc;
+    padding-bottom: 8px;
+}
+
+.comentarios-professor ul {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+}
+
+.comentarios-professor li {
+    padding: 10px 0;
+    border-bottom: 1px solid #eee;
+}
+
+.comentarios-professor li:last-child {
+    border-bottom: none;
+}
+
+.comentarios-professor strong {
+    color: #005aa7;
+    display: inline-block;
+    min-width: 150px;
+}
+
+
 
 @media (min-width: 600px) {
     main {

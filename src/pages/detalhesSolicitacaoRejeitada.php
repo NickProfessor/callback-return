@@ -1,5 +1,4 @@
 <?php
-
 require_once "../helpers/SessionManager.php";
 require_once "../models/Projeto.php";
 
@@ -18,28 +17,16 @@ if (isset($_GET["projeto"]) && $_GET["projeto"] != "") {
         echo "<h1>Projeto não encontrado</h1>";
     } else {
         $usuario = SessionManager::get("usuario");
-        $projeto = Projeto::obterDetalhesDaSolicitacaoComOsIDS($projetoId);
+        $usuarioAluno = True;
+        $projeto = Projeto::obterDetalhesDaSolicitacaoComComentarios($projetoId);
 
         $projetoNome = $projeto['projeto_nome'];
         $projetoCursos = $projeto['cursos'];
         $projetoResumo = $projeto['projeto_resumo'];
         $projetoDescricao = $projeto['projeto_descricao']; // Não usamos nl2br aqui
         $projetoMaterialApoio = $projeto['projeto_material_apoio'] ?? null;
-        $projetoAlunos = $projeto['alunos'];
-        $projetoTemas = $projeto['temas'];
-
-
-
-        $dados = [
-            "nome" => $projetoNome,
-            "cursos" => $projetoCursos,
-            "resumo" => $projetoResumo,
-            "descricao" => $projetoDescricao,
-            "material_apoio" => $projetoMaterialApoio,
-            "alunos" => $projetoAlunos,
-            "temas" => $projetoTemas
-        ];
-        SessionManager::set('projeto_temp', $dados);
+        $projetoAlunos = explode(',', $projeto['alunos']);
+        $projetoTemas = explode(',', $projeto['temas']);
 
 
 
