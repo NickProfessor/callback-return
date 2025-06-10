@@ -43,48 +43,7 @@
                 <?php endforeach; ?>
             </div>
         </div>
-        <div class="projeto-info">
-            <p>Tags:</p>
 
-
-            <?php if ($popularJovens): ?>
-                <div>
-                    <img src="../assets/images/icone-jovem.svg" alt="ícone jovem"
-                        title="Popular entre jovens de 0 a 21 anos">
-                    <p>Popular entre jovens</p>
-                </div>
-            <?php endif; ?>
-
-            <?php if ($popularAdultos): ?>
-                <div>
-                    <img src="../assets/images/icone-adulto.svg" alt="ícone adulto"
-                        title="Popular entre adultos de 22 a 59 anos">
-                    <p>Popular entre adultos</p>
-                </div>
-            <?php endif; ?>
-
-            <?php if ($popularIdosos): ?>
-                <div>
-                    <img src="../assets/images/icone-idoso.svg" alt="ícone idoso"
-                        title="Popular idosos com mais de 60 anos">
-                    <p>Popular entre idosos</p>
-                </div>
-            <?php endif; ?>
-
-            <?php if ($popularHomens): ?>
-                <div>
-                    <img src="../assets/images/icone-homem.svg" alt="ícone homem" title="Popular entre homens">
-                    <p>Popular entre homens</p>
-                </div>
-            <?php endif; ?>
-
-            <?php if ($popularMulheres): ?>
-                <div>
-                    <img src="../assets/images/icone-mulher.svg" alt="ícone mulher" title="Popular entre mulheres">
-                    <p>Popular entre mulheres</p>
-                </div>
-            <?php endif; ?>
-        </div>
 
         <a href="./avaliaProjeto.php?projeto=<?php echo $projetoId ?>" class="botao-padrao">Clique aqui para avaliar o
             projeto</a>

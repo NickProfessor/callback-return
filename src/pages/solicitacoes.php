@@ -4,14 +4,12 @@ require_once "../helpers/SessionManager.php";
 require_once "../controllers/UserController.php";
 require_once "../models/Projeto.php";
 
-SessionManager::requireLogin(3);
+SessionManager::requireLogin(4);
 
 $usuario = SessionManager::get('usuario');
 
 
-$listaDeProjetos = Projeto::carregaSolicitacoes(3, $usuario['id_aluno']);
-
-
+$listaDeProjetos = Projeto::carregaSolicitacoes();
 ?>
 
 <!DOCTYPE html>
@@ -34,9 +32,8 @@ $listaDeProjetos = Projeto::carregaSolicitacoes(3, $usuario['id_aluno']);
 <body>
 
     <header>
-        <a href="./solicitarProjeto.php">Envie seu projeto!</a>
         <br>
-        <h1 class="titulo-header">Confira suas solicitações rejeitadas:</h1>
+        <h1 class="titulo-header">Aprove ou desaprove as solicitações dos alunos</h1>
         <br>
         <a href="../../index.php" class="link-header">Voltar para tela inicial!</a>
         <br>
@@ -52,7 +49,6 @@ $listaDeProjetos = Projeto::carregaSolicitacoes(3, $usuario['id_aluno']);
 
             foreach ($listaDeProjetos as $projeto) {
                 $solicitacao = True;
-                $alunoRejeitado = True;
                 $projetoId = $projeto['id_solicitacao'];
                 $projetoNome = $projeto['projeto_nome'];
                 $projetoCursos = $projeto['cursos'];

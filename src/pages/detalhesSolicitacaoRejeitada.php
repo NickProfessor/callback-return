@@ -1,22 +1,24 @@
 <?php
-
 require_once "../helpers/SessionManager.php";
 require_once "../models/Projeto.php";
+
+
 
 if (isset($_GET["projeto"]) && $_GET["projeto"] != "") {
 
     $projetoId = $_GET["projeto"];
 
-    $projetoExiste = Projeto::obterProjetoPeloId($projetoId);
+    $projetoExiste = Projeto::obterSolicitacaoPeloId($projetoId);
 
     if (!$projetoExiste) {
         $page = "detalhesProjeto";
-        $pageTitle = "Projeto não encontrado | CallbackReturn";
+        $pageTitle = "Solicitacão não encontrado | CallbackReturn";
         include "../views/header.php";
         echo "<h1>Projeto não encontrado</h1>";
     } else {
         $usuario = SessionManager::get("usuario");
-        $projeto = Projeto::obterDetalhesDoProjeto($projetoId);
+        $usuarioAluno = True;
+        $projeto = Projeto::obterDetalhesDaSolicitacaoComComentarios($projetoId);
 
         $projetoNome = $projeto['projeto_nome'];
         $projetoCursos = $projeto['cursos'];
@@ -25,18 +27,8 @@ if (isset($_GET["projeto"]) && $_GET["projeto"] != "") {
         $projetoMaterialApoio = $projeto['projeto_material_apoio'] ?? null;
         $projetoAlunos = explode(',', $projeto['alunos']);
         $projetoTemas = explode(',', $projeto['temas']);
-        $projetoAvaliacoes = $projeto['total_avaliacoes'];
-        $projetoMediaAvaliacoes = $projeto['media_notas'];
 
-        $comentariosBrutos = explode(' | ', $projeto['comentarios']);
 
-        // Filtra comentários válidos
-        $projetoComentarios = array_filter($comentariosBrutos, function ($comentario) {
-            // Remove espaços em branco antes e depois do comentário
-            $comentario = trim($comentario);
-            // Verifica se o comentário é exatamente "Sem comentario" ou "sem comentario"
-            return $comentario !== 'Sem comentario' && $comentario !== 'sem comentario' && !empty($comentario);
-        });
 
         if (isset($usuario) && ($usuario['tipo_usuario'] == 2)) {
             $usuarioAdm = true;
@@ -47,7 +39,7 @@ if (isset($_GET["projeto"]) && $_GET["projeto"] != "") {
         $page = "detalhesProjeto";
         $pageTitle = "$projetoNome | CallbackReturn";
         include "../views/header.php";
-        include "../views/projetoDetalhado.php";
+        include "../views/solicitacaoDetalhada.php";
     }
 } else {
     $pageTitle = "Não encontrado | CallbackReturn";

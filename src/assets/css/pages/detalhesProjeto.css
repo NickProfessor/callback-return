@@ -16,6 +16,10 @@ main {
     font-weight: 500;
 }
 
+.solicitacao {
+    background-color: #ebebeb;
+}
+
 .projeto-avaliacoes {
     align-self: flex-end;
     display: flex;
@@ -102,6 +106,76 @@ div.projeto-info-desc {
     word-wrap: break-word;
     word-break: break-word;
 }
+
+.form-revisao {
+    max-width: 800px;
+    margin: 2rem auto;
+    padding: 2rem;
+    border: 1px solid #ccc;
+    border-radius: 12px;
+    background: #f9f9f9;
+}
+
+.bloco-revisao {
+    margin-bottom: 2rem;
+}
+
+.bloco-revisao h3 {
+    margin-bottom: 0.5rem;
+}
+
+.bloco-revisao label {
+    display: inline-block;
+    margin-right: 1rem;
+}
+
+.bloco-revisao textarea {
+    display: block;
+    width: 100%;
+    height: 100px;
+    margin-top: 0.5rem;
+    resize: vertical;
+}
+
+.comentarios-professor {
+    background-color: #f9f9f9;
+    border: 1px solid #dedede;
+    border-radius: 8px;
+    padding: 20px;
+    margin-top: 30px;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.05);
+}
+
+.comentarios-professor h3 {
+    margin-top: 0;
+    font-size: 20px;
+    color: #be3b3b;
+    border-bottom: 2px solid #ccc;
+    padding-bottom: 8px;
+}
+
+.comentarios-professor ul {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+}
+
+.comentarios-professor li {
+    padding: 10px 0;
+    border-bottom: 1px solid #eee;
+}
+
+.comentarios-professor li:last-child {
+    border-bottom: none;
+}
+
+.comentarios-professor strong {
+    color: #005aa7;
+    display: inline-block;
+    min-width: 150px;
+}
+
+
 
 @media (min-width: 600px) {
     main {

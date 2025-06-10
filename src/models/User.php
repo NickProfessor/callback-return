@@ -132,6 +132,7 @@ class User
             $stmt = $conn->prepare("SELECT * FROM usuario WHERE id_usuario = ?");
             if (!$stmt) {
                 Logger::log("Erro ao preparar a consulta: " . $conn->error);
+                return false;
             }
 
             $stmt->bind_param("i", $id_usuario);
@@ -139,6 +140,24 @@ class User
             $result = $stmt->get_result();
 
             if ($result && $usuario = $result->fetch_assoc()) {
+                // Se tipo_usuario for 3, buscar o id_aluno correspondente
+                if ($usuario['tipo_usuario'] == 3) {
+                    $stmtAluno = $conn->prepare("SELECT id_aluno FROM aluno WHERE id_usuario = ?");
+                    if ($stmtAluno) {
+                        $stmtAluno->bind_param("i", $id_usuario);
+                        $stmtAluno->execute();
+                        $resultAluno = $stmtAluno->get_result();
+
+                        if ($resultAluno && $aluno = $resultAluno->fetch_assoc()) {
+                            $usuario['id_aluno'] = $aluno['id_aluno'];
+                        }
+
+                        $stmtAluno->close();
+                    } else {
+                        Logger::log("Erro ao preparar consulta do aluno: " . $conn->error);
+                    }
+                }
+
                 return $usuario;
             }
 
@@ -149,5 +168,6 @@ class User
             return false;
         }
     }
+
 
 }
