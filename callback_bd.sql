@@ -103,7 +103,7 @@ CREATE TABLE `aluno_has_solicitacao` (
 
 LOCK TABLES `aluno_has_solicitacao` WRITE;
 /*!40000 ALTER TABLE `aluno_has_solicitacao` DISABLE KEYS */;
-INSERT INTO `aluno_has_solicitacao` VALUES (1,4),(3,4);
+INSERT INTO `aluno_has_solicitacao` VALUES (1,4),(3,4),(1,5),(3,5);
 /*!40000 ALTER TABLE `aluno_has_solicitacao` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -216,7 +216,7 @@ CREATE TABLE `curso_has_solicitacao` (
 
 LOCK TABLES `curso_has_solicitacao` WRITE;
 /*!40000 ALTER TABLE `curso_has_solicitacao` DISABLE KEYS */;
-INSERT INTO `curso_has_solicitacao` VALUES (1,3),(2,3),(1,4),(2,4);
+INSERT INTO `curso_has_solicitacao` VALUES (1,3),(2,3),(1,4),(2,4),(1,5),(2,5);
 /*!40000 ALTER TABLE `curso_has_solicitacao` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -251,6 +251,35 @@ CREATE TABLE `mensagem` (
 LOCK TABLES `mensagem` WRITE;
 /*!40000 ALTER TABLE `mensagem` DISABLE KEYS */;
 /*!40000 ALTER TABLE `mensagem` ENABLE KEYS */;
+UNLOCK TABLES;
+
+--
+-- Table structure for table `observacao_revisao`
+--
+
+DROP TABLE IF EXISTS `observacao_revisao`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!50503 SET character_set_client = utf8mb4 */;
+CREATE TABLE `observacao_revisao` (
+  `id` int NOT NULL AUTO_INCREMENT,
+  `solicitacao_id` int NOT NULL,
+  `campo` enum('titulo','cursos','temas','resumo','descricao','alunos','material') NOT NULL,
+  `comentario` text NOT NULL,
+  `data_registro` datetime DEFAULT CURRENT_TIMESTAMP,
+  PRIMARY KEY (`id`),
+  KEY `solicitacao_id` (`solicitacao_id`),
+  CONSTRAINT `observacao_revisao_ibfk_1` FOREIGN KEY (`solicitacao_id`) REFERENCES `solicitacao_projeto` (`id_solicitacao`) ON DELETE CASCADE
+) ENGINE=InnoDB AUTO_INCREMENT=35 DEFAULT CHARSET=utf8mb3;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Dumping data for table `observacao_revisao`
+--
+
+LOCK TABLES `observacao_revisao` WRITE;
+/*!40000 ALTER TABLE `observacao_revisao` DISABLE KEYS */;
+INSERT INTO `observacao_revisao` VALUES (34,5,'titulo','aaaaa','2025-06-10 09:37:33');
+/*!40000 ALTER TABLE `observacao_revisao` ENABLE KEYS */;
 UNLOCK TABLES;
 
 --
@@ -367,7 +396,7 @@ CREATE TABLE `solicitacao_projeto` (
   PRIMARY KEY (`id_solicitacao`),
   KEY `solicitado_por` (`solicitado_por`),
   CONSTRAINT `solicitacao_projeto_ibfk_1` FOREIGN KEY (`solicitado_por`) REFERENCES `aluno` (`id_aluno`)
-) ENGINE=InnoDB AUTO_INCREMENT=5 DEFAULT CHARSET=utf8mb3;
+) ENGINE=InnoDB AUTO_INCREMENT=6 DEFAULT CHARSET=utf8mb3;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -376,7 +405,7 @@ CREATE TABLE `solicitacao_projeto` (
 
 LOCK TABLES `solicitacao_projeto` WRITE;
 /*!40000 ALTER TABLE `solicitacao_projeto` DISABLE KEYS */;
-INSERT INTO `solicitacao_projeto` VALUES (1,'Projeto Teste SOLICITACAO','Resumo de SOLICITACAO','DESCRICAO DE SOLICITACAO',NULL,2,'2025-06-03 00:32:25','2025-06-02 19:32:25','pendente'),(3,'AAAAAAAAAAAAAAAAAAAAAAAAAAAA','AAAAAAAAA','aaa','uploads/683e9c4e39648.pdf',2,'2025-06-03 08:55:10','2025-06-03 03:55:10','pendente'),(4,'BBBBBBBBBBBBBBBBB','AAAAAAAA','AAAAAAAAAAAVBB','uploads/683e9d10d64bb.pdf',2,'2025-06-03 08:58:24','2025-06-03 03:58:24','pendente');
+INSERT INTO `solicitacao_projeto` VALUES (1,'Projeto Teste SOLICITACAO','Resumo de SOLICITACAO','DESCRICAO DE SOLICITACAO',NULL,2,'2025-06-03 00:32:25','2025-06-02 19:32:25','pendente'),(3,'AAAAAAAAAAAAAAAAAAAAAAAAAAAA','AAAAAAAAA','aaa','uploads/683e9c4e39648.pdf',2,'2025-06-03 08:55:10','2025-06-03 03:55:10','pendente'),(4,'BBBBBBBBBBBBBBBBB','AAAAAAAA','AAAAAAAAAAAVBB','uploads/683e9d10d64bb.pdf',2,'2025-06-03 08:58:24','2025-06-03 03:58:24','pendente'),(5,'Aluno nome','A','AAA','uploads/684826ee40db2.pdf',1,'2025-06-10 14:37:02','2025-06-10 09:37:33','rejeitado');
 /*!40000 ALTER TABLE `solicitacao_projeto` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -459,7 +488,7 @@ CREATE TABLE `tema_has_solicitacao` (
 
 LOCK TABLES `tema_has_solicitacao` WRITE;
 /*!40000 ALTER TABLE `tema_has_solicitacao` DISABLE KEYS */;
-INSERT INTO `tema_has_solicitacao` VALUES (1,3),(2,3),(1,4),(2,4);
+INSERT INTO `tema_has_solicitacao` VALUES (1,3),(2,3),(1,4),(2,4),(1,5),(2,5);
 /*!40000 ALTER TABLE `tema_has_solicitacao` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -506,4 +535,4 @@ UNLOCK TABLES;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2025-06-03 17:38:12
+-- Dump completed on 2025-06-10  9:38:17
