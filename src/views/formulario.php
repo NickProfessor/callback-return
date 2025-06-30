@@ -471,9 +471,7 @@
     <?php if ($admin): ?>
         <!-- REMOVER DEPOIS -->
         <a href="cadastroAluno.php">cadastrar aluno</a>
-        <form method="POST" action="reviverProjetos.php">
-            <button type="submit" name="reviver">Reviver todos os projetos excluídos</button>
-        </form>
+       
 
         <!-- REMOVER DEPOIS -->
         <h1 class="titulo-formulario">Registre um projeto</h1>
@@ -674,50 +672,50 @@
                 <input type="date" name="dataNasc" id="dataNasc" class="campo-texto" value="2000-01-01" required>
             </div>
             <div class="form-group">
-                <p>Informe seu sexo:</p>
+                
                 <div class="radio-formulario">
-                    <input type="radio" name="sexo" id="masculino" value="masculino" required>
-                    <label for="masculino">Masculino</label>
+                    <input type="radio" name="sexo" id="masculino" value="masculino" hidden required>
+                   
                 </div>
                 <div class="radio-formulario">
-                    <input type="radio" name="sexo" id="feminino" value="feminino" required>
-                    <label for="feminino">Feminino</label>
+                    <input type="radio" name="sexo" id="feminino" value="feminino" hidden required>
+                    
                 </div>
 
                 <div class="radio-formulario">
-                    <input type="radio" name="sexo" id="outro" value="outro" checked required>
-                    <label for="outro">Prefiro não informar</label>
+                    <input type="radio" name="sexo" id="outro" value="outro" checked hidden required>
+                    
                 </div>
             </div>
 
             <div class="form-group">
-                <label for="ra">Informe o ra do aluno:</label>
-                <input type="number" name="ra" id="ra" class="campo-texto" placeholder="11111" value="11111" required>
+               
+                <input type="number" name="ra" id="ra" class="campo-texto" placeholder="11111" value="11111" hidden required>
             </div>
             <div class="form-group">
-                <label for="rm">Informe o rm do aluno:</label>
-                <input type="number" name="rm" id="rm" class="campo-texto" placeholder="11111" value="11111" required>
-            </div>
-
-            <div class="form-group">
-                <label for="serie">Informe a serie do aluno:</label>
-                <input type="number" name="serie" id="serie" class="campo-texto" placeholder="11111" value="3" required>
+                
+                <input type="number" name="rm" id="rm" class="campo-texto" placeholder="11111" value="11111" hidden required>
             </div>
 
             <div class="form-group">
-                <label for="turma">Informe a turma do aluno:</label>
-                <input type="text" name="turma" id="turma" class="campo-texto" placeholder="11111" value="B" required>
+                
+                <input type="number" name="serie" id="serie" class="campo-texto" placeholder="11111" value="3" hidden required>
+            </div>
+
+            <div class="form-group">
+                
+                <input type="text" name="turma" id="turma" class="campo-texto" placeholder="11111" value="B" hidden required>
             </div>
 
 
             <div class="form-group">
-                <label for="cursos">Informe os cursos do projeto</label>
+                
                 <?php foreach ($cursos as $id_curso => $curso): ?>
                     <div class="radio-formulario">
-                        <input type="radio" name="curso" id="<?php echo strtolower($curso) ?>" value="<?php echo $id_curso ?>"
+                        <input type="radio" name="curso" id="<?php echo strtolower($curso) ?>"  hidden value="<?php echo $id_curso ?>"
                             <?php if ($id_curso == 8)
                                 echo "checked" ?>>
-                            <label for="<?php echo strtolower($curso) ?>"><?php echo $curso ?></label>
+                            
                     </div>
                 <?php endforeach; ?>
             </div>
